@@ -1,0 +1,126 @@
+{
+  "checkedAt": "2026-10-10T21:06:12.774800+00:00",
+  "facility": {
+    "id": "FL-DEMO-01",
+    "name": "Big Bend Field Office",
+    "latitude": 29.99,
+    "longitude": -83.44,
+    "fictional": true
+  },
+  "source": "https://api.weather.gov/alerts/active?area=FL",
+  "feedUpdated": "2026-10-10T21:03:39+00:00",
+  "alertCount": 36,
+  "eventCounts": {
+    "Flood Advisory": 2,
+    "Special Weather Statement": 1,
+    "Flood Watch": 2,
+    "Rip Current Statement": 8,
+    "Coastal Flood Statement": 4,
+    "Flood Warning": 11,
+    "Coastal Flood Advisory": 4,
+    "Coastal Flood Warning": 3,
+    "High Surf Advisory": 1
+  },
+  "applicabilityCounts": {
+    "not-applicable": 14,
+    "unknown": 22
+  },
+  "tornadoWarnings": [],
+  "applicableAlerts": [],
+  "missingGeometryCount": 22,
+  "point": {
+    "source": "https://api.weather.gov/points/29.99,-83.44",
+    "forecastOffice": "TAE",
+    "timeZone": "America/New_York",
+    "city": "Perry",
+    "state": "FL",
+    "forecastHourly": "https://api.weather.gov/gridpoints/TAE/118,69/forecast/hourly",
+    "observationStations": "https://api.weather.gov/gridpoints/TAE/118,69/stations",
+    "forecastZone": "https://api.weather.gov/zones/forecast/FLZ028",
+    "county": "https://api.weather.gov/zones/county/FLC123"
+  },
+  "hourlyForecast": {
+    "source": "https://api.weather.gov/gridpoints/TAE/118,69/forecast/hourly",
+    "updated": null,
+    "periods": [
+      {
+        "startTime": "2026-10-10T17:00:00-04:00",
+        "endTime": "2026-10-10T18:00:00-04:00",
+        "temperature": 79,
+        "temperatureUnit": "F",
+        "windSpeed": "10 mph",
+        "windDirection": "S",
+        "probabilityOfPrecipitation": {
+          "unitCode": "wmoUnit:percent",
+          "value": 56
+        },
+        "shortForecast": "Showers And Thunderstorms Likely"
+      },
+      {
+        "startTime": "2026-10-10T18:00:00-04:00",
+        "endTime": "2026-10-10T19:00:00-04:00",
+        "temperature": 79,
+        "temperatureUnit": "F",
+        "windSpeed": "10 mph",
+        "windDirection": "SSW",
+        "probabilityOfPrecipitation": {
+          "unitCode": "wmoUnit:percent",
+          "value": 49
+        },
+        "shortForecast": "Chance Showers And Thunderstorms"
+      },
+      {
+        "startTime": "2026-10-10T19:00:00-04:00",
+        "endTime": "2026-10-10T20:00:00-04:00",
+        "temperature": 78,
+        "temperatureUnit": "F",
+        "windSpeed": "5 mph",
+        "windDirection": "S",
+        "probabilityOfPrecipitation": {
+          "unitCode": "wmoUnit:percent",
+          "value": 42
+        },
+        "shortForecast": "Chance Showers And Thunderstorms"
+      },
+      {
+        "startTime": "2026-10-10T20:00:00-04:00",
+        "endTime": "2026-10-10T21:00:00-04:00",
+        "temperature": 78,
+        "temperatureUnit": "F",
+        "windSpeed": "5 mph",
+        "windDirection": "S",
+        "probabilityOfPrecipitation": {
+          "unitCode": "wmoUnit:percent",
+          "value": 62
+        },
+        "shortForecast": "Showers And Thunderstorms Likely"
+      }
+    ]
+  },
+  "observation": {
+    "source": "https://api.weather.gov/stations/KFPY/observations/latest",
+    "station": "KFPY",
+    "timestamp": "2026-10-10T20:35:00+00:00",
+    "textDescription": "Cloudy",
+    "temperature": {
+      "unitCode": "wmoUnit:degC",
+      "value": 25.8,
+      "qualityControl": "V"
+    },
+    "windSpeed": {
+      "unitCode": "wmoUnit:km_h-1",
+      "value": 9.252,
+      "qualityControl": "V"
+    },
+    "windGust": {
+      "unitCode": "wmoUnit:km_h-1",
+      "value": null,
+      "qualityControl": "Z"
+    },
+    "visibility": {
+      "unitCode": "wmoUnit:m",
+      "value": 16093.44,
+      "qualityControl": "C"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+syntax = "proto3";
+package weatherdesk.v1;
+option go_package = "weatherdesk.local/prototype/pkg/gen/weatherdeskv1";
+
+// This service explains evidence. It has no approval or sending RPC.
+service EvidenceBriefingService {
+ rpc GetStatus(StatusRequest) returns (StatusResponse);
+ rpc Explain(ExplainRequest) returns (ExplainResponse);
+}
+message StatusRequest {}
+message StatusResponse { bool installed = 1; bool configured = 2; string provider = 3; }
+message Facility { string id = 1; string name = 2; double latitude = 3; double longitude = 4; bool fictional = 5; }
+message Alert {
+ string id = 1; string source = 2; string event = 3; string description = 4;
+ string instruction = 5; string area = 6; string issuer = 7; string issued = 8;
+ string effective = 9; string expires = 10; string status = 11; string message_type = 12;
+ string severity = 13; string certainty = 14; string urgency = 15; string geography = 16;
+ string lifecycle = 17; string applicability = 18; string match_method = 19;
+}
+message ExplainRequest {
+ string request_id = 1; string mode = 2; Facility facility = 3;
+ string evidence_timestamp = 4; repeated Alert alerts = 5; repeated string evidence_gaps = 6;
+}
+message ChangedFact { string fact = 1; string source_id = 2; }
+message DraftMessage { string group = 1; string text = 2; }
+message Briefing {
+ repeated ChangedFact changed_facts = 1; repeated string source_references = 2;
+ repeated string evidence_gaps = 3; string explanation = 4;
+ repeated DraftMessage draft_operational_messages = 5;
+}
+message ExplainResponse {
+ string request_id = 1; string evidence_timestamp = 2; string facility_id = 3; Briefing briefing = 4;
+}

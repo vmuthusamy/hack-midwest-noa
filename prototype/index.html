@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weather Desk · Facility weather experiment</title><link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-canvas text-ink">
+<a class="sr-only focus:not-sr-only button" href="#main">Skip to decision</a>
+<header class="border-b border-line bg-panel">
+  <div class="max-w-6xl mx-auto px-4 sm:px-8 py-5 flex flex-wrap gap-4 items-center justify-between">
+    <div><div class="text-xl font-semibold">Weather Desk<span class="text-brand"> /</span></div><p class="text-sm text-dim">Facility operations · Personal hackathon experiment</p></div>
+    <div class="flex flex-wrap gap-3 items-center"><label for="mode" class="sr-only">Data mode</label><select id="mode" class="field w-auto"><option value="replay">REPLAY · Scenario</option><option value="live">LIVE · NOAA evidence</option></select><button id="theme" class="button" aria-pressed="false">Dark mode</button></div>
+  </div>
+</header>
+<main id="main" class="max-w-6xl mx-auto p-4 sm:p-8 space-y-6">
+  <div class="flex flex-wrap gap-4 justify-between items-start"><div><p class="eyebrow">Fictional Florida facility · FL-DEMO-01</p><h1 class="text-3xl sm:text-4xl font-semibold mt-2">Big Bend Field Office</h1><p class="text-dim mt-2">An approved instruction changed. Who needs a correction?</p></div><span class="badge">Design prototype · No real messages</span></div>
+  <section id="live-panel" class="panel space-y-4" hidden aria-labelledby="live-title"><p class="eyebrow">LIVE · NOAA evidence · Fictional facility</p><h2 id="live-title" class="text-2xl font-semibold">Refresh facility evidence</h2><p>Replay data is never used as live evidence. This experiment cannot send operational messages.</p><div class="flex flex-wrap gap-3"><button id="refresh-live" class="button button-primary">Refresh NOAA evidence</button><button id="brief-live" class="button" disabled>Draft evidence briefing · Strands</button><a class="button" href="https://api.weather.gov/alerts/active?area=FL" target="_blank" rel="noreferrer">Open NOAA Florida feed ↗</a></div><p id="live-status" role="status" aria-live="polite" class="notice text-sm">No live refresh in this session. Current conditions are unknown.</p><div id="live-alerts" class="space-y-4"></div><section id="agent-panel" class="border-t border-line pt-4" hidden><h3 class="font-semibold">Evidence briefing · AI draft for review</h3><p id="agent-explanation" class="mt-3 text-sm"></p><details class="mt-3"><summary class="cursor-pointer">Sources, gaps, and structured output</summary><pre id="agent-output" class="text-xs mt-3"></pre></details></section><details><summary class="cursor-pointer text-sm font-semibold">Earlier verified statewide observation</summary><div class="notice mt-3"><p id="live-check" class="font-semibold"></p><p class="text-sm text-dim mt-2">This was a statewide query, not a facility applicability check. No warning in that response is not an all-clear.</p></div></details></section>
+  <div id="replay-panel" class="space-y-6">
+    <div class="text-sm text-dim flex flex-wrap justify-between gap-2"><p><strong class="text-ink">REPLAY:</strong> Synthetic morning timeline + recorded NOAA instructions. All recipients and notice states are fixtures.</p><button id="restart" class="underline">Restart replay</button></div>
+    <ol id="timeline" class="flex flex-wrap gap-2" aria-label="Replay timeline"></ol>
+    <section id="warning" class="panel bg-warning text-warning-ink" aria-labelledby="warning-title" hidden>
+      <div class="flex flex-wrap gap-3 justify-between items-center"><span class="badge">Recorded official warning · Replay only</span><span class="text-sm font-semibold">Official instructions do not wait for approval</span></div>
+      <h2 id="warning-title" class="text-2xl font-semibold mt-4">Tornado Warning</h2>
+      <p class="text-sm mt-2">NWS Tallahassee · Lafayette and Taylor counties, Florida · Recorded, expired alert</p>
+      <blockquote id="official-instruction" class="text-lg font-semibold mt-4 whitespace-pre-line"></blockquote>
+      <p class="text-sm mt-4">These are the recorded NWS instructions, unchanged. No shelter location or route has been invented.</p>
+      <details class="mt-4"><summary class="cursor-pointer font-semibold">Source, geography, and timestamps</summary><dl id="source-details" class="text-sm mt-3 space-y-2 break-words"></dl></details>
+    </section>
+    <section class="grid md:grid-cols-3 gap-4" aria-label="Decision comparison">
+      <article class="panel"><p class="eyebrow">Previously approved</p><h2 class="text-xl font-semibold mt-3">“Report at 10:00.”</h2><p id="prior-status" class="mt-3 text-sm"></p><p class="text-sm text-dim mt-3">Original approval and notice events remain in history.</p></article>
+      <article class="panel"><p class="eyebrow">What changed</p><h2 id="change-title" class="text-xl font-semibold mt-3"></h2><p id="change-body" class="mt-3 text-sm"></p></article>
+      <article class="panel"><p class="eyebrow">What needs action</p><h2 id="action-title" class="text-xl font-semibold mt-3"></h2><p id="action-body" class="mt-3 text-sm"></p><button id="primary" class="button button-primary mt-5 w-full"></button></article>
+    </section>
+    <p id="feedback" class="notice text-sm" role="status" aria-live="polite"></p>
+    <section class="panel" aria-labelledby="groups-title"><div class="flex flex-wrap items-baseline justify-between gap-2"><h2 id="groups-title" class="text-xl font-semibold">Affected groups &amp; corrections</h2><p class="text-sm text-dim">6 synthetic staff · Fixture drafts, AI not connected</p></div><p class="text-sm text-dim mt-2">Delivery means a simulated notice event. It does not mean the employee read it.</p><div id="groups" class="space-y-5 mt-5"></div></section>
+    <section class="panel" aria-labelledby="history-title"><h2 id="history-title" class="text-xl font-semibold">Decision &amp; notice history</h2><ol id="history" class="mt-4 space-y-3"></ol></section>
+    <details class="panel"><summary class="font-semibold cursor-pointer">Design lab · Evidence changes and approval checks</summary><div class="space-y-4 mt-4"><p class="text-sm text-dim">These controls exercise fixture behavior. They are not live weather updates.</p><label class="block text-sm font-semibold" for="case">Test evidence before simulated sending</label><select id="case" class="field"><option value="applicable">Applicable warning · baseline</option><option value="outside">Warning outside facility</option><option value="missing">Missing geography · unknown</option><option value="stale">Stale refresh · unknown</option><option value="update">Material warning update</option><option value="cancel">Warning cancellation · no reopening</option><option value="expired">Warning expires · no reopening</option><option value="irrelevant">Irrelevant statewide update</option></select><p class="text-sm">Changing relevant evidence invalidates an operational approval. An irrelevant update does not.</p><pre id="trace" class="text-xs bg-canvas rounded-lg p-4"></pre><p class="text-sm text-dim">The actual app will authenticate the manager and use server-side gates. This local prototype demonstrates the interaction only.</p></div></details>
+  </div>
+  <footer class="text-sm text-dim pt-2 pb-6">USDA-style experiment · No real operational delivery or reopening decision. Replay drafts are fixtures; LIVE AI briefings require a configured inference endpoint.</footer>
+</main>
+<script type="module" src="app.mjs"></script>
+</body></html>

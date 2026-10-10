@@ -1,0 +1,18 @@
+{
+  "mode": "RECORDED_LIVE_CHECK",
+  "source": "https://api.weather.gov/alerts/active?area=FL",
+  "lastSuccessfulRefresh": "2026-10-10T18:09:58.817285+00:00",
+  "feedUpdated": "2026-10-10T18:09:26+00:00",
+  "events": {
+    "Special Weather Statement": 1,
+    "Flood Warning": 11,
+    "Rip Current Statement": 9,
+    "High Surf Advisory": 4,
+    "Coastal Flood Advisory": 4,
+    "Coastal Flood Warning": 3,
+    "Flood Watch": 2,
+    "Coastal Flood Statement": 4
+  },
+  "tornadoWarnings": 0,
+  "note": "A timestamped observation only. Not a current facility safety determination."
+}

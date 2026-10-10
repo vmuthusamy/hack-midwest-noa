@@ -1,0 +1,8 @@
+[
+  {"id":"updated-warning","case":"update","material":true,"expectedApprovalValid":false},
+  {"id":"cancelled-warning","case":"cancel","material":true,"expectedApprovalValid":false},
+  {"id":"expired-warning","case":"expired","material":true,"expectedApprovalValid":false},
+  {"id":"missing-evidence","case":"missing","material":true,"expectedApprovalValid":false},
+  {"id":"stale-evidence","case":"stale","material":true,"expectedApprovalValid":false},
+  {"id":"unrelated-update","case":"irrelevant","material":false,"expectedApprovalValid":true}
+]

@@ -1,0 +1,35 @@
+@import "tailwindcss";
+@source "./index.html";
+@source "./app.mjs";
+@theme {
+  --color-canvas: var(--surface);
+  --color-panel: var(--paper);
+  --color-ink: var(--text);
+  --color-dim: var(--secondary-text);
+  --color-line: var(--stroke);
+  --color-brand: var(--brand);
+  --color-brand-ink: var(--on-brand);
+  --color-warning: var(--warning);
+  --color-warning-ink: var(--on-warning);
+}
+:root { color-scheme:light; --surface:#f3f5f3; --paper:#ffffff; --text:#192c28; --secondary-text:#4c625b; --stroke:#c9d4cd; --brand:#145b47; --on-brand:#ffffff; --warning:#fff1ea; --on-warning:#8b2716; }
+:root[data-theme="dark"] { color-scheme:dark; --surface:#101c18; --paper:#182923; --text:#e7f1e9; --secondary-text:#afc5b8; --stroke:#3e5849; --brand:#a4e2bd; --on-brand:#122b21; --warning:#3b211c; --on-warning:#ffc7b7; }
+@layer components {
+  .panel { @apply bg-panel border border-line rounded-2xl p-6; }
+  .button { @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold border border-line bg-panel text-ink; }
+  .button-primary { @apply bg-brand text-brand-ink border-brand; }
+  .button:disabled { @apply opacity-50; cursor:not-allowed; }
+  .badge { @apply inline-flex items-center rounded-full border border-line px-3 py-1 text-xs font-semibold; }
+  .eyebrow { @apply text-xs font-semibold tracking-widest uppercase text-dim; }
+  .field { @apply w-full rounded-lg border border-line bg-panel p-3 text-sm text-ink; }
+  .timeline-step { @apply flex-1 min-w-32 text-left rounded-xl border border-line p-3 text-sm; }
+  .timeline-step[aria-current="step"] { @apply bg-brand text-brand-ink border-brand; }
+  .timeline-step:disabled { @apply opacity-50; }
+  .notice { @apply border-l-4 border-brand pl-4; }
+  :focus-visible { outline:3px solid var(--brand); outline-offset:3px; }
+}
+body { margin:0; font-family:ui-sans-serif,system-ui,sans-serif; }
+button { cursor:pointer; }
+[hidden] { display:none !important; }
+pre,code { overflow-wrap:anywhere; white-space:pre-wrap; }
+@media (prefers-reduced-motion:reduce) { * { scroll-behavior:auto !important; } }

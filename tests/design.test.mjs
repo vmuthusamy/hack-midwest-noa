@@ -1,0 +1,19 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {initialState,advance,evidenceFor,policyGate,setEvidence,approvePackage,recheckAndSimulate,packageFor,fingerprint} from '../prototype/model.mjs';
+function review(){const s=initialState();advance(s);advance(s);advance(s);return s;}
+function approved(){const s=review();assert.equal(approvePackage(s).ok,true);return s;}
+test('applicable warning holds only queued originals; delivered history preserved',()=>{const s=review();assert.deepEqual(s.held,['S02','S05']);assert.equal(s.roster.filter(r=>r.original==='delivered').length,3);assert.equal(s.history.length,2);});
+test('outside warning introduces no hold',()=>{const s=initialState();setEvidence(s,'outside');advance(s);advance(s);assert.equal(s.held.length,0);assert.equal(policyGate(s.evidence).status,'unaffected');});
+for(const kind of ['missing','stale']) test(`${kind} evidence is unknown and cannot authorize simulation`,()=>{const s=review();setEvidence(s,kind);assert.equal(policyGate(s.evidence).status,'unknown');assert.equal(approvePackage(s).ok,false);assert.equal(recheckAndSimulate(s).ok,false);});
+for(const kind of ['update','cancel','expired']) test(`${kind} invalidates approval and never implies reopening`,()=>{const s=approved();setEvidence(s,kind);assert.equal(s.approval,null);assert.equal(s.held.length,2);assert.equal(recheckAndSimulate(s).ok,false);});
+test('irrelevant statewide change preserves exact approval',()=>{const s=approved(),binding=s.approval.binding;setEvidence(s,'irrelevant');assert.equal(s.approval.binding,binding);assert.equal(recheckAndSimulate(s).ok,true);});
+test('changed recipient invalidates immediate re-check',()=>{const s=approved();s.roster[0].group='remote';assert.equal(recheckAndSimulate(s).ok,false);});
+test('changed message invalidates immediate re-check',()=>{const s=approved();s.drafts.arriving+=' New text.';assert.equal(recheckAndSimulate(s).ok,false);});
+test('facility, parameters, and policy are bound to approval',()=>{for(const mutate of [s=>s.facility.latitude=30,s=>s.policyVersion='v2']){const s=approved();mutate(s);assert.equal(recheckAndSimulate(s).ok,false);}assert.equal(packageFor(review()).parameters.previous,'Report at 10:00');});
+test('already-delivered notices receive a correction intent, original unchanged',()=>{const s=approved();recheckAndSimulate(s);assert.ok(s.intents.some(i=>i.recipient==='S01'));assert.equal(s.roster[0].original,'delivered');assert.ok(s.intents.every(i=>i.state==='queued'&&i.simulated));});
+test('repeated send attempts do not duplicate intents',()=>{const s=approved();assert.equal(recheckAndSimulate(s).added,5);assert.equal(recheckAndSimulate(s).added,0);assert.equal(s.intents.length,5);});
+test('remote staff excluded; unauthorized/unreviewed simulation rejected',()=>{const s=review();assert.equal(recheckAndSimulate(s).ok,false);approvePackage(s);recheckAndSimulate(s);assert.equal(s.intents.some(i=>i.recipient==='S06'),false);});
+test('LIVE mode rejects fixture approvals and simulation',()=>{const s=approved();s.mode='LIVE';assert.equal(approvePackage(s).ok,false);assert.equal(recheckAndSimulate(s).ok,false);});
+test('exact binding includes message text and recipients',()=>{const s=review(),before=fingerprint(packageFor(s));s.drafts.onsite+=' edited';assert.notEqual(fingerprint(packageFor(s)),before);});
+test('official instructions are stored independently of operational drafts',async()=>{const fs=await import('node:fs/promises');const raw=JSON.parse(await fs.readFile(new URL('../fixtures/noaa-warning-recorded.json',import.meta.url)));assert.ok(raw.feature.properties.instruction.startsWith('TAKE COVER NOW!'));assert.equal(raw.mode,'RECORDED');assert.equal(raw.feature.properties.parameters.tornadoDetection[0],'RADAR INDICATED');});

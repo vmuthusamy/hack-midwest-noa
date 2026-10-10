@@ -1,0 +1,141 @@
+<div id="weather-problem-map">
+  <h2>From weather evidence to a facility decision</h2>
+  <div class="viz-controls" aria-label="Explore the problem boundaries">
+    <button type="button" class="btn" data-lens="problem" aria-pressed="true">The problem</button>
+    <button type="button" class="btn" data-lens="data" aria-pressed="false">Data we need</button>
+    <button type="button" class="btn" data-lens="authority" aria-pressed="false">Who decides</button>
+    <button type="button" class="btn" data-lens="change" aria-pressed="false">When evidence changes</button>
+  </div>
+  <svg class="problem-sketch" role="img" aria-labelledby="problem-map-title problem-map-desc">
+    <title id="problem-map-title">Weather evidence, application checks, a single drafting agent, human approval, and staff notifications</title>
+    <desc id="problem-map-desc">NOAA evidence, a fictional facility and staff roster, and a supplementary operational signal feed application checks. The app determines geography, timing and policy conditions. One agent explains the evidence and drafts a recommendation. The manager decides the operating posture. Approved notifications are rechecked and simulated, and decisions and notice history are preserved. Official emergency instructions bypass drafting and operational approval.</desc>
+  </svg>
+  <p class="text-small" id="problem-map-detail" aria-live="polite">The manager’s problem: scattered evidence, different staff needs, and no clear record of why an instruction changed.</p>
+  <div class="viz-row text-small map-legend"><span><i class="solid-key"></i> Existing experiment</span><span><i class="dashed-key"></i> Needed next / proposed</span></div>
+</div>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+  #weather-problem-map { width:100%; color:var(--foreground); }
+  #weather-problem-map h2 { margin-bottom:12px; }
+  #weather-problem-map .viz-controls { margin-bottom:10px; }
+  #weather-problem-map .problem-sketch { display:block; width:100%; overflow:visible; }
+  #weather-problem-map .sketch-text { font-family:'Patrick Hand',system-ui,sans-serif; fill:var(--foreground); }
+  #weather-problem-map .sketch-label { fill:var(--muted-foreground); }
+  #weather-problem-map .node-title { font-weight:500; }
+  #weather-problem-map .node-body { font-weight:400; }
+  #weather-problem-map .map-legend { margin-top:10px; gap:20px; color:var(--muted-foreground); }
+  #weather-problem-map .map-legend span { display:inline-flex; align-items:center; gap:7px; }
+  #weather-problem-map .solid-key, #weather-problem-map .dashed-key { display:inline-block; width:20px; border-top:1.5px solid var(--muted-foreground); }
+  #weather-problem-map .dashed-key { border-top-style:dashed; }
+  #weather-problem-map #problem-map-detail { margin:10px 0 0; }
+</style>
+<script>
+(() => {
+  const root=document.getElementById('weather-problem-map');
+  const svg=root.querySelector('.problem-sketch');
+  const detail=root.querySelector('#problem-map-detail');
+  const ns='http://www.w3.org/2000/svg';
+  let lens='problem';
+  const details={
+    problem:'The manager’s problem: scattered evidence, different staff needs, and no clear record of why an instruction changed.',
+    data:'NOAA cannot supply your agency’s operating policy, staff assignments, or every local road/power condition.',
+    authority:'Code checks applicability and approval; one agent explains and drafts; the manager decides the operating posture.',
+    change:'New relevant evidence → show official instructions → hold affected queued notices → review corrections → re-check before simulation.'
+  };
+  const nodes=[
+    {id:'noaa',kind:'data',title:'NOAA / NWS',lines:['Alerts now; forecast / obs next','Source ID + place + time','Current alerts connected'],existing:true},
+    {id:'facility',kind:'data',title:'Facility + people',lines:['Location, hours, policy','Roster + essential staff','Synthetic; fields to expand'],existing:true},
+    {id:'signal',kind:'data',title:'+ One local signal',lines:['Road or river conditions','Source, time, relevance','Not connected yet'],existing:false},
+    {id:'checks',kind:'code',title:'Deterministic application checks',lines:['Does it cover this facility, at this time?','Missing / stale evidence = unknown','Policy thresholds need a defensible basis'],existing:true},
+    {id:'agent',kind:'agent',title:'ONE Strands agent',lines:['Explain evidence, gaps & changes','Draft graded posture + messages','No decision or sending authority'],existing:false},
+    {id:'manager',kind:'human',title:'Facility manager',lines:['Review evidence & recommendation','Choose operating posture','Approve exact operational messages'],existing:false},
+    {id:'notifications',kind:'output',title:'Recipient-specific package',lines:['Onsite / not onsite / remote','Re-check evidence + exact approval','Queued ≠ delivered ≠ acknowledged'],existing:true},
+    {id:'record',kind:'output',title:'Decision + notice history',lines:['What was known, and when?','Thresholds, rationale & approval','Keep originals and corrections'],existing:true}
+  ];
+  const colors={data:'var(--viz-series-1)',code:'var(--viz-series-2)',agent:'var(--viz-series-3)',human:'var(--viz-series-4)',output:'var(--viz-series-1)'};
+  const activeIds={problem:nodes.map(n=>n.id),data:['noaa','facility','signal','checks'],authority:['checks','agent','manager','notifications'],change:['noaa','checks','manager','notifications','record']};
+  function el(tag,attrs={},text){const e=document.createElementNS(ns,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e;}
+  function path(d,attrs={}) { return el('path',{d,fill:'none',stroke:'var(--muted-foreground)','stroke-width':1.3,'stroke-linecap':'round','stroke-linejoin':'round',...attrs}); }
+  function roughBox(b,color,planned,seed=0){
+    const{x,y,w,h}=b;
+    const group=el('g');
+    const d=`M ${x+4} ${y+1} Q ${x+w*.45} ${y-1} ${x+w-3} ${y+2} Q ${x+w+1} ${y+h*.5} ${x+w-1} ${y+h-2} Q ${x+w*.5} ${y+h+1} ${x+1} ${y+h-1} Q ${x-1} ${y+h*.5} ${x+4} ${y+1}`;
+    group.append(path(d,{fill:`color-mix(in srgb, ${color} 6%, transparent)`,stroke:'var(--muted-foreground)','stroke-dasharray':planned?'5 4':'none'}));
+    if(!planned)group.append(path(`M ${x+3} ${y+3} L ${x+w-2} ${y+1} L ${x+w+1} ${y+h-3} L ${x+2} ${y+h+1}`,{stroke:'var(--border)','stroke-width':.8}));
+    return group;
+  }
+  function label(x,y,text,opts={}){return el('text',{x,y,class:'sketch-text '+(opts.small?'text-small sketch-label':''),'text-anchor':opts.anchor||'start',...opts.attrs},text);}
+  function wrap(text,maxChars){const words=text.split(' '),lines=[];let line='';for(const word of words){if(line&&line.length+word.length+1>maxChars){lines.push(line);line=word;}else line+=(line?' ':'')+word;}if(line)lines.push(line);return lines;}
+  function arrow(x1,y1,x2,y2,{color='var(--muted-foreground)',dashed=false,labelText='',route=null,opacity=1}={}){
+    const g=el('g',{opacity});const d=route||`M ${x1} ${y1} Q ${(x1+x2)/2+1.5} ${(y1+y2)/2} ${x2} ${y2}`;
+    g.append(path(d,{stroke:color,'stroke-dasharray':dashed?'4 4':'none'}));
+    const angle=Math.atan2(y2-(route?y2-20:y1),x2-(route?x2:x1));
+    g.append(path(`M ${x2-8*Math.cos(angle-.48)} ${y2-8*Math.sin(angle-.48)} L ${x2} ${y2} L ${x2-8*Math.cos(angle+.48)} ${y2-8*Math.sin(angle+.48)}`,{stroke:color}));
+    if(labelText)g.append(label((x1+x2)/2+6,(y1+y2)/2-4,labelText,{small:true}));return g;
+  }
+  function node(n,b){
+    const emphasized=activeIds[lens].includes(n.id),g=el('g',{'data-node':n.id,opacity:emphasized?1:.3});
+    g.append(roughBox(b,colors[n.kind],!n.existing));
+    g.append(label(b.x+14,b.y+23,n.title,{attrs:{class:'sketch-text node-title'}}));
+    let y=b.y+47;
+    const chars=Math.max(20,Math.floor((b.w-28)/6.4));
+    for(const line of n.lines){for(const piece of wrap(line,chars)){g.append(label(b.x+14,y,piece,{small:true}));y+=18;}}
+    return g;
+  }
+  function draw(){
+    const width=Math.max(280,root.clientWidth),mobile=width<590;
+    svg.replaceChildren(el('title',{id:'problem-map-title'},'Weather evidence to a human facility decision'),el('desc',{id:'problem-map-desc'},'Official instructions display immediately. Application code checks applicability and policy. One agent drafts, a human manager decides, and recipient notices and history preserve approvals.'));
+    const positions={};
+    const margin=mobile?24:34,gap=mobile?18:20,full=width-2*margin;
+    let top=44;
+    if(mobile){for(const id of ['noaa','facility','signal']){positions[id]={x:margin,y:top,w:full,h:114};top+=135;}}
+    else {const col=(full-2*gap)/3;['noaa','facility','signal'].forEach((id,i)=>positions[id]={x:margin+i*(col+gap),y:top,w:col,h:132});top+=187;}
+    positions.checks={x:margin,y:top,w:full,h:104};
+    top+=158;
+    if(mobile){positions.agent={x:margin,y:top,w:full,h:114};top+=160;positions.manager={x:margin,y:top,w:full,h:114};top+=163;}
+    else {const half=(full-gap)/2;positions.agent={x:margin,y:top,w:half,h:114};positions.manager={x:margin+half+gap,y:top,w:half,h:114};top+=173;}
+    if(mobile){positions.notifications={x:margin,y:top,w:full,h:114};top+=146;positions.record={x:margin,y:top,w:full,h:114};top+=148;}
+    else {const half=(full-gap)/2;positions.notifications={x:margin,y:top,w:half,h:114};positions.record={x:margin+half+gap,y:top,w:half,h:114};top+=157;}
+    const height=top+56;
+    svg.setAttribute('viewBox',`0 0 ${width} ${height}`);svg.setAttribute('height',height);
+    svg.append(label(margin,20,'The problem: make the right call, reach the right people, explain why.',{small:true}));
+    const c=positions.checks,a=positions.agent,m=positions.manager,n=positions.notifications,r=positions.record;
+    if(mobile){
+      // Stacked source lane joins from the outside, so it does not imply data sources depend on each other.
+      for(const id of ['noaa','facility','signal']){const p=positions[id];svg.append(path(`M ${p.x} ${p.y+p.h/2} L 10 ${p.y+p.h/2} L 10 ${c.y-20} L ${c.x+c.w/2} ${c.y-20}`));}
+      svg.append(path(`M 10 ${c.y-20} L 10 ${c.y+c.h/2}`));
+      svg.append(arrow(10,c.y+c.h/2,c.x,c.y+c.h/2));
+    }else for(const id of ['noaa','facility','signal']){const p=positions[id];svg.append(arrow(p.x+p.w/2,p.y+p.h,c.x+c.w/2,c.y,{route:`M ${p.x+p.w/2} ${p.y+p.h} L ${p.x+p.w/2} ${c.y-22} L ${c.x+c.w/2} ${c.y-22} L ${c.x+c.w/2} ${c.y}`,opacity:lens==='authority'?.35:1}));}
+    svg.append(label(margin,c.y-8,'APP CODE — rules & applicability',{small:true}));
+    svg.append(arrow(c.x+c.w/2,c.y+c.h,a.x+a.w/2,a.y,{route:`M ${c.x+c.w/2} ${c.y+c.h} L ${c.x+c.w/2} ${a.y-24} L ${a.x+a.w/2} ${a.y-24} L ${a.x+a.w/2} ${a.y}`}));
+    svg.append(label(margin,a.y-10,'AI — drafts, never decides',{small:true}));
+    if(mobile)svg.append(arrow(a.x+a.w/2,a.y+a.h,m.x+m.w/2,m.y,{labelText:'draft for review'}));
+    else svg.append(arrow(a.x+a.w,a.y+a.h/2,m.x,m.y+m.h/2));
+    svg.append(label(m.x,m.y+m.h+23,'HUMAN AUTHORITY — operating decision + approval',{small:true}));
+    svg.append(arrow(m.x+m.w/2,m.y+m.h,n.x+n.w/2,n.y,{route:`M ${m.x+m.w/2} ${m.y+m.h} L ${m.x+m.w/2} ${n.y-20} L ${n.x+n.w/2} ${n.y-20} L ${n.x+n.w/2} ${n.y}`}));
+    if(mobile)svg.append(arrow(n.x+n.w/2,n.y+n.h,r.x+r.w/2,r.y));
+    else svg.append(arrow(n.x+n.w,n.y+n.h/2,r.x,r.y+r.h/2));
+    // Official warning path is independent of the AI recommendation and operational approval.
+    const bypassX=width-10,source=positions.noaa;
+    svg.append(path(`M ${source.x+source.w/2} ${source.y} L ${source.x+source.w/2} 31 L ${bypassX} 31 L ${bypassX} ${m.y+25} L ${m.x+m.w} ${m.y+25}`,{stroke:'var(--viz-series-4)','stroke-dasharray':'4 5',opacity:lens==='data'?.4:1}));
+    svg.append(label(bypassX-5,c.y+c.h+21,'Official warnings: immediate display',{small:true,anchor:'end',attrs:{fill:'var(--foreground)'}}));
+    for(const item of nodes)svg.append(node(item,positions[item.id]));
+    svg.append(label(margin,top+3,mobile?'Akamai: planned hosting + storage':'AKAMAI: proposed app runtime + decision storage; inference if compatible',{small:true}));
+    svg.append(label(margin,top+23,mobile?'One facility • tornado / flood':'First experiment: one Florida facility • tornado / flood • simulated notices',{small:true}));
+    // Long labels reflow at small widths rather than shrinking the whole drawing.
+    if(mobile){
+      const longLabels=Array.from(svg.querySelectorAll('text')).filter(t=>t.textContent.length>50&&t.getAttribute('x')===String(margin));
+      for(const t of longLabels){const value=t.textContent;const y=Number(t.getAttribute('y'));t.textContent='';wrap(value,Math.floor(full/6.6)).forEach((line,i)=>t.append(el('tspan',{x:margin,y:y+i*16},line)));}
+    }
+    detail.textContent=details[lens];
+    root.querySelectorAll('[data-lens]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lens===lens)));
+  }
+  function restore(value){const saved=value&&value.privateContent;if(saved&&details[saved.lens])lens=saved.lens;draw();}
+  for(const button of root.querySelectorAll('[data-lens]'))button.addEventListener('click',()=>{lens=button.dataset.lens;draw();if(window.openai&&window.openai.setWidgetState)window.openai.setWidgetState({modelContent:{problem:'Weather-driven facility decisions and notifications',focus:lens},privateContent:{lens}}).catch(()=>{});});
+  if(window.openai&&window.openai.widgetState)restore(window.openai.widgetState);
+  window.addEventListener('openai:set_globals',event=>{const state=event.detail&&event.detail.globals&&event.detail.globals.widgetState;if(state)restore(state);});
+  new ResizeObserver(draw).observe(root);
+  if(document.fonts)document.fonts.ready.then(draw);
+  draw();
+})();
+</script>
