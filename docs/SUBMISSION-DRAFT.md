@@ -1,6 +1,6 @@
 # Hack Midwest submission draft
 
-Prepared for the organizer form shown by the team. Keep this draft local until the team supplies its names, corporate email addresses and video link. No form or message has been sent. The existing repository is the code destination; a second repository is unnecessary.
+Prepared for the organizer form shown by the team. This repository draft awaits the team's names, corporate email addresses and video link. No form or message has been sent. The existing repository is the code destination; a second repository is unnecessary.
 
 ## Your Full Name
 
@@ -22,7 +22,7 @@ Weather Desk
 
 Weather Desk helps a facility manager decide what to change when weather disrupts an office's operating plan. It brings official NOAA/NWS alerts together with location checks, facility context and a staff roster, then helps the manager review a delay, telework or closure decision and the exact messages for affected groups. A Strands agent using Akamai-hosted inference explains the evidence and drafts a rationale. Go and OPA enforce the approval rules, recheck the evidence before recording simulated notice intents and prevent duplicate intents. The saved decision record shows what was known, who approved the decision and who still needs a correction. The hackathon app uses real public weather data, fictional facilities and synthetic staff; notification delivery is simulated.
 
-App link: https://weatherdesk.172-236-96-42.sslip.io (redirects to the hosted Google sign-in app).
+App link: https://weatherdesk-hackmidwest.duckdns.org (hosted on Akamai; Google sign-in required).
 
 ## Link to 3 minute video demo of your app
 
@@ -53,7 +53,7 @@ Do not select Flex or DevRev on the basis of the current implementation. No inte
 
 https://github.com/vmuthusamy/hack-midwest-noa
 
-Working branch: `codex/noaa-prototype`. The new local monitoring and submission changes have not been pushed. Before submitting, the team must publish the intended revision and confirm anonymous access to the code. No repository visibility change is authorized by this draft.
+Working branch: `codex/noaa-prototype`. The monitoring and submission changes are published on this branch, but the monitoring slice is not deployed. Before submitting, the team must confirm anonymous access to the intended code revision. No repository visibility change is authorized by this draft.
 
 ## Organizer note for the team to review
 
@@ -65,4 +65,4 @@ We built Weather Desk to explore a practical enterprise operations problem: keep
 
 The collaborator's recorded posture evaluation reports 68/68 matches against authored policy labels after adding Coastal Flood Warning, 68/68 Barnwell location comparisons and 58/58 polygon comparisons across two facilities. Posture checks assume applicable active alerts and fresh data. This is one storm snapshot, with labels written by the evaluator, and the same dataset was used to find and fix the gap. It does not establish zero missed warnings in production. Results are in `docs/evaluation-results/posture-isaias-eval.json`.
 
-The latest live-monitoring slice compiled and displayed public NWS data in a local preview; acceptance and QA remain pending. The existing hosted application and inference evidence are separate from these unpublished changes.
+The latest live-monitoring slice compiled and displayed public NWS data in a local preview; acceptance and QA remain pending. The existing hosted application and inference evidence are separate from these undeployed changes.
