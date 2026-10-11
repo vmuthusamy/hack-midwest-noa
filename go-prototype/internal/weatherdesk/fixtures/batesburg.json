@@ -1,0 +1,180 @@
+{
+  "mode": "RECORDED",
+  "capturedAt": "2026-10-11T02:20:00Z",
+  "facility": {
+    "id": "SC-DEMO-02",
+    "name": "Batesburg Field Office",
+    "latitude": 33.91,
+    "longitude": -81.54,
+    "fictional": true
+  },
+  "feature": {
+    "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.be5613bdb2f88e91a29b7e41456b681f8ab18db1.001.1",
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            -81.76,
+            33.84
+          ],
+          [
+            -81.63,
+            34.1
+          ],
+          [
+            -81.64,
+            34.11
+          ],
+          [
+            -81.57,
+            34.1
+          ],
+          [
+            -81.55,
+            34.09
+          ],
+          [
+            -81.54,
+            34.08
+          ],
+          [
+            -81.51,
+            34.08
+          ],
+          [
+            -81.5,
+            34.07
+          ],
+          [
+            -81.49,
+            34.08
+          ],
+          [
+            -81.47,
+            34.08
+          ],
+          [
+            -81.35,
+            34.05
+          ],
+          [
+            -81.59,
+            33.64
+          ],
+          [
+            -81.8,
+            33.76
+          ],
+          [
+            -81.76,
+            33.84
+          ]
+        ]
+      ]
+    },
+    "properties": {
+      "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.be5613bdb2f88e91a29b7e41456b681f8ab18db1.001.1",
+      "@type": "wx:Alert",
+      "id": "urn:oid:2.49.0.1.840.0.be5613bdb2f88e91a29b7e41456b681f8ab18db1.001.1",
+      "areaDesc": "Aiken, SC; Edgefield, SC; Lexington, SC; Saluda, SC",
+      "geocode": {
+        "SAME": [
+          "045003",
+          "045037",
+          "045063",
+          "045081"
+        ],
+        "UGC": [
+          "SCC003",
+          "SCC037",
+          "SCC063",
+          "SCC081"
+        ]
+      },
+      "affectedZones": [
+        "https://api.weather.gov/zones/county/SCC003",
+        "https://api.weather.gov/zones/county/SCC037",
+        "https://api.weather.gov/zones/county/SCC063",
+        "https://api.weather.gov/zones/county/SCC081"
+      ],
+      "references": [
+        {
+          "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.34e080842bce5d1f06add734b63aa3726eb7065a.001.1",
+          "identifier": "urn:oid:2.49.0.1.840.0.34e080842bce5d1f06add734b63aa3726eb7065a.001.1",
+          "sender": "w-nws.webmaster@noaa.gov",
+          "sent": "2026-10-10T19:00:00-04:00"
+        },
+        {
+          "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.5270b2f1bfa90437317601f9e4214785d7b6ffab.001.1",
+          "identifier": "urn:oid:2.49.0.1.840.0.5270b2f1bfa90437317601f9e4214785d7b6ffab.001.1",
+          "sender": "w-nws.webmaster@noaa.gov",
+          "sent": "2026-10-10T19:57:00-04:00"
+        },
+        {
+          "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.b6cdb578cb012be76e8d926e4bca701373cd67fe.001.1",
+          "identifier": "urn:oid:2.49.0.1.840.0.b6cdb578cb012be76e8d926e4bca701373cd67fe.001.1",
+          "sender": "w-nws.webmaster@noaa.gov",
+          "sent": "2026-10-10T21:28:00-04:00"
+        }
+      ],
+      "sent": "2026-10-10T21:45:00-04:00",
+      "effective": "2026-10-10T21:45:00-04:00",
+      "onset": "2026-10-10T21:45:00-04:00",
+      "expires": "2026-10-10T23:00:00-04:00",
+      "ends": "2026-10-10T23:00:00-04:00",
+      "status": "Actual",
+      "messageType": "Update",
+      "category": "Met",
+      "severity": "Severe",
+      "certainty": "Likely",
+      "urgency": "Immediate",
+      "event": "Flash Flood Warning",
+      "sender": "w-nws.webmaster@noaa.gov",
+      "senderName": "NWS Columbia SC",
+      "headline": "Flash Flood Warning issued October 10 at 9:45PM EDT until October 10 at 11:00PM EDT by NWS Columbia SC",
+      "description": "FFWCAE\n\nThe National Weather Service in Columbia has extended the\n\n* Flash Flood Warning for...\nNorth Central Aiken County in central South Carolina...\nEast Central Edgefield County in central South Carolina...\nWest Central Lexington County in central South Carolina...\nEastern Saluda County in central South Carolina...\n\n* Until 1100 PM EDT.\n\n* At 945 PM EDT, local law enforcement reported thunderstorms\nproducing heavy rain in eastern Saluda County. Between 3 and 4\ninches of rain have fallen. Flooding impacts will continue, but no\nadditional rainfall is expected. Flash flooding is already\noccurring.\n\nHAZARD...Flash flooding caused by thunderstorms.\n\nSOURCE...Law enforcement reported.\n\nIMPACT...Flash flooding of small creeks and streams, urban areas,\nhighways, streets and underpasses as well as other poor\ndrainage and low-lying areas.\n\n* Some locations that will experience flash flooding include...\nBatesburg-Leesville, Ridge Spring, Summit, Monetta, Ward, Hibernia,\nKneece, Fredonia, Delmar, Circle Fire Station, Murray, Cedar Grove\nFire Station, South Shore Marina, Riverbend Boat Ramp, Lake Murray\nShores, Hollow Creek Public Park, Oswald Park, Siesta Cove Marina\nand Shull Island.\n\nThis includes Interstate 20 in South Carolina between mile markers 24\nand 32.",
+      "instruction": "Most flooding deaths occur in vehicles. Never drive through a flooded\nroadway or around barricades. Turn around, don't drown.\n\nBe especially cautious at night when it is harder to recognize the\ndangers of flooding.",
+      "response": "Avoid",
+      "note": null,
+      "parameters": {
+        "AWIPSidentifier": [
+          "FFWCAE"
+        ],
+        "WMOidentifier": [
+          "WGUS52 KCAE 110145"
+        ],
+        "flashFloodDetection": [
+          "OBSERVED"
+        ],
+        "BLOCKCHANNEL": [
+          "EAS",
+          "NWEM",
+          "CMAS"
+        ],
+        "EAS-ORG": [
+          "WXR"
+        ],
+        "VTEC": [
+          "/O.EXT.KCAE.FF.W.0030.000000T0000Z-261011T0300Z/"
+        ],
+        "eventEndingTime": [
+          "2026-10-10T23:00:00-04:00"
+        ]
+      },
+      "scope": "Public",
+      "code": "IPAWSv1.0",
+      "language": "en-US",
+      "web": "http://www.weather.gov",
+      "eventCode": {
+        "SAME": [
+          "FFW"
+        ],
+        "NationalWeatherService": [
+          "FFW"
+        ]
+      }
+    }
+  }
+}

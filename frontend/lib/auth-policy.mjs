@@ -1,4 +1,4 @@
-export const FACILITY_IDS = ['SC-DEMO-01', 'FL-DEMO-01', 'CA-DEMO-01'];
+export const FACILITY_IDS = ['SC-DEMO-01', 'FL-DEMO-01', 'CA-DEMO-01', 'MT-DEMO-01', 'SC-DEMO-02'];
 
 // Demo access is an explicit development choice, never a production fallback.
 export function authEnvironment(env = process.env) {

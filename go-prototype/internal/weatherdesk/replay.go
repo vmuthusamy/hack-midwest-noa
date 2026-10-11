@@ -56,9 +56,10 @@ type Intent struct {
 	ApprovalBinding string   `json:"approvalBinding"`
 }
 type Event struct {
-	Time   string `json:"time"`
-	Label  string `json:"label"`
-	Detail string `json:"detail"`
+	Time            string `json:"time"`
+	Label           string `json:"label"`
+	Detail          string `json:"detail"`
+	ApprovalBinding string `json:"approvalBinding,omitempty"`
 }
 type Replay struct {
 	OperatingPosture string         `json:"operatingPosture"`
@@ -86,6 +87,7 @@ type Recording struct {
 	CapturedAt string   `json:"capturedAt"`
 	Feature    Feature  `json:"feature"`
 	Facility   Facility `json:"facility"`
+	Zones      []string `json:"zones"`
 }
 
 func newReplay(scenario string, previous []Event) (*Replay, error) {
@@ -101,7 +103,7 @@ func newReplay(scenario string, previous []Event) (*Replay, error) {
 	if err != nil {
 		return nil, err
 	}
-	r := &Replay{Mode: "REPLAY", Scenario: scenario, CapturedAt: recording.CapturedAt, Facility: recording.Facility, Alert: normalize(recording.Feature, recording.Facility, nil, captured), Case: "applicable", MaterialVersion: "recorded-v1", Fresh: true, Policy: policyVersion, Intents: []Intent{}, History: append([]Event{}, previous...)}
+	r := &Replay{Mode: "REPLAY", Scenario: scenario, CapturedAt: recording.CapturedAt, Facility: recording.Facility, Alert: normalize(recording.Feature, recording.Facility, recording.Zones, captured), Case: "applicable", MaterialVersion: "recorded-v1", Fresh: true, Policy: policyVersion, Intents: []Intent{}, History: append([]Event{}, previous...)}
 	r.OperatingPosture = "delay"
 	r.OperatingHours = "08:00–17:00 facility local time (synthetic)"
 	r.Roster = []Recipient{
@@ -124,7 +126,7 @@ func newReplay(scenario string, previous []Event) (*Replay, error) {
 	return r, nil
 }
 func (r *Replay) event(label, detail string) {
-	r.History = append(r.History, Event{time.Now().UTC().Format(time.RFC3339), label, detail})
+	r.History = append(r.History, Event{Time: time.Now().UTC().Format(time.RFC3339), Label: label, Detail: detail})
 }
 func digest(v any) string {
 	b, _ := json.Marshal(v)

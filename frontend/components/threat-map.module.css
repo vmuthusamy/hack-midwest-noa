@@ -1,0 +1,23 @@
+.map { min-width:0; overflow:hidden; border:1px solid var(--line,#303d44); border-radius:16px; background:var(--panel,#101c22); }
+.header { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:16px 18px 12px; }
+.header p { margin:0 0 5px; color:var(--muted,#8faaa9); font-size:13px; text-transform:uppercase; letter-spacing:.12em; }
+.header h3 { margin:0; font-size:19px; }
+.status { border:1px solid var(--line,#3b5355); border-radius:999px; padding:6px 10px; font-size:13px; white-space:nowrap; }
+.status[data-relation='Inside'] { color:var(--mint,#76dec5); border-color:var(--mint,#76dec5); }
+.status[data-relation='Near'] { color:var(--orange,#f0a46d); border-color:var(--orange,#f0a46d); }
+.viewport { position:relative; height:320px; background:var(--plot,#111f27); color:var(--muted,#8faaa9); }
+.basemap,.extent { width:100%; height:100%; position:absolute; inset:0; }
+.extent { display:block; }
+.label { fill:var(--text,#dfebe9); font-size:13px; font-weight:600; paint-order:stroke; stroke:var(--plot,#111f27); stroke-width:3px; stroke-linejoin:round; }
+.mapState { position:absolute; left:10px; top:10px; max-width:calc(100% - 66px); padding:5px 9px; border-radius:5px; background:var(--panel,#101c22); color:var(--muted,#8faaa9); font-size:13px; pointer-events:none; }
+.empty { position:absolute; top:42%; width:100%; text-align:center; }
+.legend { display:flex; flex-wrap:wrap; gap:10px 15px; padding:12px 18px 6px; font-size:13px; color:var(--muted,#8faaa9); }
+.legend span { display:inline-flex; align-items:center; gap:6px; }
+.legend i { width:9px; height:9px; display:inline-block; }
+.warning { background:#e47b45; border:1px solid #d8733c; }
+.facility { background:#25a78b; border-radius:50%; }
+.gauge { background:#4487d9; }
+.note,.gaugeNote { padding:0 18px; margin:7px 0; font-size:13px; line-height:1.5; }
+.gaugeNote { color:var(--muted,#8faaa9); }
+.footer { display:flex; flex-direction:column; gap:3px; padding:11px 18px 15px; color:var(--muted,#8faaa9); font-size:13px; line-height:1.5; }
+@media(max-width:640px) { .viewport { height:260px; } .header { padding:14px; } .legend,.footer { padding-left:14px; padding-right:14px; } }

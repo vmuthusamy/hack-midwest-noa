@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-11T02:29:44.678Z",
+  "passedAssertions": 6,
+  "checks": [
+    "All36 fixture calls drive24 completion buckets and6 histogram bins; recent table capped20; p95 in90+s; rolling UTC minute labels preserved",
+    "Absent token usage stays unknown; selected SDK read-only tool timing preserves subsecond milliseconds",
+    "Chart page has no document overflow in dark/light at390px and320px",
+    "Empty24-hour window shows zero counts and unavailable percentiles without fabricated p95 highlight",
+    "Missing chart data is explicitly unavailable, not presented as zero",
+    "No browser page errors or console errors; no provider or workflow requests"
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "providerCalls": 0,
+  "workflowMutations": 0,
+  "authentication": "Synthetic encrypted Google session decoded by actual Auth.js",
+  "data": "Explicit local journal passed through production MetricsStore.snapshot; no actual hosted inference counts",
+  "artifacts": [
+    "/tmp/weather-desk-telemetry-final-desktop-qa.png",
+    "/tmp/weather-desk-telemetry-final-mobile-qa.png"
+  ],
+  "independentArithmetic": {
+    "pythonTestsPassed": 4,
+    "nodeHelperTestsPassed": 3,
+    "failures": 0,
+    "coverage": [
+      "Completion timestamps and exact inclusive window endpoints",
+      "All36 calls drive charts rather than capped recent20",
+      "Six lower-inclusive latency bins and nearest-rank p50/p95",
+      "Unknown/missing/invalid values remain unknown",
+      "Empty and unmeasured window",
+      "Finite p95 exactly one bin; null none",
+      "Tool durations preserve0 and subsecond precision"
+    ]
+  },
+  "review": {
+    "desktopScreenshotVisuallyReviewed": true,
+    "timingCopyDefects": "Fixed by frontend owner before final browser run: completion clock, exact rolling UTC minutes, actual UTC table formatting"
+  }
+}

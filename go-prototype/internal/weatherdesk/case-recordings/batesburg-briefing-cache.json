@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-10-11T02:35:59.275053+00:00",
+  "modelId": "hackathon-chat",
+  "mode": "REPLAY",
+  "facilityId": "SC-DEMO-02",
+  "evidenceTimestamp": "2026-10-11T02:20:00Z",
+  "evidenceConditions": "38034478e03d572ab582355988b8ef87fd7eddb30c073917c7dd0a29692f9266",
+  "proposedPosture": "telework",
+  "effectiveAt": "2026-10-11T02:20:00Z",
+  "briefing": {
+    "changed_facts": [
+      {
+        "fact": "A Flash Flood Warning was recorded as an Update issued by NWS Columbia SC at 2026-10-10T21:45:00-04:00, active until 2026-10-10T23:00:00-04:00, covering Aiken, Edgefield, Lexington, and Saluda counties in South Carolina.",
+        "source_id": "urn:oid:2.49.0.1.840.0.be5613bdb2f88e91a29b7e41456b681f8ab18db1.001.1"
+      },
+      {
+        "fact": "The recorded warning states that between 3 and 4 inches of rain had fallen in eastern Saluda County, flash flooding was already occurring, and no additional rainfall was expected.",
+        "source_id": "urn:oid:2.49.0.1.840.0.be5613bdb2f88e91a29b7e41456b681f8ab18db1.001.1"
+      }
+    ],
+    "source_references": [
+      "urn:oid:2.49.0.1.840.0.be5613bdb2f88e91a29b7e41456b681f8ab18db1.001.1"
+    ],
+    "evidence_gaps": [
+      "Recorded NOAA source responses; synthetic facility, roster and operating policy. Replay clock is the capture time; these are not current conditions.",
+      "This is an operating-review case. No earlier arrival instruction is supplied; do not invent a before/after change or a correction draft.",
+      "No prior approval, operational review context, or recipient groups are supplied; the illustrative policy is marked ineligible and has no policy authority."
+    ],
+    "explanation": "Batesburg Field Office is inside the recorded Flash Flood Warning area, with 3 to 4 inches of rain and ongoing flash flooding reported in eastern Saluda County. The proposed telework posture at 2026-10-11T02:20:00Z matches the illustrative policy suggestion, with the limit that essential and onsite assignments require individual review.",
+    "draft_operational_messages": []
+  },
+  "metrics": {
+    "cycles": 1,
+    "cycleLatencyMs": [
+      18264.537
+    ],
+    "avgCycleLatencyMs": 18264.537,
+    "totalCycleLatencyMs": 18264.537,
+    "inputTokens": 3278,
+    "outputTokens": 500,
+    "totalTokens": 3778,
+    "toolCalls": 0,
+    "tools": []
+  }
+}

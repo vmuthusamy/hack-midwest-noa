@@ -114,3 +114,26 @@ Record:
 Do not invent percentages or call a fixture-only run a live model evaluation. Measured sample counts, provider failures and manual output review are recorded in VERIFICATION.md. Contract passes alone are not model-quality passes.
 
 Additional executable checks cover model-generated replay drafts without state mutation, stale review revision rejection, concurrent material changes, clean plain-text rendering, exact approval text after generation, and approval archive preservation. Browser fixtures test generation, approval, reapproval, live expiry, themes and mobile layout.
+
+## Current unified manager workflow (October 10 evening update)
+
+The primary UI now uses the same case model for LIVE and explicitly recorded REPLAY: situation → operating decision → recipients → printable decision record. New cases do not invent a prior approval or delivered notice. The original arrival-correction replay remains a separately stored legacy contract.
+
+- The actual recorded Barnwell input is a Flood Watch plus Lake Wind Advisory and NOAA SRBS1 river observation. It has no published minor-flood stage; a neighboring warning and another gauge's threshold are never substituted. Great Falls has a separately recorded actual Winter Storm Warning and point-zone membership. These snapshots describe their capture times, not current conditions.
+- The versioned demo warning policy adds flood and winter telework proposals, accepts valid Expected urgency for winter planning, and distinguishes watches from warnings. The manager reviews operating time against hazard onset/end. Normal operations/early dismissal still need separate facility procedures. No surveyed road/river dependency, forecast or station observation is connected to the operating gate.
+- Exact approval covers posture, rationale, effective time, recipients/reasons/channels/messages and relevant warning conditions. LIVE re-fetches immediately before recording simulated intents. A material warning change blocks queueing and preserves the old record; an outside national update or retrieval timestamp alone does not invalidate approval. Regional gauge context is frozen in the record but does not drive this warning-only policy.
+- Printable records preserve evidence/source times, suggestion versus choice, approver, digest, included/excluded people, exact text and append-only notice outcomes. New cases and restarts preserve prior records. Failed writes publish neither approval nor new intents. Only queued simulated states are asserted.
+- NWS fire-zone membership is collected independently by validated type. Missing fire lookup remains unknown for fire alerts; a resolved unrelated fire zone is outside. Unsupported unrelated hazard records no longer veto a matched tornado/flood/winter operating policy.
+- Authenticated inference telemetry records actual request outcomes and available SDK measurements. Saved historical hosted evaluation samples remain a distinct series. Missing historical token/cycle data stays unknown; accepted output is not equivalent to a truth/quality pass.
+
+Independent fixture QA covers the exact workflow and authorization; browser/cloud verification is reported separately in VERIFICATION.md. Sponsor integration is demonstrated by actual hosted requests and the existing Akamai deployment, not the presence of SDK names alone.
+
+## Recorded SC demo brief implementation
+
+The default fictional Batesburg facility (SC-DEMO-02, 33.91, -81.54) uses the saved October 11 02:20 UTC NWS capture. Its Flash Flood Warning polygon contains the facility and satisfies the existing Severe/Likely/Immediate telework criterion. Barnwell remains outside that polygon and retains a Flood Watch planning example; its gauge has no published flood-stage comparison. The displayed category criterion is an illustrative operating policy, not an invented numeric threshold.
+
+The demo clock stays at the actual capture time. The requested 4 AM opening is a presentation framing, not a retiming of NOAA evidence. The supplied Isaias/Destin death and power-total narrative is not shown because the captured alert does not establish those claims.
+
+The status-first page presents the facility, hazard, message expiry and posture before the map, people/message preview and decision record. Closure overrides require a stored reason. Local power reports carry their source, observation time and Example/Manager reported provenance; warning plus reported outage changes the proposed posture only. Official warnings remain immediately visible, independent of approval. Essential staff receive individual review, without an automatic travel instruction.
+
+Queued intents remain distinct from explicitly run delivery fixtures. Fixture attempts, delivery, acknowledgment and unreachable/channel fallback events are stored separately, deduplicated by exact approval, and never claim employee delivery. The planned 6 AM update is labeled an example schedule. The pre-run model cache contains real validated Strands/Akamai output for the exact recorded facility/evidence/posture/time and is cleared on a changed proposal or power report.

@@ -6,6 +6,8 @@ services:
       AI_BASE_URL: ${AI_BASE_URL:?required}
       AI_MODEL_ID: ${AI_MODEL_ID:?required}
       AI_API_KEY: ${AI_API_KEY:?required}
+      WEATHER_DESK_METRICS_PATH: /data/metrics/inference.jsonl
+    volumes: [worker_metrics:/data/metrics]
     networks: [private]
   api:
     build: {context: .., dockerfile: deploy/Dockerfile.go}
@@ -45,6 +47,7 @@ services:
 networks:
   private: {}
 volumes:
+  worker_metrics: {}
   history: {}
   caddy_data: {}
   caddy_config: {}

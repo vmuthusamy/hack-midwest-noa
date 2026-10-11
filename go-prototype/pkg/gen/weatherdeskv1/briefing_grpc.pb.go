@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	EvidenceBriefingService_GetStatus_FullMethodName = "/weatherdesk.v1.EvidenceBriefingService/GetStatus"
-	EvidenceBriefingService_Explain_FullMethodName   = "/weatherdesk.v1.EvidenceBriefingService/Explain"
+	EvidenceBriefingService_GetStatus_FullMethodName  = "/weatherdesk.v1.EvidenceBriefingService/GetStatus"
+	EvidenceBriefingService_Explain_FullMethodName    = "/weatherdesk.v1.EvidenceBriefingService/Explain"
+	EvidenceBriefingService_GetMetrics_FullMethodName = "/weatherdesk.v1.EvidenceBriefingService/GetMetrics"
 )
 
 // EvidenceBriefingServiceClient is the client API for EvidenceBriefingService service.
@@ -31,6 +32,7 @@ const (
 type EvidenceBriefingServiceClient interface {
 	GetStatus(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	Explain(ctx context.Context, in *ExplainRequest, opts ...grpc.CallOption) (*ExplainResponse, error)
+	GetMetrics(ctx context.Context, in *MetricsRequest, opts ...grpc.CallOption) (*MetricsResponse, error)
 }
 
 type evidenceBriefingServiceClient struct {
@@ -61,6 +63,16 @@ func (c *evidenceBriefingServiceClient) Explain(ctx context.Context, in *Explain
 	return out, nil
 }
 
+func (c *evidenceBriefingServiceClient) GetMetrics(ctx context.Context, in *MetricsRequest, opts ...grpc.CallOption) (*MetricsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MetricsResponse)
+	err := c.cc.Invoke(ctx, EvidenceBriefingService_GetMetrics_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EvidenceBriefingServiceServer is the server API for EvidenceBriefingService service.
 // All implementations must embed UnimplementedEvidenceBriefingServiceServer
 // for forward compatibility.
@@ -69,6 +81,7 @@ func (c *evidenceBriefingServiceClient) Explain(ctx context.Context, in *Explain
 type EvidenceBriefingServiceServer interface {
 	GetStatus(context.Context, *StatusRequest) (*StatusResponse, error)
 	Explain(context.Context, *ExplainRequest) (*ExplainResponse, error)
+	GetMetrics(context.Context, *MetricsRequest) (*MetricsResponse, error)
 	mustEmbedUnimplementedEvidenceBriefingServiceServer()
 }
 
@@ -84,6 +97,9 @@ func (UnimplementedEvidenceBriefingServiceServer) GetStatus(context.Context, *St
 }
 func (UnimplementedEvidenceBriefingServiceServer) Explain(context.Context, *ExplainRequest) (*ExplainResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Explain not implemented")
+}
+func (UnimplementedEvidenceBriefingServiceServer) GetMetrics(context.Context, *MetricsRequest) (*MetricsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetMetrics not implemented")
 }
 func (UnimplementedEvidenceBriefingServiceServer) mustEmbedUnimplementedEvidenceBriefingServiceServer() {
 }
@@ -143,6 +159,24 @@ func _EvidenceBriefingService_Explain_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EvidenceBriefingService_GetMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MetricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EvidenceBriefingServiceServer).GetMetrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EvidenceBriefingService_GetMetrics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EvidenceBriefingServiceServer).GetMetrics(ctx, req.(*MetricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EvidenceBriefingService_ServiceDesc is the grpc.ServiceDesc for EvidenceBriefingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -157,6 +191,10 @@ var EvidenceBriefingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Explain",
 			Handler:    _EvidenceBriefingService_Explain_Handler,
+		},
+		{
+			MethodName: "GetMetrics",
+			Handler:    _EvidenceBriefingService_GetMetrics_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

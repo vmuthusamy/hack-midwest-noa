@@ -9,7 +9,7 @@ import (
 	"github.com/open-policy-agent/opa/v1/rego"
 )
 
-//go:embed approval.rego
+//go:embed approval.rego operations.rego
 var policyFiles embed.FS
 
 type PolicyDecision struct {

@@ -2,8 +2,10 @@ FROM python:3.13-slim-bookworm
 WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && useradd -u 10001 -m desk
-COPY briefing.py ./
+COPY briefing.py inference_telemetry.py ./
+COPY docs/evaluation-results/model*.json ./docs/evaluation-results/
 COPY agent_service/ ./agent_service/
+RUN mkdir -p /data/metrics && chown desk:desk /data/metrics
 USER desk
 ENV WEATHER_DESK_GRPC_BIND=0.0.0.0:8089
 CMD ["python", "agent_service/server.py"]

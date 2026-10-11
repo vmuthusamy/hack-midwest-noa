@@ -1,0 +1,33 @@
+{
+  "reviewedAt": "2026-10-11T02:09:32.498675+00:00",
+  "scope": "Independent source and test review of fire-zone applicability repair; no live weather fetch or model call.",
+  "reproduction": {
+    "attribution": "Coordinating agent reported pre-fix reproduction",
+    "result": "National fire-zone alerts were classified unknown and suppressed a valid local posture suggestion. No independently executed reproduction is claimed."
+  },
+  "reviewFindings": [
+    "Exact full NWS zone URL equality keeps forecast and fire membership distinct even when IDs overlap.",
+    "A nonmatching zone is outside only when facility membership for that zone kind is resolved; unsupported or unresolved kinds remain unknown.",
+    "Polygon precedence and existing time/lifecycle normalization are unchanged.",
+    "New table tests cover local fire match, unrelated fire zone, missing fire lookup, forecast/fire ID overlap, unsupported and mixed unresolved kinds.",
+    "New mocked integration fixture exercises national unrelated fire evidence alongside a local warning; it expects the illustrative delay suggestion to remain available."
+  ],
+  "testExecution": "Independent QA ran the three fire-zone tests successfully. Full Go race/vet is handled separately by the coordinating agent.",
+  "status": "Reviewed and narrow fixture tests passed; no remaining defect identified in this scope.",
+  "boundaries": "No current-weather assertion, confidence score, operational approval, simulated-send mutation, commit, push or deployment.",
+  "resolvedFinding": {
+    "severity": "availability / missing-data edge case",
+    "location": "go-prototype/internal/weatherdesk/evidence.go",
+    "detail": "Before repair, fire membership depended on forecast and county metadata, and geography required two memberships. Valid partial fire evidence was discarded.",
+    "suggestedRepair": "Collect each nonempty validated membership independently and evaluate unknown based on the relevant kind, with single-kind and partial-points regressions.",
+    "status": "resolved",
+    "repairReviewed": "Each successful points membership is ingested independently only when its URL kind matches its field; geography needs some membership, then resolves the relevant kind."
+  },
+  "independentTests": {
+    "namedPassed": 3,
+    "namedFailed": 0,
+    "membershipSubcasesPassed": 9,
+    "partialPointsSubcasesPassed": 4,
+    "method": "Narrow local Go tests with mocked HTTP transport; no live NOAA request."
+  }
+}

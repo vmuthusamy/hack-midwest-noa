@@ -1,0 +1,108 @@
+{
+  "checkedAt": "2026-10-11T02:09:32.498675+00:00",
+  "scope": "Unified operations case and frontend gateway independent fixture QA",
+  "operations": {
+    "namedTestsPassed": 9,
+    "namedTestsFailed": 0,
+    "tableSubcasesPassed": 22,
+    "testFile": "go-prototype/internal/weatherdesk/operations_qa_test.go",
+    "checks": [
+      "Exact draft must be saved before approval; seven material package edits invalidate queue authority.",
+      "Remote excluded with reason; essential designation does not authorize travel.",
+      "Replay captured clock separated from live wall clock.",
+      "LIVE refetch before each queue, irrelevant outside/feed update does not hold, repeated queue deduplicates.",
+      "Warning update/expiration/unknown applicability/fetch failure prevent queue.",
+      "Missing/stale/future/mode/facility/expired evidence fail approval.",
+      "Viewer and wrong-facility manager rejected through signed HTTP middleware and policy.",
+      "Archived approval and simulated notice record survives new case and restart.",
+      "Persistence failures roll back cases and records.",
+      "Concurrent draft change during refetch blocks stale approval.",
+      "Each recheck is attached to its exact approval record."
+    ],
+    "additionalAccessibilityAssertion": "Jordan plain-text email is included in planned routes and exact approved package; no email delivery claim."
+  },
+  "gateway": {
+    "namedTestsPassed": 7,
+    "namedTestsFailed": 0,
+    "testFile": "tests/case-gateway-qa.test.mjs",
+    "checks": [
+      "Authenticated viewers can read cases, records and metrics.",
+      "All POST case routes require manager, exact origin and configured OAuth.",
+      "Unknown routes/methods/facility/invalid record IDs rejected.",
+      "Signed forwarding preserves exact reviewed bytes and facility path; browser forgery ignored.",
+      "Missing, legacy and unverified sessions denied.",
+      "Body limits and non-JSON backend errors fail closed."
+    ],
+    "additionalLegacyAuthRegression": {
+      "authAndCaseGatewayNamedTestsPassed": 25,
+      "failed": 0,
+      "detail": "Exact facility allowlist updated to four fictional facilities including Montana."
+    }
+  },
+  "issuesResolvedDuringQa": [
+    "Case record notice history needed persistence across case replacement.",
+    "Recheck events needed exact ApprovalBinding instead of timestamp attribution."
+  ],
+  "limitations": [
+    "All evidence, principals and recipient notices in these tests are fixtures.",
+    "Browser checks below use synthetic login, recorded NOAA inputs and fixture telemetry; hosted inference, deployment and actual employee delivery are verified separately or remain out of scope.",
+    "Full race/vet checks are separate coordinating-agent validation."
+  ],
+  "mutations": "Temporary local persistence roots only; no shared or deployed state writes; no commit or push.",
+  "browser": {
+    "checkedAt": "2026-10-11T02:17:24.330Z",
+    "passedAssertions": 10,
+    "failures": 0,
+    "checks": [
+      "Synthetic encrypted Google manager session decoded by actual Auth.js; isolated app opens",
+      "Recorded Barnwell watch/advisory and regional gauge shown; no fabricated prior approval or current-weather claim",
+      "Chosen posture/rationale/effective time and exact per-person edit reviewed before approval; essential review checkbox gates UI",
+      "Five simulated notices queued; repeated recheck creates no duplicates and claims no delivery",
+      "Printable record preserves exact messages, source, gauge, approval digest, and separate notice states; print hides controls",
+      "Recorded Montana winter warning proposes telework for review with historical source timing",
+      "LIVE/REPLAY mode switches remove other-mode evidence until a case opens; LIVE uses explicitly labeled retimed input fixture",
+      "Expired/stale LIVE evidence hides actionable posture suggestion and disables proceeding to approval",
+      "Telemetry fixture distinguishes application/evaluation sections, exact request rows, and unknown token usage; no invented usage",
+      "Dark/light at390px/320px across situation, recipients, record and telemetry have no document overflow or browser errors"
+    ],
+    "pageErrors": [],
+    "consoleErrors": [],
+    "environment": {
+      "ui": "http://127.0.0.1:8094",
+      "api": "http://127.0.0.1:8093",
+      "authentication": "Synthetic encrypted Google Auth.js session; real signed gateway and isolated Go temporary history",
+      "weather": "Captured recorded NOAA fixtures; retimed LIVE fixture; no live fetch",
+      "telemetry": "Clearly labeled response fixture; no provider calls"
+    },
+    "mutationEndpoints": [
+      "/api/case",
+      "/api/case/action"
+    ],
+    "artifacts": [
+      "/tmp/weather-desk-case-situation-desktop-qa.png",
+      "/tmp/weather-desk-case-situation-mobile-qa.png",
+      "/tmp/weather-desk-case-recipients-desktop-qa.png",
+      "/tmp/weather-desk-case-recipients-mobile-qa.png",
+      "/tmp/weather-desk-case-record-desktop-qa.png",
+      "/tmp/weather-desk-case-record-mobile-qa.png",
+      "/tmp/weather-desk-case-telemetry-desktop-qa.png",
+      "/tmp/weather-desk-case-telemetry-mobile-qa.png",
+      "/tmp/weather-desk-case-record-print-qa.pdf"
+    ],
+    "visualReview": "QA inspected desktop situation and320px recipient screenshots; coordinating UX agent separately reviews final gallery.",
+    "aiInputDelta": {
+      "checkedAt": "2026-10-11T02:18:45.592Z",
+      "checks": [
+        "Synthetic encrypted Google manager session decoded by actual Auth.js; isolated app opens",
+        "Recorded Barnwell watch/advisory and regional gauge shown; no fabricated prior approval or current-weather claim",
+        "AI fixture requests include unsaved closure/time; wrong facility and stale timestamp ignored; valid rationale remains an unapproved local edit"
+      ],
+      "modelCalls": 0,
+      "fixtureResponses": 3,
+      "errors": [],
+      "consoleErrors": [],
+      "distinctAdditionalAssertionGroup": 1,
+      "boundary": "Three intercepted fixtures test client identity/input handling only; hosted model behavior is not claimed."
+    }
+  }
+}

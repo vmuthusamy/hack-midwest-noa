@@ -26,6 +26,9 @@ type App struct {
 	agent         *agentclient.Client
 	agentMu       sync.Mutex
 	lastInference string
+	cases         map[string]*OperationsCase
+	records       map[string]DecisionRecord
+	caseFetch     func(context.Context, Facility) (Evidence, error)
 }
 
 func (a *App) Close() error { return a.agent.Close() }
@@ -33,7 +36,7 @@ func explainRequest(e Evidence) *pb.ExplainRequest {
 	f := e.Facility
 	request := &pb.ExplainRequest{Mode: e.Mode, Facility: &pb.Facility{Id: f.ID, Name: f.Name, Latitude: f.Latitude, Longitude: f.Longitude, Fictional: f.Fictional}, EvidenceTimestamp: e.LastRefresh, EvidenceGaps: e.Gaps}
 	for _, a := range e.Alerts {
-		request.Alerts = append(request.Alerts, &pb.Alert{Id: a.ID, Source: a.Source, Event: a.Event, Description: a.Description, Instruction: a.Instruction, Area: a.Area, Issuer: a.Issuer, Issued: a.Issued, Effective: a.Effective, Expires: a.Expires, Status: a.Status, MessageType: a.MessageType, Severity: a.Severity, Certainty: a.Certainty, Urgency: a.Urgency, Geography: a.Geography, Lifecycle: a.Lifecycle, Applicability: a.Applicability, MatchMethod: a.MatchMethod})
+		request.Alerts = append(request.Alerts, &pb.Alert{Id: a.ID, Source: a.Source, Event: a.Event, Description: a.Description, Instruction: a.Instruction, Area: a.Area, Issuer: a.Issuer, Issued: a.Issued, Effective: a.Effective, Expires: a.Expires, Onset: a.Onset, Ends: a.Ends, Status: a.Status, MessageType: a.MessageType, Severity: a.Severity, Certainty: a.Certainty, Urgency: a.Urgency, Geography: a.Geography, Lifecycle: a.Lifecycle, Applicability: a.Applicability, MatchMethod: a.MatchMethod})
 	}
 	return request
 }
@@ -99,6 +102,13 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	if !exists {
 		failure(w, 404, "Unknown fictional facility")
+		return
+	}
+	if r.URL.Path == "/api/metrics" {
+		a.serveMetrics(w, r)
+		return
+	}
+	if a.serveOperations(w, r, scenario) {
 		return
 	}
 	switch r.URL.Path {
@@ -348,8 +358,8 @@ func New(root, agentAddress string) (*App, error) {
 		client.Close()
 		return nil, err
 	}
-	app := &App{auth: auth, replays: map[string]*Replay{}, live: map[string]Evidence{}, root: root, agent: client}
-	for _, key := range []string{"barnwell", "florida", "california"} {
+	app := &App{auth: auth, replays: map[string]*Replay{}, live: map[string]Evidence{}, root: root, agent: client, cases: map[string]*OperationsCase{}, records: map[string]DecisionRecord{}, caseFetch: fetchEvidence}
+	for _, key := range []string{"barnwell", "florida", "california", "montana", "batesburg"} {
 		r, err := newReplay(key, nil)
 		if err != nil {
 			return nil, err
@@ -392,6 +402,10 @@ func New(root, agentAddress string) (*App, error) {
 			}
 		}
 	} else if !os.IsNotExist(err) {
+		client.Close()
+		return nil, err
+	}
+	if err := app.restoreOperations(); err != nil {
 		client.Close()
 		return nil, err
 	}

@@ -4,8 +4,9 @@ import { authEnvironment, identityFromSession, demoIdentity } from './auth-polic
 const routes = new Map([
   ['/api/status', 'GET'], ['/api/replay', 'GET'], ['/api/live', 'GET'],
   ['/api/replay/action', 'POST'], ['/api/briefing', 'POST'],
+  ['/api/case', ['GET', 'POST']], ['/api/case/action', 'POST'], ['/api/case/briefing', 'POST'], ['/api/records', 'GET'], ['/api/metrics', 'GET'],
 ]);
-const facilities = new Set(['barnwell', 'florida', 'california']);
+const facilities = new Set(['barnwell', 'florida', 'california', 'montana', 'batesburg']);
 const json = (status, error) => Response.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } });
 
 export function signedHeaders(identity, method, path, body, secret, now = Date.now(), nonce = randomUUID()) {
@@ -39,8 +40,9 @@ export async function forwardRequest(request, { getSession, fetchBackend = fetch
   catch { return json(401, 'Your session could not be verified. Sign in again.'); }
   if (!identity) return json(401, 'Sign in to use Weather Desk.');
   const url = new URL(request.url);
-  if (!routes.has(url.pathname)) return json(404, 'Route not found');
-  if (request.method !== routes.get(url.pathname)) return json(405, 'Method not allowed');
+  const allowed = routes.get(url.pathname) || (/^\/api\/records\/[A-Za-z0-9_-]{1,128}$/.test(url.pathname) ? 'GET' : null);
+  if (!allowed) return json(404, 'Route not found');
+  if (!(Array.isArray(allowed) ? allowed : [allowed]).includes(request.method)) return json(405, 'Method not allowed');
   const scenario = url.searchParams.get('facility');
   if (scenario && !facilities.has(scenario)) return json(404, 'Unknown facility');
   if (request.method === 'POST') {

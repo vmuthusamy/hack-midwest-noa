@@ -1,0 +1,112 @@
+{
+    "@context": [
+        "https://geojson.org/geojson-ld/geojson-context.jsonld",
+        {
+            "@version": "1.1",
+            "wx": "https://api.weather.gov/ontology#",
+            "s": "https://schema.org/",
+            "geo": "http://www.opengis.net/ont/geosparql#",
+            "unit": "http://codes.wmo.int/common/unit/",
+            "@vocab": "https://api.weather.gov/ontology#",
+            "geometry": {
+                "@id": "s:GeoCoordinates",
+                "@type": "geo:wktLiteral"
+            },
+            "city": "s:addressLocality",
+            "state": "s:addressRegion",
+            "distance": {
+                "@id": "s:Distance",
+                "@type": "s:QuantitativeValue"
+            },
+            "bearing": {
+                "@type": "s:QuantitativeValue"
+            },
+            "value": {
+                "@id": "s:value"
+            },
+            "unitCode": {
+                "@id": "s:unitCode",
+                "@type": "@id"
+            },
+            "forecastOffice": {
+                "@type": "@id"
+            },
+            "forecastGridData": {
+                "@type": "@id"
+            },
+            "publicZone": {
+                "@type": "@id"
+            },
+            "county": {
+                "@type": "@id"
+            }
+        }
+    ],
+    "id": "https://api.weather.gov/points/33.28,-81.35",
+    "type": "Feature",
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -81.35,
+            33.28
+        ]
+    },
+    "properties": {
+        "@id": "https://api.weather.gov/points/33.28,-81.35",
+        "@type": "wx:Point",
+        "cwa": "CAE",
+        "type": "land",
+        "forecastOffice": "https://api.weather.gov/offices/CAE",
+        "gridId": "CAE",
+        "gridX": 56,
+        "gridY": 28,
+        "forecast": "https://api.weather.gov/gridpoints/CAE/56,28/forecast",
+        "forecastHourly": "https://api.weather.gov/gridpoints/CAE/56,28/forecast/hourly",
+        "forecastGridData": "https://api.weather.gov/gridpoints/CAE/56,28",
+        "observationStations": "https://api.weather.gov/gridpoints/CAE/56,28/stations",
+        "relativeLocation": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -81.3661435,
+                    33.2416332
+                ]
+            },
+            "properties": {
+                "city": "Barnwell",
+                "state": "SC",
+                "distance": {
+                    "unitCode": "wmoUnit:m",
+                    "value": 1871.3482993841
+                },
+                "bearing": {
+                    "unitCode": "wmoUnit:degree_(angle)",
+                    "value": 19
+                }
+            }
+        },
+        "forecastZone": "https://api.weather.gov/zones/forecast/SCZ035",
+        "county": "https://api.weather.gov/zones/county/SCC011",
+        "fireWeatherZone": "https://api.weather.gov/zones/fire/SCZ035",
+        "timeZone": "America/New_York",
+        "radarStation": "KCLX",
+        "astronomicalData": {
+            "sunrise": "2026-10-10T07:26:17-04:00",
+            "sunset": "2026-10-10T18:58:22-04:00",
+            "transit": "2026-10-10T13:12:19-04:00",
+            "civilTwilightBegin": "2026-10-10T07:01:30-04:00",
+            "civilTwilightEnd": "2026-10-10T19:23:08-04:00",
+            "nauticalTwilightBegin": "2026-10-10T06:32:46-04:00",
+            "nauticalTwilightEnd": "2026-10-10T19:51:53-04:00",
+            "astronomicalTwilightBegin": "2026-10-10T06:04:02-04:00",
+            "astronomicalTwilightEnd": "2026-10-10T20:20:36-04:00"
+        },
+        "nwr": {
+            "transmitter": "KHC29",
+            "sameCode": "045011",
+            "areaBroadcast": "https://api.weather.gov/radio/KHC29/broadcast",
+            "pointBroadcast": "https://api.weather.gov/points/33.28,-81.35/radio"
+        }
+    }
+}

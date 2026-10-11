@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x62riefing.proto\x12\x0eweatherdesk.v1\"\x0f\n\rStatusRequest\"I\n\x0eStatusResponse\x12\x11\n\tinstalled\x18\x01 \x01(\x08\x12\x12\n\nconfigured\x18\x02 \x01(\x08\x12\x10\n\x08provider\x18\x03 \x01(\t\"\\\n\x08\x46\x61\x63ility\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x10\n\x08latitude\x18\x03 \x01(\x01\x12\x11\n\tlongitude\x18\x04 \x01(\x01\x12\x11\n\tfictional\x18\x05 \x01(\x08\"\xdd\x02\n\x05\x41lert\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06source\x18\x02 \x01(\t\x12\r\n\x05\x65vent\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12\x13\n\x0binstruction\x18\x05 \x01(\t\x12\x0c\n\x04\x61rea\x18\x06 \x01(\t\x12\x0e\n\x06issuer\x18\x07 \x01(\t\x12\x0e\n\x06issued\x18\x08 \x01(\t\x12\x11\n\teffective\x18\t \x01(\t\x12\x0f\n\x07\x65xpires\x18\n \x01(\t\x12\x0e\n\x06status\x18\x0b \x01(\t\x12\x14\n\x0cmessage_type\x18\x0c \x01(\t\x12\x10\n\x08severity\x18\r \x01(\t\x12\x11\n\tcertainty\x18\x0e \x01(\t\x12\x0f\n\x07urgency\x18\x0f \x01(\t\x12\x11\n\tgeography\x18\x10 \x01(\t\x12\x11\n\tlifecycle\x18\x11 \x01(\t\x12\x15\n\rapplicability\x18\x12 \x01(\t\x12\x14\n\x0cmatch_method\x18\x13 \x01(\t\"\x91\x01\n\rPriorApproval\x12\x13\n\x0binstruction\x18\x01 \x01(\t\x12\x13\n\x0b\x61pproved_at\x18\x02 \x01(\t\x12\x15\n\rrecipient_ids\x18\x03 \x03(\t\x12#\n\x1b\x63orrection_package_approved\x18\x04 \x01(\x08\x12\x1a\n\x12\x63orrection_binding\x18\x05 \x01(\t\"S\n\tRecipient\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05group\x18\x03 \x01(\t\x12\x1d\n\x15original_notice_state\x18\x04 \x01(\t\"Q\n\x0cReviewPolicy\x12\x0f\n\x07version\x18\x01 \x01(\t\x12\x0e\n\x06\x64igest\x18\x02 \x01(\t\x12\x10\n\x08\x65ligible\x18\x03 \x01(\x08\x12\x0e\n\x06\x61\x63tion\x18\x04 \x01(\t\"\x86\x03\n\x0e\x45xplainRequest\x12\x12\n\nrequest_id\x18\x01 \x01(\t\x12\x0c\n\x04mode\x18\x02 \x01(\t\x12*\n\x08\x66\x61\x63ility\x18\x03 \x01(\x0b\x32\x18.weatherdesk.v1.Facility\x12\x1a\n\x12\x65vidence_timestamp\x18\x04 \x01(\t\x12%\n\x06\x61lerts\x18\x05 \x03(\x0b\x32\x15.weatherdesk.v1.Alert\x12\x15\n\revidence_gaps\x18\x06 \x03(\t\x12\x35\n\x0eprior_approval\x18\x07 \x01(\x0b\x32\x1d.weatherdesk.v1.PriorApproval\x12-\n\nrecipients\x18\x08 \x03(\x0b\x32\x19.weatherdesk.v1.Recipient\x12\x33\n\rreview_policy\x18\t \x01(\x0b\x32\x1c.weatherdesk.v1.ReviewPolicy\x12\x17\n\x0freview_revision\x18\n \x01(\t\x12\x18\n\x10replay_condition\x18\x0b \x01(\t\".\n\x0b\x43hangedFact\x12\x0c\n\x04\x66\x61\x63t\x18\x01 \x01(\t\x12\x11\n\tsource_id\x18\x02 \x01(\t\"+\n\x0c\x44raftMessage\x12\r\n\x05group\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\"\xc7\x01\n\x08\x42riefing\x12\x32\n\rchanged_facts\x18\x01 \x03(\x0b\x32\x1b.weatherdesk.v1.ChangedFact\x12\x19\n\x11source_references\x18\x02 \x03(\t\x12\x15\n\revidence_gaps\x18\x03 \x03(\t\x12\x13\n\x0b\x65xplanation\x18\x04 \x01(\t\x12@\n\x1a\x64raft_operational_messages\x18\x05 \x03(\x0b\x32\x1c.weatherdesk.v1.DraftMessage\"\x9b\x01\n\x0f\x45xplainResponse\x12\x12\n\nrequest_id\x18\x01 \x01(\t\x12\x1a\n\x12\x65vidence_timestamp\x18\x02 \x01(\t\x12\x13\n\x0b\x66\x61\x63ility_id\x18\x03 \x01(\t\x12*\n\x08\x62riefing\x18\x04 \x01(\x0b\x32\x18.weatherdesk.v1.Briefing\x12\x17\n\x0freview_revision\x18\x05 \x01(\t2\xb1\x01\n\x17\x45videnceBriefingService\x12J\n\tGetStatus\x12\x1d.weatherdesk.v1.StatusRequest\x1a\x1e.weatherdesk.v1.StatusResponse\x12J\n\x07\x45xplain\x12\x1e.weatherdesk.v1.ExplainRequest\x1a\x1f.weatherdesk.v1.ExplainResponseBKZIgithub.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/gen/weatherdeskv1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x62riefing.proto\x12\x0eweatherdesk.v1\x1a\x1cgoogle/protobuf/struct.proto\"\x10\n\x0eMetricsRequest\";\n\x0fMetricsResponse\x12(\n\x07metrics\x18\x01 \x01(\x0b\x32\x17.google.protobuf.Struct\"\x0f\n\rStatusRequest\"I\n\x0eStatusResponse\x12\x11\n\tinstalled\x18\x01 \x01(\x08\x12\x12\n\nconfigured\x18\x02 \x01(\x08\x12\x10\n\x08provider\x18\x03 \x01(\t\"\\\n\x08\x46\x61\x63ility\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x10\n\x08latitude\x18\x03 \x01(\x01\x12\x11\n\tlongitude\x18\x04 \x01(\x01\x12\x11\n\tfictional\x18\x05 \x01(\x08\"\xfa\x02\n\x05\x41lert\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06source\x18\x02 \x01(\t\x12\r\n\x05\x65vent\x18\x03 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x04 \x01(\t\x12\x13\n\x0binstruction\x18\x05 \x01(\t\x12\x0c\n\x04\x61rea\x18\x06 \x01(\t\x12\x0e\n\x06issuer\x18\x07 \x01(\t\x12\x0e\n\x06issued\x18\x08 \x01(\t\x12\x11\n\teffective\x18\t \x01(\t\x12\x0f\n\x07\x65xpires\x18\n \x01(\t\x12\x0e\n\x06status\x18\x0b \x01(\t\x12\x14\n\x0cmessage_type\x18\x0c \x01(\t\x12\x10\n\x08severity\x18\r \x01(\t\x12\x11\n\tcertainty\x18\x0e \x01(\t\x12\x0f\n\x07urgency\x18\x0f \x01(\t\x12\x11\n\tgeography\x18\x10 \x01(\t\x12\x11\n\tlifecycle\x18\x11 \x01(\t\x12\x15\n\rapplicability\x18\x12 \x01(\t\x12\x14\n\x0cmatch_method\x18\x13 \x01(\t\x12\r\n\x05onset\x18\x14 \x01(\t\x12\x0c\n\x04\x65nds\x18\x15 \x01(\t\"\x91\x01\n\rPriorApproval\x12\x13\n\x0binstruction\x18\x01 \x01(\t\x12\x13\n\x0b\x61pproved_at\x18\x02 \x01(\t\x12\x15\n\rrecipient_ids\x18\x03 \x03(\t\x12#\n\x1b\x63orrection_package_approved\x18\x04 \x01(\x08\x12\x1a\n\x12\x63orrection_binding\x18\x05 \x01(\t\"S\n\tRecipient\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05group\x18\x03 \x01(\t\x12\x1d\n\x15original_notice_state\x18\x04 \x01(\t\"Q\n\x0cReviewPolicy\x12\x0f\n\x07version\x18\x01 \x01(\t\x12\x0e\n\x06\x64igest\x18\x02 \x01(\t\x12\x10\n\x08\x65ligible\x18\x03 \x01(\x08\x12\x0e\n\x06\x61\x63tion\x18\x04 \x01(\t\"\xcc\x03\n\x0e\x45xplainRequest\x12\x12\n\nrequest_id\x18\x01 \x01(\t\x12\x0c\n\x04mode\x18\x02 \x01(\t\x12*\n\x08\x66\x61\x63ility\x18\x03 \x01(\x0b\x32\x18.weatherdesk.v1.Facility\x12\x1a\n\x12\x65vidence_timestamp\x18\x04 \x01(\t\x12%\n\x06\x61lerts\x18\x05 \x03(\x0b\x32\x15.weatherdesk.v1.Alert\x12\x15\n\revidence_gaps\x18\x06 \x03(\t\x12\x35\n\x0eprior_approval\x18\x07 \x01(\x0b\x32\x1d.weatherdesk.v1.PriorApproval\x12-\n\nrecipients\x18\x08 \x03(\x0b\x32\x19.weatherdesk.v1.Recipient\x12\x33\n\rreview_policy\x18\t \x01(\x0b\x32\x1c.weatherdesk.v1.ReviewPolicy\x12\x17\n\x0freview_revision\x18\n \x01(\t\x12\x18\n\x10replay_condition\x18\x0b \x01(\t\x12\x15\n\revidence_only\x18\x0c \x01(\x08\x12-\n\x0c\x63\x61se_context\x18\r \x01(\x0b\x32\x17.google.protobuf.Struct\".\n\x0b\x43hangedFact\x12\x0c\n\x04\x66\x61\x63t\x18\x01 \x01(\t\x12\x11\n\tsource_id\x18\x02 \x01(\t\"+\n\x0c\x44raftMessage\x12\r\n\x05group\x18\x01 \x01(\t\x12\x0c\n\x04text\x18\x02 \x01(\t\"\xc7\x01\n\x08\x42riefing\x12\x32\n\rchanged_facts\x18\x01 \x03(\x0b\x32\x1b.weatherdesk.v1.ChangedFact\x12\x19\n\x11source_references\x18\x02 \x03(\t\x12\x15\n\revidence_gaps\x18\x03 \x03(\t\x12\x13\n\x0b\x65xplanation\x18\x04 \x01(\t\x12@\n\x1a\x64raft_operational_messages\x18\x05 \x03(\x0b\x32\x1c.weatherdesk.v1.DraftMessage\"\x9b\x01\n\x0f\x45xplainResponse\x12\x12\n\nrequest_id\x18\x01 \x01(\t\x12\x1a\n\x12\x65vidence_timestamp\x18\x02 \x01(\t\x12\x13\n\x0b\x66\x61\x63ility_id\x18\x03 \x01(\t\x12*\n\x08\x62riefing\x18\x04 \x01(\x0b\x32\x18.weatherdesk.v1.Briefing\x12\x17\n\x0freview_revision\x18\x05 \x01(\t2\x80\x02\n\x17\x45videnceBriefingService\x12J\n\tGetStatus\x12\x1d.weatherdesk.v1.StatusRequest\x1a\x1e.weatherdesk.v1.StatusResponse\x12J\n\x07\x45xplain\x12\x1e.weatherdesk.v1.ExplainRequest\x1a\x1f.weatherdesk.v1.ExplainResponse\x12M\n\nGetMetrics\x12\x1e.weatherdesk.v1.MetricsRequest\x1a\x1f.weatherdesk.v1.MetricsResponseBKZIgithub.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/gen/weatherdeskv1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,30 +33,34 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'briefing_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'ZIgithub.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/gen/weatherdeskv1'
-  _globals['_STATUSREQUEST']._serialized_start=34
-  _globals['_STATUSREQUEST']._serialized_end=49
-  _globals['_STATUSRESPONSE']._serialized_start=51
-  _globals['_STATUSRESPONSE']._serialized_end=124
-  _globals['_FACILITY']._serialized_start=126
-  _globals['_FACILITY']._serialized_end=218
-  _globals['_ALERT']._serialized_start=221
-  _globals['_ALERT']._serialized_end=570
-  _globals['_PRIORAPPROVAL']._serialized_start=573
-  _globals['_PRIORAPPROVAL']._serialized_end=718
-  _globals['_RECIPIENT']._serialized_start=720
-  _globals['_RECIPIENT']._serialized_end=803
-  _globals['_REVIEWPOLICY']._serialized_start=805
-  _globals['_REVIEWPOLICY']._serialized_end=886
-  _globals['_EXPLAINREQUEST']._serialized_start=889
-  _globals['_EXPLAINREQUEST']._serialized_end=1279
-  _globals['_CHANGEDFACT']._serialized_start=1281
-  _globals['_CHANGEDFACT']._serialized_end=1327
-  _globals['_DRAFTMESSAGE']._serialized_start=1329
-  _globals['_DRAFTMESSAGE']._serialized_end=1372
-  _globals['_BRIEFING']._serialized_start=1375
-  _globals['_BRIEFING']._serialized_end=1574
-  _globals['_EXPLAINRESPONSE']._serialized_start=1577
-  _globals['_EXPLAINRESPONSE']._serialized_end=1732
-  _globals['_EVIDENCEBRIEFINGSERVICE']._serialized_start=1735
-  _globals['_EVIDENCEBRIEFINGSERVICE']._serialized_end=1912
+  _globals['_METRICSREQUEST']._serialized_start=64
+  _globals['_METRICSREQUEST']._serialized_end=80
+  _globals['_METRICSRESPONSE']._serialized_start=82
+  _globals['_METRICSRESPONSE']._serialized_end=141
+  _globals['_STATUSREQUEST']._serialized_start=143
+  _globals['_STATUSREQUEST']._serialized_end=158
+  _globals['_STATUSRESPONSE']._serialized_start=160
+  _globals['_STATUSRESPONSE']._serialized_end=233
+  _globals['_FACILITY']._serialized_start=235
+  _globals['_FACILITY']._serialized_end=327
+  _globals['_ALERT']._serialized_start=330
+  _globals['_ALERT']._serialized_end=708
+  _globals['_PRIORAPPROVAL']._serialized_start=711
+  _globals['_PRIORAPPROVAL']._serialized_end=856
+  _globals['_RECIPIENT']._serialized_start=858
+  _globals['_RECIPIENT']._serialized_end=941
+  _globals['_REVIEWPOLICY']._serialized_start=943
+  _globals['_REVIEWPOLICY']._serialized_end=1024
+  _globals['_EXPLAINREQUEST']._serialized_start=1027
+  _globals['_EXPLAINREQUEST']._serialized_end=1487
+  _globals['_CHANGEDFACT']._serialized_start=1489
+  _globals['_CHANGEDFACT']._serialized_end=1535
+  _globals['_DRAFTMESSAGE']._serialized_start=1537
+  _globals['_DRAFTMESSAGE']._serialized_end=1580
+  _globals['_BRIEFING']._serialized_start=1583
+  _globals['_BRIEFING']._serialized_end=1782
+  _globals['_EXPLAINRESPONSE']._serialized_start=1785
+  _globals['_EXPLAINRESPONSE']._serialized_end=1940
+  _globals['_EVIDENCEBRIEFINGSERVICE']._serialized_start=1943
+  _globals['_EVIDENCEBRIEFINGSERVICE']._serialized_end=2199
 # @@protoc_insertion_point(module_scope)

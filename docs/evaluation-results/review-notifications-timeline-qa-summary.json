@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-11T02:58:17.684Z",
+  "checks": [
+    "Initial desktop decision CTA within900px; official warning immediately rendered; no stepper",
+    "Concurrent revision preserves closure/rationale/time/override, does not apply on409, succeeds explicit fresh resubmit into people review; five Not attempted and one Not targeted",
+    "Concurrent recipient edit kept as notes only, never automatically reapplied or approved",
+    "Exact approval queuesfive separate simulated notices;17 explicit attempted/delivered/acknowledged/fallback events; responsive notification table",
+    "Stale live evidence still permits closure draft and recipient review while approval stays disabled",
+    "barnwell timeline uses recorded clock and facilityEDT;320/390 dark/light have no page overflow",
+    "batesburg timeline uses recorded clock and facilityEDT;320/390 dark/light have no page overflow"
+  ],
+  "errors": [],
+  "providerCalls": 0,
+  "environment": "Synthetic manager and signed isolated8093/8094 QA app, temporary persistence; fixtures only",
+  "artifacts": [
+    "/tmp/weather-desk-revision-initial-desktop-qa.png",
+    "/tmp/weather-desk-revision-notifications-desktop-qa.png",
+    "/tmp/weather-desk-barnwell-timeline-320-qa.png",
+    "/tmp/weather-desk-batesburg-timeline-390-qa.png"
+  ],
+  "visualReview": "Actual component screenshots inspected. Timeline labels and recorded marker readable at320/390; pattern distinguishes possiblewatch and likelywarning; workday shading visible for Barnwell. Screenshots refreshed with element capture after theme switch.",
+  "backend": "All TestOperationsQA focused Go tests pass, including stale-review current-case response with no draft mutation."
+}

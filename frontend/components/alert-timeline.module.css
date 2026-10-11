@@ -1,0 +1,53 @@
+.timeline { min-width:0; display:grid; gap:10px; container-type:inline-size; }
+.head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.title { margin:0; font-size:16px; }
+.tz,.empty { color:var(--muted,#8faaa9); font-size:13px; margin:0; }
+.plot { overflow-x:auto; }
+.plot svg { display:block; overflow:visible; }
+.band { fill:var(--mint,#76dec5); opacity:.07; }
+.grid { stroke:var(--line,#303d44); stroke-width:1; }
+.tick { fill:var(--muted,#8faaa9); font-size:13px; }
+.event { fill:var(--text,#dfebe9); font-size:13px; font-weight:600; }
+.lane { outline:none; cursor:default; }
+.lane:focus-visible .bar { stroke:var(--text,#dfebe9); stroke-width:2; }
+/* Severity → color. Status hues match the threat map's warning orange. */
+.lane[data-level='0'],.lane[data-level='1'] { color:#8a9aa6; }
+.lane[data-level='2'] { color:#fab219; }
+.lane[data-level='3'] { color:#ec835a; }
+.lane[data-level='4'] { color:#d03b3b; }
+.lane[data-inactive] { color:#5f6c75; }
+.lane[data-inactive] .event { fill:var(--muted,#8faaa9);  }
+.bar { stroke:currentColor; stroke-width:1.5; }
+.bar[data-fill='outline'] { stroke-dasharray:4 3; }
+.lane:hover .bar { filter:brightness(1.15); }
+.open { fill:var(--muted,#8faaa9); font-size:13px; }
+.lead { stroke:currentColor; stroke-width:1.5; stroke-dasharray:2 3; opacity:.7; }
+.issued { fill:var(--panel,#101c22); stroke:currentColor; stroke-width:2; }
+.now { stroke:var(--text,#dfebe9); stroke-width:1.5; stroke-dasharray:5 4; }
+.nowLabel { fill:var(--text,#dfebe9); font-size:13px; font-weight:700; }
+.rows { list-style:none; margin:0; padding:0; display:grid; }
+.rows li { display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; align-items:center; gap:4px 12px; padding:9px 4px; border-top:1px solid var(--line,#303d44); font-size:13px; }
+.rows li[data-active] { background:color-mix(in srgb,var(--mint,#76dec5) 8%,transparent); }
+.rows li[data-inactive] .rowMain { color:var(--muted,#8faaa9); }
+.rowMain { display:grid; min-width:0; }
+.rowMain span { color:var(--muted,#8faaa9); }
+.rowTime { color:var(--muted,#8faaa9); font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+.meter { display:inline-grid; grid-template-columns:repeat(4,7px); gap:2px; align-items:end; height:16px; }
+.meter i { display:block; border-radius:1px; background:var(--line,#303d44); }
+.meter i:nth-child(1) { height:6px; } .meter i:nth-child(2) { height:9px; } .meter i:nth-child(3) { height:12px; } .meter i:nth-child(4) { height:16px; }
+.meter[data-level='1'] .on,.meter[data-level='0'] .on { background:#8a9aa6; }
+.meter[data-level='2'] .on { background:#fab219; }
+.meter[data-level='3'] .on { background:#ec835a; }
+.meter[data-level='4'] .on { background:#d03b3b; }
+.legend { display:flex; flex-wrap:wrap; gap:6px 14px; font-size:13px; color:var(--muted,#8faaa9); }
+.legend span { display:inline-flex; align-items:center; gap:6px; }
+.legend i { display:inline-block; width:16px; height:9px; border-radius:2px; }
+.kSolid { background:#ec835a; }
+.kStriped { background:repeating-linear-gradient(45deg,#ec835a 0 2px,transparent 2px 5px); border:1px solid #ec835a; }
+.kIssued { width:9px!important; height:9px!important; border-radius:50%!important; border:2px solid #ec835a; }
+.kBand { background:var(--mint,#76dec5); opacity:.25; }
+.kNow { width:0!important; height:12px!important; border-left:2px dashed var(--text,#dfebe9); border-radius:0!important; }
+@container (max-width:520px) { .rows li { grid-template-columns:auto minmax(0,1fr) auto; } .rowTime { grid-column:2 / -1; grid-row:2; } }
+
+.kOutline { border:1.5px dashed #8a9aa6; }
+@container (max-width:360px) { .rows li { gap:5px 8px; } .rowTime { font-size:13px; } }

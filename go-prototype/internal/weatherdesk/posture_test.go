@@ -51,7 +51,7 @@ func TestPostureMissingOrIncompatibleEvidenceDoesNotInventRecommendation(t *test
 		"certainty gap":         func(a *Alert) { a.Certainty = "Unknown" },
 		"future urgency":        func(a *Alert) { a.Urgency = "Future" },
 		"watch":                 func(a *Alert) { a.Event = "Tornado Watch" },
-		"flood":                 func(a *Alert) { a.Event = "Flood Warning" },
+		"unsupported event":     func(a *Alert) { a.Event = "Dust Advisory" },
 	}
 	for name, mutate := range mutations {
 		t.Run(name, func(t *testing.T) {
@@ -112,5 +112,53 @@ func TestPosturePreservesInputsAndSerializesUnknownAsNull(t *testing.T) {
 	encoded, _ := json.Marshal(next)
 	if !strings.Contains(string(encoded), `"recommendedPosture":null`) || strings.Contains(string(encoded), `"confidence"`) {
 		t.Fatalf("unknown posture or unsupported confidence misrepresented: %s", encoded)
+	}
+}
+
+func TestFloodAndWinterOperatingReviewPolicy(t *testing.T) {
+	for _, event := range []string{"Flash Flood Warning", "Flood Warning", "Winter Storm Warning"} {
+		t.Run(event, func(t *testing.T) {
+			a := postureWarning()
+			a.Event, a.Urgency, a.Certainty = event, "Expected", "Likely"
+			p := AssessPosture("LIVE", Facility{ID: "QA", Name: "Demo"}, []Alert{a}, true)
+			if p.RecommendedPosture == nil || *p.RecommendedPosture != "telework" || p.EvidenceAdequacy != "warning supports operating review" || (!strings.Contains(p.Rationale, "review essential") || !strings.Contains(p.Rationale, event)) {
+				t.Fatalf("planning warning lost: %+v", p)
+			}
+		})
+	}
+	watch := postureWarning()
+	watch.Event, watch.Urgency, watch.Certainty = "Flood Watch", "Future", "Possible"
+	p := AssessPosture("LIVE", Facility{ID: "QA", Name: "Demo"}, []Alert{watch}, true)
+	if p.RecommendedPosture != nil || p.Status != "planning-review" || (!strings.Contains(p.Rationale, "no applicable warning") || !strings.Contains(p.Rationale, "Flood Watch")) {
+		t.Fatalf("watch promoted to warning: %+v", p)
+	}
+	winter := postureWarning()
+	winter.Event, winter.Urgency = "Winter Storm Warning", "Expected"
+	p = AssessPosture("LIVE", Facility{ID: "QA"}, []Alert{winter, postureWarning()}, true)
+	if p.RecommendedPosture == nil || *p.RecommendedPosture != "delay" {
+		t.Fatalf("immediate storm did not take precedence: %+v", p)
+	}
+	irrelevant := postureWarning()
+	irrelevant.Geography, irrelevant.Applicability, irrelevant.Event = "unknown", "unknown", "Special Marine Warning"
+	p = AssessPosture("LIVE", Facility{ID: "QA"}, []Alert{winter, irrelevant}, true)
+	if p.RecommendedPosture == nil {
+		t.Fatalf("unsupported nationwide hazard suppressed matched policy: %+v", p)
+	}
+}
+
+func TestRecordedFloodWatchAndWinterWarningRemainSeparate(t *testing.T) {
+	barnwell, err := recordedCaseEvidence("barnwell")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if barnwell.Mode != "REPLAY" || barnwell.PostureAssessment.Status != "planning-review" || len(barnwell.RiverSignals) != 1 || barnwell.RiverSignals[0].Thresholds.Minor != nil {
+		t.Fatalf("recorded Barnwell evidence misrepresented: %+v", barnwell)
+	}
+	montana, err := recordedCaseEvidence("montana")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if montana.PostureAssessment.RecommendedPosture == nil || *montana.PostureAssessment.RecommendedPosture != "telework" || montana.Alerts[0].Onset == "" || montana.Alerts[0].Ends == "" || montana.Alerts[0].Ends == montana.Alerts[0].Expires {
+		t.Fatalf("winter hazard time and message expiry conflated: %+v", montana)
 	}
 }

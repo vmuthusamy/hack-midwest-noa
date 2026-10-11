@@ -9,6 +9,7 @@ package weatherdeskv1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	structpb "google.golang.org/protobuf/types/known/structpb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -21,6 +22,86 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type MetricsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MetricsRequest) Reset() {
+	*x = MetricsRequest{}
+	mi := &file_briefing_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MetricsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MetricsRequest) ProtoMessage() {}
+
+func (x *MetricsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_briefing_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MetricsRequest.ProtoReflect.Descriptor instead.
+func (*MetricsRequest) Descriptor() ([]byte, []int) {
+	return file_briefing_proto_rawDescGZIP(), []int{0}
+}
+
+type MetricsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Metrics       *structpb.Struct       `protobuf:"bytes,1,opt,name=metrics,proto3" json:"metrics,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MetricsResponse) Reset() {
+	*x = MetricsResponse{}
+	mi := &file_briefing_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MetricsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MetricsResponse) ProtoMessage() {}
+
+func (x *MetricsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_briefing_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MetricsResponse.ProtoReflect.Descriptor instead.
+func (*MetricsResponse) Descriptor() ([]byte, []int) {
+	return file_briefing_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *MetricsResponse) GetMetrics() *structpb.Struct {
+	if x != nil {
+		return x.Metrics
+	}
+	return nil
+}
+
 type StatusRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -29,7 +110,7 @@ type StatusRequest struct {
 
 func (x *StatusRequest) Reset() {
 	*x = StatusRequest{}
-	mi := &file_briefing_proto_msgTypes[0]
+	mi := &file_briefing_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -41,7 +122,7 @@ func (x *StatusRequest) String() string {
 func (*StatusRequest) ProtoMessage() {}
 
 func (x *StatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[0]
+	mi := &file_briefing_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -54,7 +135,7 @@ func (x *StatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatusRequest.ProtoReflect.Descriptor instead.
 func (*StatusRequest) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{0}
+	return file_briefing_proto_rawDescGZIP(), []int{2}
 }
 
 type StatusResponse struct {
@@ -68,7 +149,7 @@ type StatusResponse struct {
 
 func (x *StatusResponse) Reset() {
 	*x = StatusResponse{}
-	mi := &file_briefing_proto_msgTypes[1]
+	mi := &file_briefing_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -80,7 +161,7 @@ func (x *StatusResponse) String() string {
 func (*StatusResponse) ProtoMessage() {}
 
 func (x *StatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[1]
+	mi := &file_briefing_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -93,7 +174,7 @@ func (x *StatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatusResponse.ProtoReflect.Descriptor instead.
 func (*StatusResponse) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{1}
+	return file_briefing_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *StatusResponse) GetInstalled() bool {
@@ -130,7 +211,7 @@ type Facility struct {
 
 func (x *Facility) Reset() {
 	*x = Facility{}
-	mi := &file_briefing_proto_msgTypes[2]
+	mi := &file_briefing_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -142,7 +223,7 @@ func (x *Facility) String() string {
 func (*Facility) ProtoMessage() {}
 
 func (x *Facility) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[2]
+	mi := &file_briefing_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -155,7 +236,7 @@ func (x *Facility) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Facility.ProtoReflect.Descriptor instead.
 func (*Facility) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{2}
+	return file_briefing_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Facility) GetId() string {
@@ -214,13 +295,15 @@ type Alert struct {
 	Lifecycle     string                 `protobuf:"bytes,17,opt,name=lifecycle,proto3" json:"lifecycle,omitempty"`
 	Applicability string                 `protobuf:"bytes,18,opt,name=applicability,proto3" json:"applicability,omitempty"`
 	MatchMethod   string                 `protobuf:"bytes,19,opt,name=match_method,json=matchMethod,proto3" json:"match_method,omitempty"`
+	Onset         string                 `protobuf:"bytes,20,opt,name=onset,proto3" json:"onset,omitempty"`
+	Ends          string                 `protobuf:"bytes,21,opt,name=ends,proto3" json:"ends,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Alert) Reset() {
 	*x = Alert{}
-	mi := &file_briefing_proto_msgTypes[3]
+	mi := &file_briefing_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -232,7 +315,7 @@ func (x *Alert) String() string {
 func (*Alert) ProtoMessage() {}
 
 func (x *Alert) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[3]
+	mi := &file_briefing_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -245,7 +328,7 @@ func (x *Alert) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Alert.ProtoReflect.Descriptor instead.
 func (*Alert) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{3}
+	return file_briefing_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Alert) GetId() string {
@@ -381,6 +464,20 @@ func (x *Alert) GetMatchMethod() string {
 	return ""
 }
 
+func (x *Alert) GetOnset() string {
+	if x != nil {
+		return x.Onset
+	}
+	return ""
+}
+
+func (x *Alert) GetEnds() string {
+	if x != nil {
+		return x.Ends
+	}
+	return ""
+}
+
 type PriorApproval struct {
 	state                     protoimpl.MessageState `protogen:"open.v1"`
 	Instruction               string                 `protobuf:"bytes,1,opt,name=instruction,proto3" json:"instruction,omitempty"`
@@ -394,7 +491,7 @@ type PriorApproval struct {
 
 func (x *PriorApproval) Reset() {
 	*x = PriorApproval{}
-	mi := &file_briefing_proto_msgTypes[4]
+	mi := &file_briefing_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -406,7 +503,7 @@ func (x *PriorApproval) String() string {
 func (*PriorApproval) ProtoMessage() {}
 
 func (x *PriorApproval) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[4]
+	mi := &file_briefing_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -419,7 +516,7 @@ func (x *PriorApproval) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PriorApproval.ProtoReflect.Descriptor instead.
 func (*PriorApproval) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{4}
+	return file_briefing_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *PriorApproval) GetInstruction() string {
@@ -469,7 +566,7 @@ type Recipient struct {
 
 func (x *Recipient) Reset() {
 	*x = Recipient{}
-	mi := &file_briefing_proto_msgTypes[5]
+	mi := &file_briefing_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -481,7 +578,7 @@ func (x *Recipient) String() string {
 func (*Recipient) ProtoMessage() {}
 
 func (x *Recipient) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[5]
+	mi := &file_briefing_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -494,7 +591,7 @@ func (x *Recipient) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Recipient.ProtoReflect.Descriptor instead.
 func (*Recipient) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{5}
+	return file_briefing_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *Recipient) GetId() string {
@@ -537,7 +634,7 @@ type ReviewPolicy struct {
 
 func (x *ReviewPolicy) Reset() {
 	*x = ReviewPolicy{}
-	mi := &file_briefing_proto_msgTypes[6]
+	mi := &file_briefing_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -549,7 +646,7 @@ func (x *ReviewPolicy) String() string {
 func (*ReviewPolicy) ProtoMessage() {}
 
 func (x *ReviewPolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[6]
+	mi := &file_briefing_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -562,7 +659,7 @@ func (x *ReviewPolicy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReviewPolicy.ProtoReflect.Descriptor instead.
 func (*ReviewPolicy) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{6}
+	return file_briefing_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ReviewPolicy) GetVersion() string {
@@ -606,13 +703,15 @@ type ExplainRequest struct {
 	ReviewPolicy      *ReviewPolicy          `protobuf:"bytes,9,opt,name=review_policy,json=reviewPolicy,proto3" json:"review_policy,omitempty"`
 	ReviewRevision    string                 `protobuf:"bytes,10,opt,name=review_revision,json=reviewRevision,proto3" json:"review_revision,omitempty"`
 	ReplayCondition   string                 `protobuf:"bytes,11,opt,name=replay_condition,json=replayCondition,proto3" json:"replay_condition,omitempty"`
+	EvidenceOnly      bool                   `protobuf:"varint,12,opt,name=evidence_only,json=evidenceOnly,proto3" json:"evidence_only,omitempty"`
+	CaseContext       *structpb.Struct       `protobuf:"bytes,13,opt,name=case_context,json=caseContext,proto3" json:"case_context,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
 func (x *ExplainRequest) Reset() {
 	*x = ExplainRequest{}
-	mi := &file_briefing_proto_msgTypes[7]
+	mi := &file_briefing_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -624,7 +723,7 @@ func (x *ExplainRequest) String() string {
 func (*ExplainRequest) ProtoMessage() {}
 
 func (x *ExplainRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[7]
+	mi := &file_briefing_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -637,7 +736,7 @@ func (x *ExplainRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExplainRequest.ProtoReflect.Descriptor instead.
 func (*ExplainRequest) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{7}
+	return file_briefing_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ExplainRequest) GetRequestId() string {
@@ -717,6 +816,20 @@ func (x *ExplainRequest) GetReplayCondition() string {
 	return ""
 }
 
+func (x *ExplainRequest) GetEvidenceOnly() bool {
+	if x != nil {
+		return x.EvidenceOnly
+	}
+	return false
+}
+
+func (x *ExplainRequest) GetCaseContext() *structpb.Struct {
+	if x != nil {
+		return x.CaseContext
+	}
+	return nil
+}
+
 type ChangedFact struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Fact          string                 `protobuf:"bytes,1,opt,name=fact,proto3" json:"fact,omitempty"`
@@ -727,7 +840,7 @@ type ChangedFact struct {
 
 func (x *ChangedFact) Reset() {
 	*x = ChangedFact{}
-	mi := &file_briefing_proto_msgTypes[8]
+	mi := &file_briefing_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -739,7 +852,7 @@ func (x *ChangedFact) String() string {
 func (*ChangedFact) ProtoMessage() {}
 
 func (x *ChangedFact) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[8]
+	mi := &file_briefing_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -752,7 +865,7 @@ func (x *ChangedFact) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChangedFact.ProtoReflect.Descriptor instead.
 func (*ChangedFact) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{8}
+	return file_briefing_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ChangedFact) GetFact() string {
@@ -779,7 +892,7 @@ type DraftMessage struct {
 
 func (x *DraftMessage) Reset() {
 	*x = DraftMessage{}
-	mi := &file_briefing_proto_msgTypes[9]
+	mi := &file_briefing_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -791,7 +904,7 @@ func (x *DraftMessage) String() string {
 func (*DraftMessage) ProtoMessage() {}
 
 func (x *DraftMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[9]
+	mi := &file_briefing_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -804,7 +917,7 @@ func (x *DraftMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DraftMessage.ProtoReflect.Descriptor instead.
 func (*DraftMessage) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{9}
+	return file_briefing_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DraftMessage) GetGroup() string {
@@ -834,7 +947,7 @@ type Briefing struct {
 
 func (x *Briefing) Reset() {
 	*x = Briefing{}
-	mi := &file_briefing_proto_msgTypes[10]
+	mi := &file_briefing_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -846,7 +959,7 @@ func (x *Briefing) String() string {
 func (*Briefing) ProtoMessage() {}
 
 func (x *Briefing) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[10]
+	mi := &file_briefing_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -859,7 +972,7 @@ func (x *Briefing) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Briefing.ProtoReflect.Descriptor instead.
 func (*Briefing) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{10}
+	return file_briefing_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *Briefing) GetChangedFacts() []*ChangedFact {
@@ -910,7 +1023,7 @@ type ExplainResponse struct {
 
 func (x *ExplainResponse) Reset() {
 	*x = ExplainResponse{}
-	mi := &file_briefing_proto_msgTypes[11]
+	mi := &file_briefing_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -922,7 +1035,7 @@ func (x *ExplainResponse) String() string {
 func (*ExplainResponse) ProtoMessage() {}
 
 func (x *ExplainResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[11]
+	mi := &file_briefing_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -935,7 +1048,7 @@ func (x *ExplainResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExplainResponse.ProtoReflect.Descriptor instead.
 func (*ExplainResponse) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{11}
+	return file_briefing_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *ExplainResponse) GetRequestId() string {
@@ -977,7 +1090,10 @@ var File_briefing_proto protoreflect.FileDescriptor
 
 const file_briefing_proto_rawDesc = "" +
 	"\n" +
-	"\x0ebriefing.proto\x12\x0eweatherdesk.v1\"\x0f\n" +
+	"\x0ebriefing.proto\x12\x0eweatherdesk.v1\x1a\x1cgoogle/protobuf/struct.proto\"\x10\n" +
+	"\x0eMetricsRequest\"D\n" +
+	"\x0fMetricsResponse\x121\n" +
+	"\ametrics\x18\x01 \x01(\v2\x17.google.protobuf.StructR\ametrics\"\x0f\n" +
 	"\rStatusRequest\"j\n" +
 	"\x0eStatusResponse\x12\x1c\n" +
 	"\tinstalled\x18\x01 \x01(\bR\tinstalled\x12\x1e\n" +
@@ -990,7 +1106,7 @@ const file_briefing_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
 	"\blatitude\x18\x03 \x01(\x01R\blatitude\x12\x1c\n" +
 	"\tlongitude\x18\x04 \x01(\x01R\tlongitude\x12\x1c\n" +
-	"\tfictional\x18\x05 \x01(\bR\tfictional\"\x99\x04\n" +
+	"\tfictional\x18\x05 \x01(\bR\tfictional\"\xc3\x04\n" +
 	"\x05Alert\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x12\x14\n" +
@@ -1011,7 +1127,9 @@ const file_briefing_proto_rawDesc = "" +
 	"\tgeography\x18\x10 \x01(\tR\tgeography\x12\x1c\n" +
 	"\tlifecycle\x18\x11 \x01(\tR\tlifecycle\x12$\n" +
 	"\rapplicability\x18\x12 \x01(\tR\rapplicability\x12!\n" +
-	"\fmatch_method\x18\x13 \x01(\tR\vmatchMethod\"\xe6\x01\n" +
+	"\fmatch_method\x18\x13 \x01(\tR\vmatchMethod\x12\x14\n" +
+	"\x05onset\x18\x14 \x01(\tR\x05onset\x12\x12\n" +
+	"\x04ends\x18\x15 \x01(\tR\x04ends\"\xe6\x01\n" +
 	"\rPriorApproval\x12 \n" +
 	"\vinstruction\x18\x01 \x01(\tR\vinstruction\x12\x1f\n" +
 	"\vapproved_at\x18\x02 \x01(\tR\n" +
@@ -1028,7 +1146,7 @@ const file_briefing_proto_rawDesc = "" +
 	"\aversion\x18\x01 \x01(\tR\aversion\x12\x16\n" +
 	"\x06digest\x18\x02 \x01(\tR\x06digest\x12\x1a\n" +
 	"\beligible\x18\x03 \x01(\bR\beligible\x12\x16\n" +
-	"\x06action\x18\x04 \x01(\tR\x06action\"\x94\x04\n" +
+	"\x06action\x18\x04 \x01(\tR\x06action\"\xf5\x04\n" +
 	"\x0eExplainRequest\x12\x1d\n" +
 	"\n" +
 	"request_id\x18\x01 \x01(\tR\trequestId\x12\x12\n" +
@@ -1044,7 +1162,9 @@ const file_briefing_proto_rawDesc = "" +
 	"\rreview_policy\x18\t \x01(\v2\x1c.weatherdesk.v1.ReviewPolicyR\freviewPolicy\x12'\n" +
 	"\x0freview_revision\x18\n" +
 	" \x01(\tR\x0ereviewRevision\x12)\n" +
-	"\x10replay_condition\x18\v \x01(\tR\x0freplayCondition\">\n" +
+	"\x10replay_condition\x18\v \x01(\tR\x0freplayCondition\x12#\n" +
+	"\revidence_only\x18\f \x01(\bR\fevidenceOnly\x12:\n" +
+	"\fcase_context\x18\r \x01(\v2\x17.google.protobuf.StructR\vcaseContext\">\n" +
 	"\vChangedFact\x12\x12\n" +
 	"\x04fact\x18\x01 \x01(\tR\x04fact\x12\x1b\n" +
 	"\tsource_id\x18\x02 \x01(\tR\bsourceId\"8\n" +
@@ -1064,10 +1184,12 @@ const file_briefing_proto_rawDesc = "" +
 	"\vfacility_id\x18\x03 \x01(\tR\n" +
 	"facilityId\x124\n" +
 	"\bbriefing\x18\x04 \x01(\v2\x18.weatherdesk.v1.BriefingR\bbriefing\x12'\n" +
-	"\x0freview_revision\x18\x05 \x01(\tR\x0ereviewRevision2\xb1\x01\n" +
+	"\x0freview_revision\x18\x05 \x01(\tR\x0ereviewRevision2\x80\x02\n" +
 	"\x17EvidenceBriefingService\x12J\n" +
 	"\tGetStatus\x12\x1d.weatherdesk.v1.StatusRequest\x1a\x1e.weatherdesk.v1.StatusResponse\x12J\n" +
-	"\aExplain\x12\x1e.weatherdesk.v1.ExplainRequest\x1a\x1f.weatherdesk.v1.ExplainResponseBKZIgithub.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/gen/weatherdeskv1b\x06proto3"
+	"\aExplain\x12\x1e.weatherdesk.v1.ExplainRequest\x1a\x1f.weatherdesk.v1.ExplainResponse\x12M\n" +
+	"\n" +
+	"GetMetrics\x12\x1e.weatherdesk.v1.MetricsRequest\x1a\x1f.weatherdesk.v1.MetricsResponseBKZIgithub.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/gen/weatherdeskv1b\x06proto3"
 
 var (
 	file_briefing_proto_rawDescOnce sync.Once
@@ -1081,39 +1203,46 @@ func file_briefing_proto_rawDescGZIP() []byte {
 	return file_briefing_proto_rawDescData
 }
 
-var file_briefing_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_briefing_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_briefing_proto_goTypes = []any{
-	(*StatusRequest)(nil),   // 0: weatherdesk.v1.StatusRequest
-	(*StatusResponse)(nil),  // 1: weatherdesk.v1.StatusResponse
-	(*Facility)(nil),        // 2: weatherdesk.v1.Facility
-	(*Alert)(nil),           // 3: weatherdesk.v1.Alert
-	(*PriorApproval)(nil),   // 4: weatherdesk.v1.PriorApproval
-	(*Recipient)(nil),       // 5: weatherdesk.v1.Recipient
-	(*ReviewPolicy)(nil),    // 6: weatherdesk.v1.ReviewPolicy
-	(*ExplainRequest)(nil),  // 7: weatherdesk.v1.ExplainRequest
-	(*ChangedFact)(nil),     // 8: weatherdesk.v1.ChangedFact
-	(*DraftMessage)(nil),    // 9: weatherdesk.v1.DraftMessage
-	(*Briefing)(nil),        // 10: weatherdesk.v1.Briefing
-	(*ExplainResponse)(nil), // 11: weatherdesk.v1.ExplainResponse
+	(*MetricsRequest)(nil),  // 0: weatherdesk.v1.MetricsRequest
+	(*MetricsResponse)(nil), // 1: weatherdesk.v1.MetricsResponse
+	(*StatusRequest)(nil),   // 2: weatherdesk.v1.StatusRequest
+	(*StatusResponse)(nil),  // 3: weatherdesk.v1.StatusResponse
+	(*Facility)(nil),        // 4: weatherdesk.v1.Facility
+	(*Alert)(nil),           // 5: weatherdesk.v1.Alert
+	(*PriorApproval)(nil),   // 6: weatherdesk.v1.PriorApproval
+	(*Recipient)(nil),       // 7: weatherdesk.v1.Recipient
+	(*ReviewPolicy)(nil),    // 8: weatherdesk.v1.ReviewPolicy
+	(*ExplainRequest)(nil),  // 9: weatherdesk.v1.ExplainRequest
+	(*ChangedFact)(nil),     // 10: weatherdesk.v1.ChangedFact
+	(*DraftMessage)(nil),    // 11: weatherdesk.v1.DraftMessage
+	(*Briefing)(nil),        // 12: weatherdesk.v1.Briefing
+	(*ExplainResponse)(nil), // 13: weatherdesk.v1.ExplainResponse
+	(*structpb.Struct)(nil), // 14: google.protobuf.Struct
 }
 var file_briefing_proto_depIdxs = []int32{
-	2,  // 0: weatherdesk.v1.ExplainRequest.facility:type_name -> weatherdesk.v1.Facility
-	3,  // 1: weatherdesk.v1.ExplainRequest.alerts:type_name -> weatherdesk.v1.Alert
-	4,  // 2: weatherdesk.v1.ExplainRequest.prior_approval:type_name -> weatherdesk.v1.PriorApproval
-	5,  // 3: weatherdesk.v1.ExplainRequest.recipients:type_name -> weatherdesk.v1.Recipient
-	6,  // 4: weatherdesk.v1.ExplainRequest.review_policy:type_name -> weatherdesk.v1.ReviewPolicy
-	8,  // 5: weatherdesk.v1.Briefing.changed_facts:type_name -> weatherdesk.v1.ChangedFact
-	9,  // 6: weatherdesk.v1.Briefing.draft_operational_messages:type_name -> weatherdesk.v1.DraftMessage
-	10, // 7: weatherdesk.v1.ExplainResponse.briefing:type_name -> weatherdesk.v1.Briefing
-	0,  // 8: weatherdesk.v1.EvidenceBriefingService.GetStatus:input_type -> weatherdesk.v1.StatusRequest
-	7,  // 9: weatherdesk.v1.EvidenceBriefingService.Explain:input_type -> weatherdesk.v1.ExplainRequest
-	1,  // 10: weatherdesk.v1.EvidenceBriefingService.GetStatus:output_type -> weatherdesk.v1.StatusResponse
-	11, // 11: weatherdesk.v1.EvidenceBriefingService.Explain:output_type -> weatherdesk.v1.ExplainResponse
-	10, // [10:12] is the sub-list for method output_type
-	8,  // [8:10] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	14, // 0: weatherdesk.v1.MetricsResponse.metrics:type_name -> google.protobuf.Struct
+	4,  // 1: weatherdesk.v1.ExplainRequest.facility:type_name -> weatherdesk.v1.Facility
+	5,  // 2: weatherdesk.v1.ExplainRequest.alerts:type_name -> weatherdesk.v1.Alert
+	6,  // 3: weatherdesk.v1.ExplainRequest.prior_approval:type_name -> weatherdesk.v1.PriorApproval
+	7,  // 4: weatherdesk.v1.ExplainRequest.recipients:type_name -> weatherdesk.v1.Recipient
+	8,  // 5: weatherdesk.v1.ExplainRequest.review_policy:type_name -> weatherdesk.v1.ReviewPolicy
+	14, // 6: weatherdesk.v1.ExplainRequest.case_context:type_name -> google.protobuf.Struct
+	10, // 7: weatherdesk.v1.Briefing.changed_facts:type_name -> weatherdesk.v1.ChangedFact
+	11, // 8: weatherdesk.v1.Briefing.draft_operational_messages:type_name -> weatherdesk.v1.DraftMessage
+	12, // 9: weatherdesk.v1.ExplainResponse.briefing:type_name -> weatherdesk.v1.Briefing
+	2,  // 10: weatherdesk.v1.EvidenceBriefingService.GetStatus:input_type -> weatherdesk.v1.StatusRequest
+	9,  // 11: weatherdesk.v1.EvidenceBriefingService.Explain:input_type -> weatherdesk.v1.ExplainRequest
+	0,  // 12: weatherdesk.v1.EvidenceBriefingService.GetMetrics:input_type -> weatherdesk.v1.MetricsRequest
+	3,  // 13: weatherdesk.v1.EvidenceBriefingService.GetStatus:output_type -> weatherdesk.v1.StatusResponse
+	13, // 14: weatherdesk.v1.EvidenceBriefingService.Explain:output_type -> weatherdesk.v1.ExplainResponse
+	1,  // 15: weatherdesk.v1.EvidenceBriefingService.GetMetrics:output_type -> weatherdesk.v1.MetricsResponse
+	13, // [13:16] is the sub-list for method output_type
+	10, // [10:13] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_briefing_proto_init() }
@@ -1127,7 +1256,7 @@ func file_briefing_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_briefing_proto_rawDesc), len(file_briefing_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

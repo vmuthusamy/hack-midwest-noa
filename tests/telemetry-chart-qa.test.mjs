@@ -1,0 +1,8 @@
+// Independent chart presentation checks against worker-defined boundaries.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {bucketTotal,isPercentileBin,measuredDuration,histogramRange} from '../frontend/lib/telemetry-ui.mjs';
+const bins=[{minMs:0,maxMs:5000},{minMs:5000,maxMs:15000},{minMs:15000,maxMs:30000},{minMs:30000,maxMs:60000},{minMs:60000,maxMs:90000},{minMs:90000,maxMs:null}];
+test('Every finite p95 occupies exactly one lower-inclusive histogram bucket',()=>{for(const [value,index] of [[0,0],[4999.999,0],[5000,1],[15000,2],[30000,3],[60000,4],[90000,5],[1e6,5]])assert.deepEqual(bins.map(bin=>isPercentileBin(bin,value)),bins.map((_,i)=>i===index));for(const value of [null,undefined,NaN,Infinity])assert(bins.every(bin=>!isPercentileBin(bin,value)));assert.equal(histogramRange(bins[5]),'90+ s');});
+test('Hourly sum preserves genuine zero while incomplete bucket remains unknown',()=>{const empty={accepted:0,rejected:0,timeout:0,cancelled:0,providerError:0};assert.equal(bucketTotal(empty),0);assert.equal(bucketTotal({...empty,accepted:6,rejected:3,timeout:2,cancelled:1,providerError:4}),16);assert.equal(bucketTotal({...empty,accepted:null}),null);assert.equal(bucketTotal({...empty,timeout:undefined}),null);assert.equal(bucketTotal({...empty,cancelled:-1}),null);});
+test('Measured tool duration preserves subsecond precision and unknown usage',()=>{assert.equal(measuredDuration(0),'0 ms');assert.equal(measuredDuration(12.345),'12.35 ms');assert.equal(measuredDuration(999.99),'999.99 ms');assert.equal(measuredDuration(2500),'2.5 s');for(const value of [null,undefined,NaN])assert.equal(measuredDuration(value),'Not recorded');});

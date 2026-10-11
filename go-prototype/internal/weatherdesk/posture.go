@@ -8,7 +8,7 @@ import (
 )
 
 // This version identifies a demo operating policy, not a USDA safety standard.
-const posturePolicyVersion = "illustrative-weather-posture-v1"
+const posturePolicyVersion = "demo-weather-posture-v2"
 
 type PostureOption struct {
 	Value       string `json:"value"`
@@ -102,36 +102,64 @@ func AssessPosture(mode string, facility Facility, alerts []Alert, fresh bool) P
 		return p
 	}
 	matched, unknown := false, false
+	suggested := "delay"
+	planningMatched := false
+	stormMatched := false
 	for _, a := range alerts {
 		if a.Geography == "outside" || a.Applicability == "not-applicable" || a.Lifecycle == "expired" || a.Lifecycle == "cancelled" {
 			continue
 		}
 		if a.Applicability != "applicable" || a.Geography != "applicable" || a.Lifecycle != "active" {
-			unknown = true
-			p.Gaps = append(p.Gaps, fmt.Sprintf("Alert %s has unresolved facility applicability or timing.", a.ID))
+			if operatingHazard(a.Event) || a.Geography == "applicable" {
+				unknown = true
+				p.Gaps = append(p.Gaps, fmt.Sprintf("Alert %s has unresolved facility applicability or timing.", a.ID))
+			}
 			continue
 		}
 		candidate := a.Event == "Tornado Warning" || a.Event == "Severe Thunderstorm Warning"
-		if !candidate {
+		planningWarning := a.Event == "Flash Flood Warning" || a.Event == "Flood Warning" || a.Event == "Winter Storm Warning"
+		watch := a.Event == "Flood Watch" || a.Event == "Winter Storm Watch"
+		if watch && trustedPostureSource(a.Source) && validPostureTimes(a) && a.Status == "Actual" {
+			p.Status = "planning-review"
+			p.EvidenceAdequacy = "planning evidence"
+			p.Rationale = fmt.Sprintf("%s for %s. Plan reporting and telework eligibility; no applicable warning is confirmed in this snapshot.", a.Event, facility.Name)
+			p.WhatWouldChange = []string{"The watch becomes a warning, its footprint or hazard period changes, or verified facility access or power disruption is reported.", "A change in assignments or telework eligibility changes the recipient package.", "Failed refresh or message expiry requires another review; neither is an all-clear."}
+			continue
+		}
+		if !candidate && !planningWarning {
 			p.Gaps = append(p.Gaps, fmt.Sprintf("%s requires manager review beyond this tornado/thunderstorm warning policy.", a.Event))
 			continue
 		}
-		ok := trustedPostureSource(a.Source) && a.ID != "" && validPostureTimes(a) && a.Status == "Actual" && (a.MessageType == "Alert" || a.MessageType == "Update") && (a.Severity == "Severe" || a.Severity == "Extreme") && a.Urgency == "Immediate" && (a.Certainty == "Observed" || a.Certainty == "Likely")
-		p.Triggers = append(p.Triggers, PostureTrigger{a.ID, a.Source, a.Issued, a.Effective, a.Expires, a.Event, a.Severity, a.Certainty, a.Urgency, warningPostureCriterion, ok})
+		ok := trustedPostureSource(a.Source) && a.ID != "" && validPostureTimes(a) && a.Status == "Actual" && (a.MessageType == "Alert" || a.MessageType == "Update") && (a.Severity == "Severe" || a.Severity == "Extreme") && (a.Urgency == "Immediate" || (planningWarning && a.Urgency == "Expected")) && (a.Certainty == "Observed" || a.Certainty == "Likely")
+		p.Triggers = append(p.Triggers, PostureTrigger{a.ID, a.Source, a.Issued, a.Effective, a.Expires, a.Event, a.Severity, a.Certainty, a.Urgency, postureCriterion(a.Event), ok})
 		if !ok {
 			unknown = true
 			p.Gaps = append(p.Gaps, fmt.Sprintf("Alert %s does not satisfy the complete sourced warning criterion; no posture is inferred.", a.ID))
 		} else {
 			matched = true
+			if candidate {
+				stormMatched = true
+			}
+			if planningWarning {
+				suggested = "telework"
+				planningMatched = true
+			}
 		}
 	}
 	if !matched || unknown {
-		if !matched {
+		if unknown {
+			p.Status = "insufficient-evidence"
+			p.EvidenceAdequacy = "unresolved evidence"
+		}
+		if !matched && p.Status != "planning-review" {
 			p.Gaps = append(p.Gaps, "No complete applicable warning matched this policy; this is not an all-clear.")
 		}
 		return p
 	}
-	delay := "delay"
+	if stormMatched {
+		suggested = "delay"
+	}
+	delay := suggested
 	p.RecommendedPosture, p.Status = &delay, "proposed-for-review"
 	context := "Live NWS evidence"
 	if mode == "REPLAY" {
@@ -142,5 +170,24 @@ func AssessPosture(mode string, facility Facility, alerts []Alert, fresh bool) P
 		name = "the selected facility"
 	}
 	p.Rationale = fmt.Sprintf("%s contains an active, applicable tornado or severe thunderstorm warning for %s that meets the named NWS category criterion. The illustrative facility policy proposes delaying arrivals while the manager reviews reporting time and group-specific operating instructions. Official emergency instructions apply immediately and separately. This proposal does not assess individual travel, authorize departure or establish when operations can resume.", context, name)
+	if planningMatched && !stormMatched {
+		p.EvidenceAdequacy = "warning supports operating review"
+		p.Gaps = []string{"Facility access, power and individual travel conditions are unverified.", "Manager reviews the effective time, essential assignments and telework eligibility."}
+		p.WhatWouldChange = []string{"The warning footprint or hazard period changes, or verified facility access or power disruption is reported.", "The manager's effective time must be reviewed against the warning's onset and hazard end, separately from message expiry.", "Roster, eligibility or message changes require a new exact approval.", "Failed refresh, cancellation or expiry requires review; it never automatically reopens operations."}
+		events := []string{}
+		for _, trigger := range p.Triggers {
+			if trigger.Matched {
+				events = append(events, trigger.Event)
+			}
+		}
+		p.Rationale = fmt.Sprintf("%s: %s covers %s. Propose telework for eligible nonessential staff; review essential and onsite assignments individually.", context, strings.Join(events, ", "), name)
+		p.Anchors = []PostureAnchor{{"NWS flood watch and warning meanings", "https://www.weather.gov/safety/flood-watch-warning", "Issued warning category supports operating review; telework is this demo facility policy."}, {"NWS winter watch and warning meanings", "https://www.weather.gov/safety/winter-ww", "Local warning criteria are selected by NWS; Expected urgency is valid for planning."}, {"OPM operating status procedures", "https://www.opm.gov/policy-data-oversight/pay-leave/reference-materials/handbooks/dcdismissal/", "Operating vocabulary only; this app is a fictional facility policy."}}
+	}
 	return p
+}
+func postureCriterion(event string) string {
+	if event == "Flash Flood Warning" || event == "Flood Warning" || event == "Winter Storm Warning" {
+		return "Actual, issued and facility-applicable flood or winter storm warning; Severe or Extreme; Observed or Likely; Immediate or Expected urgency. Proposed telework requires manager review of operating time and eligibility."
+	}
+	return warningPostureCriterion
 }

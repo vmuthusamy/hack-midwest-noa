@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {bucketTotal,isPercentileBin,measuredDuration,histogramRange} from '../frontend/lib/telemetry-ui.mjs';
+test('Hourly counts preserve measured zero while missing or invalid outcomes remain unknown',()=>{assert.equal(bucketTotal({accepted:0,rejected:0,timeout:0,cancelled:0,providerError:0}),0);assert.equal(bucketTotal({accepted:2,rejected:1,timeout:0,cancelled:1,providerError:3}),7);assert.equal(bucketTotal({accepted:2}),null);assert.equal(bucketTotal({accepted:-1,rejected:0,timeout:0,cancelled:0,providerError:0}),null);});
+test('Histogram p95 uses exact inclusive lower and exclusive upper boundaries including open top range',()=>{const bins=[{minMs:0,maxMs:10000},{minMs:10000,maxMs:30000},{minMs:30000,maxMs:null}];assert.deepEqual(bins.map(b=>isPercentileBin(b,10000)),[false,true,false]);assert.deepEqual(bins.map(b=>isPercentileBin(b,30000)),[false,false,true]);assert.deepEqual(bins.map(b=>isPercentileBin(b,null)),[false,false,false]);assert.equal(histogramRange(bins[2]),'30+ s');});
+test('Measured tool timing distinguishes subsecond duration, real zero, and missing measurements',()=>{assert.equal(measuredDuration(2.43),'2.43 ms');assert.equal(measuredDuration(0),'0 ms');assert.equal(measuredDuration(null),'Not recorded');assert.equal(measuredDuration(1200),'1.2 s');});

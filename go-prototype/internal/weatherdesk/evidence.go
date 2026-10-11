@@ -33,6 +33,8 @@ type Feature struct {
 		Sent        string            `json:"sent"`
 		Effective   string            `json:"effective"`
 		Expires     string            `json:"expires"`
+		Onset       string            `json:"onset"`
+		Ends        string            `json:"ends"`
 		Status      string            `json:"status"`
 		MessageType string            `json:"messageType"`
 		Severity    string            `json:"severity"`
@@ -54,6 +56,8 @@ type Alert struct {
 	Issued        string            `json:"issued"`
 	Effective     string            `json:"effective"`
 	Expires       string            `json:"expires"`
+	Onset         string            `json:"onset"`
+	Ends          string            `json:"ends"`
 	Status        string            `json:"status"`
 	MessageType   string            `json:"messageType"`
 	Severity      string            `json:"severity"`
@@ -68,6 +72,8 @@ type Alert struct {
 	References    []json.RawMessage `json:"references"`
 }
 type Evidence struct {
+	PowerSignal       *PowerSignal      `json:"powerSignal,omitempty"`
+	NearbyAlerts      []Alert           `json:"nearbyAlerts,omitempty"`
 	PostureAssessment PostureAssessment `json:"postureAssessment"`
 	RiverSignals      []RiverSignal     `json:"riverSignals"`
 	Mode              string            `json:"mode"`
@@ -83,13 +89,23 @@ type Evidence struct {
 // Geometry takes precedence over county membership: a warning covers only its polygon.
 func geography(raw json.RawMessage, f Facility, zones, facilityZones []string) (string, string) {
 	if len(raw) == 0 || string(raw) == "null" {
-		if len(zones) == 0 || len(facilityZones) < 2 {
+		if len(zones) == 0 || len(facilityZones) == 0 {
 			return "unknown", "location evidence missing"
 		}
-		supported := true
+		// A nonmatching zone is outside only when the point lookup resolved
+		// membership for that same zone type. Forecast and fire IDs can overlap.
+		resolvedKinds := map[string]bool{}
+		for _, fz := range facilityZones {
+			if kind := nwsZoneKind(fz); kind != "" {
+				resolvedKinds[kind] = true
+			}
+		}
+		unresolved := false
 		for _, z := range zones {
-			if !strings.HasPrefix(z, "https://api.weather.gov/zones/forecast/") && !strings.HasPrefix(z, "https://api.weather.gov/zones/county/") {
-				supported = false
+			kind := nwsZoneKind(z)
+			if kind == "" || !resolvedKinds[kind] {
+				unresolved = true
+				continue
 			}
 			for _, fz := range facilityZones {
 				if z == fz {
@@ -97,10 +113,10 @@ func geography(raw json.RawMessage, f Facility, zones, facilityZones []string) (
 				}
 			}
 		}
-		if supported {
-			return "outside", "NWS point-to-zone membership"
+		if unresolved {
+			return "unknown", "zone type or facility membership unresolved"
 		}
-		return "unknown", "unsupported zone type"
+		return "outside", "NWS point-to-zone membership"
 	}
 	var g struct {
 		Type        string          `json:"type"`
@@ -150,6 +166,16 @@ func geography(raw json.RawMessage, f Facility, zones, facilityZones []string) (
 	}
 	return "outside", "NWS warning polygon"
 }
+func nwsZoneKind(zone string) string {
+	for _, kind := range []string{"forecast", "county", "fire"} {
+		prefix := "https://api.weather.gov/zones/" + kind + "/"
+		if strings.HasPrefix(zone, prefix) && len(zone) > len(prefix) {
+			return kind
+		}
+	}
+	return ""
+}
+
 func validRing(r [][]float64) bool {
 	if len(r) < 4 {
 		return false
@@ -206,7 +232,7 @@ func normalize(f Feature, facility Facility, zones []string, now time.Time) Aler
 	if id == "" {
 		id = f.ID
 	}
-	return Alert{ID: id, Source: f.ID, Event: p.Event, Headline: p.Headline, Description: p.Description, Instruction: p.Instruction, Area: p.Area, Issuer: p.Issuer, Issued: p.Sent, Effective: p.Effective, Expires: p.Expires, Status: p.Status, MessageType: p.MessageType, Severity: p.Severity, Certainty: p.Certainty, Urgency: p.Urgency, Geography: geo, Lifecycle: life, Applicability: applicable, MatchMethod: method, Geometry: f.Geometry, Zones: p.Zones, References: p.References}
+	return Alert{ID: id, Source: f.ID, Event: p.Event, Headline: p.Headline, Description: p.Description, Instruction: p.Instruction, Area: p.Area, Issuer: p.Issuer, Issued: p.Sent, Effective: p.Effective, Expires: p.Expires, Onset: p.Onset, Ends: p.Ends, Status: p.Status, MessageType: p.MessageType, Severity: p.Severity, Certainty: p.Certainty, Urgency: p.Urgency, Geography: geo, Lifecycle: life, Applicability: applicable, MatchMethod: method, Geometry: f.Geometry, Zones: p.Zones, References: p.References}
 }
 
 var noaaClient = &http.Client{Timeout: 25 * time.Second}
@@ -237,14 +263,19 @@ func fetchEvidence(ctx context.Context, f Facility) (Evidence, error) {
 	go func() {
 		var p struct {
 			Properties struct {
-				ForecastZone string `json:"forecastZone"`
-				County       string `json:"county"`
+				ForecastZone    string `json:"forecastZone"`
+				County          string `json:"county"`
+				FireWeatherZone string `json:"fireWeatherZone"`
 			} `json:"properties"`
 		}
 		err := getNOAA(ctx, fmt.Sprintf("https://api.weather.gov/points/%.4f,%.4f", f.Latitude, f.Longitude), &p)
 		var zones []string
-		if p.Properties.ForecastZone != "" && p.Properties.County != "" {
-			zones = []string{p.Properties.ForecastZone, p.Properties.County}
+		if err == nil {
+			for _, membership := range []struct{ kind, zone string }{{"forecast", p.Properties.ForecastZone}, {"county", p.Properties.County}, {"fire", p.Properties.FireWeatherZone}} {
+				if nwsZoneKind(membership.zone) == membership.kind {
+					zones = append(zones, membership.zone)
+				}
+			}
 		}
 		pointChan <- pointResult{zones, err}
 	}()
@@ -262,8 +293,11 @@ func fetchEvidence(ctx context.Context, f Facility) (Evidence, error) {
 	points := <-pointChan
 	now := time.Now().UTC()
 	e := Evidence{Mode: "LIVE", Facility: f, LastRefresh: now.Format(time.RFC3339), FeedUpdated: feed.Updated, Source: source, Alerts: []Alert{}, Zones: points.zones, Gaps: []string{"No road, power, or employee commute data is connected.", "No prior operational approval is supplied to the live agent.", "An expired or cancelled warning does not authorize reopening."}}
-	if points.err != nil || len(points.zones) < 2 {
+	if points.err != nil || len(points.zones) == 0 {
 		e.Gaps = append(e.Gaps, "Facility zone lookup failed; alerts without polygons have unknown applicability.")
+	}
+	if points.err == nil && len(points.zones) > 0 && len(points.zones) < 3 {
+		e.Gaps = append(e.Gaps, "Some facility zone memberships are unavailable; alerts of unresolved types remain unknown.")
 	}
 	for _, feature := range feed.Features {
 		e.Alerts = append(e.Alerts, normalize(feature, f, points.zones, now))
@@ -296,6 +330,10 @@ func alertRank(a Alert) int {
 		return r + 1
 	case "Flash Flood Warning":
 		return r + 2
+	case "Winter Storm Warning", "Flood Warning":
+		return r + 3
+	case "Flood Watch", "Winter Storm Watch":
+		return r + 5
 	}
 	if a.Severity == "Extreme" {
 		return r + 3
@@ -303,5 +341,5 @@ func alertRank(a Alert) int {
 	if a.Severity == "Severe" {
 		return r + 4
 	}
-	return r + 5
+	return r + 6
 }
