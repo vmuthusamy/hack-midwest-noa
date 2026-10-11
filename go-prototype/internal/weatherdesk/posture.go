@@ -8,7 +8,7 @@ import (
 )
 
 // This version identifies a demo operating policy, not a USDA safety standard.
-const posturePolicyVersion = "demo-weather-posture-v2"
+const posturePolicyVersion = "demo-weather-posture-v3"
 
 type PostureOption struct {
 	Value       string `json:"value"`
@@ -117,7 +117,7 @@ func AssessPosture(mode string, facility Facility, alerts []Alert, fresh bool) P
 			continue
 		}
 		candidate := a.Event == "Tornado Warning" || a.Event == "Severe Thunderstorm Warning"
-		planningWarning := a.Event == "Flash Flood Warning" || a.Event == "Flood Warning" || a.Event == "Winter Storm Warning"
+		planningWarning := a.Event == "Flash Flood Warning" || a.Event == "Flood Warning" || a.Event == "Coastal Flood Warning" || a.Event == "Winter Storm Warning"
 		watch := a.Event == "Flood Watch" || a.Event == "Winter Storm Watch"
 		if watch && trustedPostureSource(a.Source) && validPostureTimes(a) && a.Status == "Actual" {
 			p.Status = "planning-review"
@@ -186,7 +186,7 @@ func AssessPosture(mode string, facility Facility, alerts []Alert, fresh bool) P
 	return p
 }
 func postureCriterion(event string) string {
-	if event == "Flash Flood Warning" || event == "Flood Warning" || event == "Winter Storm Warning" {
+	if event == "Flash Flood Warning" || event == "Flood Warning" || event == "Coastal Flood Warning" || event == "Winter Storm Warning" {
 		return "Actual, issued and facility-applicable flood or winter storm warning; Severe or Extreme; Observed or Likely; Immediate or Expected urgency. Proposed telework requires manager review of operating time and eligibility."
 	}
 	return warningPostureCriterion

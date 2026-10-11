@@ -1,0 +1,35 @@
+{
+  "dataset": "68 real NWS alerts, SC/GA/NC/FL/AL, captured 2026-10-11T02:20Z during Hurricane Isaias",
+  "location": {
+    "agreementPct": 100,
+    "alerts": 68,
+    "correctInside": 2,
+    "correctOutside": 66,
+    "missedInside": 0,
+    "oracle": "NWS /alerts/active?point=33.28,-81.35 at capture",
+    "unknown": 0,
+    "wrongInside": 0
+  },
+  "polygon": {
+    "agree": 58,
+    "agreementPct": 100,
+    "checks": 58,
+    "oracle": "independent point-in-polygon"
+  },
+  "posture": {
+    "agree": 68,
+    "agreementPct": 100,
+    "missedWarnings": 0,
+    "misses": null,
+    "oracle": "posture-labels.json",
+    "overEscalations": 0,
+    "policyGaps": [],
+    "scored": 68,
+    "unlabeled": 0
+  },
+  "power": {
+    "agree": 17,
+    "checks": 17,
+    "rule": "warning + power out → closure"
+  }
+}

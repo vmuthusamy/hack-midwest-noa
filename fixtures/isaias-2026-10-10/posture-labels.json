@@ -1,0 +1,25 @@
+{
+  "labeledAt": "2026-10-11T03:45:00Z",
+  "basis": "Written before running the evaluator, from the USDA Closure Call brief, docs/ACCEPTANCE.md graded-posture proposal, and NWS product meanings. Expected posture assumes the alert covers the facility and is active.",
+  "postures": {
+    "Flash Flood Warning": "telework",
+    "Flood Warning": "telework",
+    "Coastal Flood Warning": "telework",
+    "Flood Watch": "planning",
+    "Flood Advisory": "none",
+    "Coastal Flood Advisory": "none",
+    "Coastal Flood Statement": "none",
+    "Special Weather Statement": "none",
+    "Wind Advisory": "none",
+    "Lake Wind Advisory": "none",
+    "High Surf Advisory": "none",
+    "Rip Current Statement": "none",
+    "Beach Hazards Statement": "none"
+  },
+  "notes": {
+    "Coastal Flood Warning": "A flood warning for the facility's location. The brief's intent is the same posture as other flood warnings; listed so a policy gap shows up as a miss, not a silent pass.",
+    "planning": "Watch: no posture is proposed; status must be planning review, never an all-clear.",
+    "none": "Advisory or statement: must not propose any posture."
+  },
+  "powerOut": "Any alert labeled telework or delay, with facility power reported out, expects closure."
+}

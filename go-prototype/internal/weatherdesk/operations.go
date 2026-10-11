@@ -19,7 +19,7 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-const operationsPolicyVersion = "demo-facility-operations-v3"
+const operationsPolicyVersion = "demo-facility-operations-v4"
 
 type CaseRecipient struct {
 	ID               string   `json:"id"`
@@ -166,7 +166,7 @@ func caseRecipients(roster []Recipient, posture, effectiveAt string, nextUpdate 
 }
 func operatingHazard(event string) bool {
 	switch event {
-	case "Tornado Warning", "Severe Thunderstorm Warning", "Flash Flood Warning", "Flood Warning", "Flood Watch", "Winter Storm Warning", "Winter Storm Watch":
+	case "Tornado Warning", "Severe Thunderstorm Warning", "Flash Flood Warning", "Flood Warning", "Coastal Flood Warning", "Flood Watch", "Winter Storm Warning", "Winter Storm Watch":
 		return true
 	}
 	return false
