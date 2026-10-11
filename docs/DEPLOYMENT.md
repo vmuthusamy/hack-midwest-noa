@@ -2,6 +2,12 @@
 
 Weather Desk runs on one Akamai Compute instance with Caddy HTTPS, Next.js, Go and a single Strands gRPC worker. Hosted model inference uses the workshop endpoint. Only ports 80 and 443 serve the app; SSH uses a dedicated deployment key. Internal API and gRPC ports are not published.
 
+## Free shareable app name
+
+Share https://weatherdesk.172-236-96-42.sslip.io. The free sslip.io hostname resolves to the existing Akamai public IP, 172.236.96.42. Caddy obtains HTTPS for it and redirects visitors to the canonical app origin, preserving the path and query. The address bar then shows the canonical hostname. Google OAuth callbacks and session cookies continue using https://172-236-96-42.sslip.io; the alias does not require another OAuth registration.
+
+This is a free named entry point, not an owned domain or an Akamai DNS zone. No domain purchase or additional compute resource is needed. The deployment only changes the HTTPS edge routing; it does not publish the pending application changes.
+
 ## Google login registration
 
 The selected login provider is Google. Register a Web application OAuth client in Google Cloud Console, with only openid, email and profile sign-in scopes.

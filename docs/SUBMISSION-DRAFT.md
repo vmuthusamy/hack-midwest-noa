@@ -22,6 +22,8 @@ Weather Desk
 
 Weather Desk helps a facility manager decide what to change when weather disrupts an office's operating plan. It brings official NOAA/NWS alerts together with location checks, facility context and a staff roster, then helps the manager review a delay, telework or closure decision and the exact messages for affected groups. A Strands agent using Akamai-hosted inference explains the evidence and drafts a rationale. Go and OPA enforce the approval rules, recheck the evidence before recording simulated notice intents and prevent duplicate intents. The saved decision record shows what was known, who approved the decision and who still needs a correction. The hackathon app uses real public weather data, fictional facilities and synthetic staff; notification delivery is simulated.
 
+App link: https://weatherdesk.172-236-96-42.sslip.io (redirects to the hosted Google sign-in app).
+
 ## Link to 3 minute video demo of your app
 
 [Insert the team's public or unlisted video link after recording. No video has been uploaded.]

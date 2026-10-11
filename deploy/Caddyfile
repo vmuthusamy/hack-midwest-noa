@@ -7,3 +7,8 @@
     }
     reverse_proxy web:8088
 }
+
+# Free named entry point. Keep the canonical OAuth origin and its session cookies.
+weatherdesk.172-236-96-42.sslip.io {
+    redir https://{$PUBLIC_HOST}{uri} 302
+}
