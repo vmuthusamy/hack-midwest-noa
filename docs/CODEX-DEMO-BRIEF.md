@@ -87,3 +87,13 @@ Use the facility name, a time and a number in every heading. No taglines, no pai
 
 ## Reference
 Pattern gallery with visuals, data needs and snippets: https://claude.ai/artifact/WdkvBz2PBXofyK8SUEHSix
+
+## Notification channels and official alert cards
+
+The supplied channel-icons and official-alert components are integrated in the manager case. Channel chips describe the planned order; status icons use the existing exact-approval notification events, never the preview's sample values. Both recipient tables share these components.
+
+The official alert card shows NWS instructions immediately, severity/certainty/urgency, source attribution and exact listed-place matches. The full bulletin is expandable and retains observation paragraphs. Message expiry and expected hazard end are labeled separately in the facility timezone. Matching a place name is display context only; geographic applicability remains a server check.
+
+## Phone flow pending user acceptance
+
+Crisis response view: official alert and source instruction paragraph, operating choice, one review action. Full NWS text, map/timeline, rationale and local power inputs open on demand. Channel icons continue to describe planned routes separately from recorded simulated status. Preserve the user's existing approval and show its actual posture at the top. Pause further QA until the user accepts this flow.

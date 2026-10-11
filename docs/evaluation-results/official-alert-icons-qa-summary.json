@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-11T03:17:28.162Z",
+  "checks": [
+    "NWS instructions exact and first; full bulletin retains every parsed observation/location/list and law-enforcement rainfall paragraph; expiry explicitlylabeled",
+    "Collapsed fullbulletin preserves immediate instructions and readable card at320/390 inlight/dark withoutoverflow",
+    "Channelicons distinguishplannedroute and actualnotificationstatus; every statusmatches exact-bound backendevents and excludedperson;320/390lightdark nooverflow"
+  ],
+  "errors": [],
+  "providerCalls": 0,
+  "environment": "Synthetic manager and signed isolated8093/8094 QA app, temporary persistence; real recorded NOAA fixtures",
+  "regressionChecks": [
+    "Initial desktop decision CTA within900px; official warning immediately rendered; no stepper",
+    "Concurrent revision preserves closure/rationale/time/override, does not apply on409, succeeds explicit fresh resubmit into people review; five Not attempted and one Not targeted",
+    "Concurrent recipient edit kept as notes only, never automatically reapplied or approved",
+    "Exact approval queuesfive separate simulated notices;17 explicit attempted/delivered/acknowledged/fallback events; responsive notification table",
+    "Stale live evidence still permits closure draft and recipient review while approval stays disabled",
+    "barnwell timeline uses recorded clock and facilityEDT;320/390 dark/light have no page overflow",
+    "batesburg timeline uses recorded clock and facilityEDT;320/390 dark/light have no page overflow"
+  ],
+  "productionBuild": "Passed after final facts/tag typography fix",
+  "visualReview": "Inspected actual official-card and notification-table screenshots. Facts computed14px; tag rows preserve fullwidth; official instructions immediate. No horizontal page overflow320/390 in dark/light. Exact full bulletin observations, locations, lists and law-enforcement rainfall paragraph preserved.",
+  "artifacts": [
+    "/tmp/weather-desk-official-dark-320-qa.png",
+    "/tmp/weather-desk-official-light-390-qa.png",
+    "/tmp/weather-desk-official-bulletin-desktop-qa.png",
+    "/tmp/weather-desk-notification-icons-desktop-qa.png",
+    "/tmp/weather-desk-notification-icons-light-320-qa.png"
+  ]
+}

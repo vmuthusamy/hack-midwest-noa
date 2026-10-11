@@ -106,3 +106,45 @@ a { color:inherit;text-decoration:none; }
 .status-workspace .recommendation-action{margin-top:12px;}
 .status-hazard .source-link{display:flex;width:fit-content;}
 .status-workspace .alert-meta,.status-workspace .official-instruction,.status-workspace .evidence-source p{font-size:13px;}
+
+/* Phone response view: warning, operating choice, review. Detail opens on demand. */
+.supporting-detail > summary { cursor:pointer; padding:10px 0; font-size:14px; font-weight:500; }
+.supporting-detail > .overview-evidence { margin-top:8px; }
+@media (max-width:820px) {
+ .status-workspace .workspace-header { padding:10px 16px; gap:10px; flex-wrap:wrap; }
+ .status-workspace .workspace-header nav { font-size:13px; gap:18px; order:3; width:100%; }
+ .status-workspace .workspace-account { gap:8px; }
+ .status-workspace .account-contact,.status-workspace .account-menu button span { display:none; }
+ .status-workspace .case-shell { padding:12px 16px; }
+ .status-workspace .demo-strip { flex-wrap:wrap; gap:6px; }
+ .status-workspace .demo-strip .mode-control { margin-left:auto; }
+ .status-workspace .status-hazard,.status-workspace .reporting-example,.status-workspace .posture-ladder { display:none; }
+ .status-workspace .facility-status { padding:0 0 10px; }
+ .status-workspace .status-location label { display:none; }
+ .status-workspace .overview-grid { gap:12px; }
+ .status-workspace .overview-evidence-stack { display:contents; }
+ .status-workspace .official-compact { order:0; width:100%; padding:0; border:0; background:none; }
+ .status-workspace .official-compact > summary { padding:4px 0 8px; }
+ .status-workspace .official-compact > summary > span:not(.badge),.status-workspace .official-compact > .microcopy { display:none; }
+ .status-workspace .recommendation-card { order:1; padding:16px; }
+ .status-workspace .weather-support { order:2; width:100%; }
+ .status-workspace .power-support { order:3; width:100%; }
+ .status-workspace .supporting-detail { min-width:0; }
+ .status-workspace .recommendation-card .panel-header { margin-bottom:8px; }
+ .status-workspace .recommendation-tools { margin:8px 0; }
+ .status-workspace .recommendation-tools .button:first-child { display:none; }
+ .status-workspace .recommendation-action { margin:10px 0 0; }
+ .status-workspace .recommendation-action small { display:none; }
+ .status-workspace .recommendation-action .button { min-height:48px; font-size:16px; }
+ .status-workspace .recommendation-card > .button { margin-top:10px; }
+}
+
+@media (max-width:820px) {
+ .status-workspace .recommendation-card { display:flex; flex-direction:column; }
+ .status-workspace .recommendation-card > * { order:4; }
+ .status-workspace .recommendation-card > .panel-header { order:0; margin-bottom:4px; }
+ .status-workspace .recommendation-card > h1 { order:1; }
+ .status-workspace .recommendation-card > .chosen-posture { order:2; margin:0; }
+ .status-workspace .recommendation-card > .recommendation-action { order:3; }
+ .status-workspace .recommendation-card .eyebrow { letter-spacing:0; font-size:14px; }
+}
