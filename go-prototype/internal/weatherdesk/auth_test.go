@@ -22,7 +22,7 @@ func qaAuthorization() *authorization {
 }
 func qaPrincipal(method, path string, body []byte) Principal {
 	h := sha256.Sum256(body)
-	return Principal{Sub: "github:123", Name: "QA manager", Login: "manager", Role: "manager", Facilities: []string{"SC-DEMO-01"}, Exp: time.Now().Unix() + 60, Method: method, Path: path, BodySHA256: hex.EncodeToString(h[:]), Nonce: "qa-independent-nonce-123456"}
+	return Principal{Sub: "google:123", Name: "QA manager", Login: "manager", Role: "manager", Facilities: []string{"SC-DEMO-01"}, Exp: time.Now().Unix() + 60, Method: method, Path: path, BodySHA256: hex.EncodeToString(h[:]), Nonce: "qa-independent-nonce-123456"}
 }
 func qaSignedRequest(p Principal, method, path string, body []byte) *http.Request {
 	r := httptest.NewRequest(method, path, bytes.NewReader(body))
@@ -38,7 +38,7 @@ func TestPrincipalBindsExactReviewedRequestAndRestoresBody(t *testing.T) {
 	body := []byte(`{"action":"approve","messages":{"onsite":"Reviewed exact text"}}`)
 	path := "/api/replay/action?facility=barnwell"
 	p, err := qaAuthorization().verify(qaSignedRequest(qaPrincipal("POST", path, body), "POST", path, body), "SC-DEMO-01")
-	if err != nil || p.Sub != "github:123" || p.Role != "manager" {
+	if err != nil || p.Sub != "google:123" || p.Role != "manager" {
 		t.Fatal(p, err)
 	}
 	r := qaSignedRequest(qaPrincipal("POST", path, body), "POST", path, body)
@@ -128,7 +128,7 @@ func TestPrincipalNoncePreventsRepeatedWriteButViewerCanRead(t *testing.T) {
 }
 func TestPrincipalPolicyUsesAuthenticatedRoleAndScope(t *testing.T) {
 	r, _ := newReplay("barnwell", nil)
-	p := Principal{Sub: "github:123", Role: "manager", Facilities: []string{"SC-DEMO-01"}}
+	p := Principal{Sub: "google:123", Role: "manager", Facilities: []string{"SC-DEMO-01"}}
 	input := policyInputFor(r, "approve", p)
 	if input["actor_role"] != "manager" || input["actor_facility"] != "SC-DEMO-01" {
 		t.Fatal("policy ignored principal", input)
@@ -185,7 +185,7 @@ func TestRequiredHTTPAuthCoversKnownAndUnknownFacility(t *testing.T) {
 }
 func TestAuthenticatedManagerApprovalRecordsActorAndViewerCannotApprove(t *testing.T) {
 	r, _ := newReplay("barnwell", nil)
-	manager := Principal{Sub: "github:123", Name: "QA verified manager", Role: "manager", Facilities: []string{r.Facility.ID}}
+	manager := Principal{Sub: "google:123", Name: "QA verified manager", Role: "manager", Facilities: []string{r.Facility.ID}}
 	if err := r.approveAs(manager); err != nil {
 		t.Fatal(err)
 	}

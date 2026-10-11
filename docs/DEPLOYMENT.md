@@ -9,7 +9,7 @@ The selected login provider is Google. Register a Web application OAuth client i
 - App name: Weather Desk
 - JavaScript origin: https://172-236-96-42.sslip.io
 - Redirect URI: https://172-236-96-42.sslip.io/api/auth/callback/google
-- Keep the app in testing for the hackathon; configure the intended test users if Google requires them.
+- The configured brand remains Testing. With only openid, email and profile, Google’s [basic identity exception](https://support.google.com/cloud/answer/15549945?hl=en) does not require a trusted test-user list. Additional scopes would require reassessing that exception. No saved test-user registration or production brand verification is claimed.
 
 Use a personal Google Cloud project. No billing account or paid Google resource is needed for this sign-in client. Save AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET in a private local environment file. Include AUTH_MANAGER_EMAILS for the intended verified manager account; optional AUTH_MANAGER_GOOGLE_IDS pins manager access to the immutable Google subject. Missing manager grants leave accounts as viewers; the first person to log in does not become a manager automatically.
 
@@ -27,6 +27,6 @@ The server is /opt/weather-desk on Akamai instance 107869915, label weather-desk
 
 ## Verification and mobile
 
-Unauthenticated requests must redirect to sign-in or return an uncached authentication error. Verify the actual Google callback, manager identity and viewer restrictions before calling OAuth complete. Run the exact review and simulated-send flow after login, including repeated send attempts and changed evidence.
+The actual Google account chooser, basic identity consent and callback succeeded on the deployed HTTPS app, showing the intended manager account. Independent cookie-free checks at 2026-10-11T01:45:57Z verified root → /signin (307), Google sign-in (200), protected /api/status and /api/live (401, no-store), Google-only provider discovery, and a null unauthenticated session. Independent QA reviewed the manager/replay screenshot; the coordinating agent additionally read authenticated runtime status. See the [actual callback QA report](evaluation-results/google-live-oauth-qa-summary.json) for attribution and limits. Viewer restrictions and exact review/simulated-send behavior were checked separately with isolated synthetic sessions; no cloud decisions were changed during this read-only callback verification.
 
 The responsive website works at the same HTTPS URL on a phone. There is no native mobile client, push-notification service or real SMS/email delivery. Channels and staff are synthetic review data. Missing weather evidence stays unknown; cached or expired warnings never authorize reopening.

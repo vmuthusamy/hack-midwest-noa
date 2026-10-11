@@ -1,0 +1,103 @@
+{
+  "checkedAt": "2026-10-11T01:45:57.778535+00:00",
+  "deploymentUrl": "https://172-236-96-42.sslip.io",
+  "scope": "Read-only deployment verification after the actual Google callback; no decisions or messages changed.",
+  "actualProviderCallback": {
+    "status": "completed",
+    "observedBy": "coordinating agent using the user existing in-app browser",
+    "flow": "Google account chooser, basic name/email/profile consent, Continue, callback to Weather Desk",
+    "identityShown": {
+      "role": "Manager",
+      "verifiedManagerEmailDisplayed": true,
+      "personalIdentityOmittedFromRepository": true
+    },
+    "qaEvidence": "Independent QA visually reviewed /tmp/weather-desk-google-login-success.png supplied by the coordinating agent. The QA agent could not attach to that browser because its CUA inventory exposed no browsers."
+  },
+  "independentHttpChecks": {
+    "checkedAt": "2026-10-11T01:45:57.778535+00:00",
+    "baseUrl": "https://172-236-96-42.sslip.io",
+    "checks": [
+      {
+        "path": "/",
+        "status": 307,
+        "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+        "content-type": "text/html; charset=utf-8",
+        "location": "/signin"
+      },
+      {
+        "path": "/signin",
+        "status": 200,
+        "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+        "content-type": "text/html; charset=utf-8",
+        "googleButtonVisible": true,
+        "setupMessageVisible": false
+      },
+      {
+        "path": "/api/status",
+        "status": 401,
+        "cache-control": "no-store",
+        "content-type": "application/json",
+        "response": {
+          "error": "Sign in to use Weather Desk."
+        }
+      },
+      {
+        "path": "/api/live",
+        "status": 401,
+        "cache-control": "no-store",
+        "content-type": "application/json",
+        "response": {
+          "error": "Sign in to use Weather Desk."
+        }
+      },
+      {
+        "path": "/api/auth/providers",
+        "status": 200,
+        "content-type": "application/json",
+        "providerIds": [
+          "google"
+        ]
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 200,
+        "cache-control": "private, no-cache, no-store",
+        "content-type": "application/json",
+        "sessionNull": true
+      }
+    ],
+    "authentication": "No cookies or authorization headers supplied",
+    "tls": "curl used normal certificate verification; Python urllib local CA trust unavailable"
+  },
+  "authenticatedUi": {
+    "independentScreenshotReview": [
+      "Manager name, role and account address are visible.",
+      "Recorded replay is selected; Live NOAA is a separate tab.",
+      "Evidence is labeled Recorded NOAA \u00b7 Replay and Not live.",
+      "Tornado Warning card is labeled RECORDED OFFICIAL NOAA / NWS WARNING and REPLAY."
+    ],
+    "coordinatingAgentAccessibilityRead": [
+      "3 people received the original instruction; 2 queued notices are held.",
+      "NOAA/NWS Connected; Go + OPA policy Enforced; Strands + Akamai Configured \u00b7 ready to test; Road conditions Not connected."
+    ],
+    "authenticatedApiStatusDirectlyVerified": false
+  },
+  "googleConfiguration": {
+    "publishingStatus": "Testing",
+    "scopes": [
+      "openid",
+      "email",
+      "profile"
+    ],
+    "testUserRegistrationClaimed": false,
+    "brandProductionVerificationClaimed": false,
+    "basicIdentityExceptionSource": "https://support.google.com/cloud/answer/15549945?hl=en"
+  },
+  "limitations": [
+    "Provider callback was witnessed by the coordinating agent, not independently replayed by QA.",
+    "Actual viewer-account provider login and new mobile interaction were not performed in this read-only pass; prior synthetic session and mobile results are separate.",
+    "No authenticated direct HTTP API status assertion; runtime UI evidence came from the coordinating agent.",
+    "No inference calls, approvals, simulated sending, sign-out, cookies or tokens were read/exported."
+  ],
+  "priorSyntheticQaReport": "google-oauth-qa-summary.json"
+}

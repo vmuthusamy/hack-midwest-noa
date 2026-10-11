@@ -1,0 +1,36 @@
+{
+  "scope": "Google migration independent QA using synthetic verified identities and encrypted Auth.js sessions on isolated servers; no actual Google provider callback",
+  "unit_results": {
+    "auth_gateway": "18/18 pass",
+    "go": "all packages pass under go test -race ./... with Google principal fixtures"
+  },
+  "browser_results": [
+    "Google is the only registered provider and signin button uses Google",
+    "No session redirects to signin; API returns401",
+    "Old GitHub and unverified Google encrypted cookies return null Auth.js session and API401",
+    "Verified unlisted email is viewer; cached manager role ignored",
+    "Viewer actual gateway approval/inferencePOST returns403",
+    "Tampered encrypted session is rejected",
+    "Allowlisted email with mismatched immutable Google subject remains viewer",
+    "Allowlisted verified email with matching Google subject unlocks manager UI",
+    "320/390px long profile and LIVE-only regional river fixtures have no overflow"
+  ],
+  "callback_contract_tests": [
+    "Google provider required",
+    "email_verified must be boolean true",
+    "Profile sub must match immutable provider accountID",
+    "Missing/invalid email rejected",
+    "Manager email allowlist and optional Google subject pin both enforced"
+  ],
+  "limitations": [
+    "Actual Google Cloud/browser provider consent and callback still await user sign-in/configuration.",
+    "No paid model calls or shared8087/8088/8089 state mutations."
+  ],
+  "qa_files": [
+    "tests/auth-qa.test.mjs",
+    "tests/auth-browser-qa.cjs",
+    "tests/browser-qa.cjs",
+    "go-prototype/internal/weatherdesk/auth_test.go",
+    "go-prototype/internal/weatherdesk/profile_test.go"
+  ]
+}

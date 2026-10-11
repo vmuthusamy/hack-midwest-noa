@@ -81,7 +81,7 @@ func TestHTTPPostureApprovalPersistsExactSelectedParameter(t *testing.T) {
 		t.Fatal(w.Code, w.Body.String())
 	}
 	r = app.replays["barnwell"]
-	if r.Approval == nil || r.Approval.Package.Parameters["operatingPosture"] != "closure" || r.Approval.ActorID != "github:123" {
+	if r.Approval == nil || r.Approval.Package.Parameters["operatingPosture"] != "closure" || r.Approval.ActorID != "google:123" {
 		t.Fatal("posture or manager lost", r.Approval)
 	}
 }
