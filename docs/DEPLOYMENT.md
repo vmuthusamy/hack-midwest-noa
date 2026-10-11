@@ -1,5 +1,15 @@
 # Weather Desk deployment
 
+## Current status: retired October 11, 2026
+
+The hackathon instance `107869915` was deleted after stopping its containers and saving a private local archive of decision history, inference telemetry and runtime configuration. A follow-up API lookup returned 404 and the instance inventory returned zero. No block volumes, NodeBalancers, Kubernetes clusters, databases, object-storage buckets or allocated IPs remain. Object Storage is disabled; Managed and Longview subscriptions are inactive.
+
+The free DuckDNS name is retained with its IPv4 record set to `0.0.0.0`, removing its link to the released address. The public app is offline. Local app processes were stopped and inference keys cleared from active runtime environment files. The installed Strands SDK is an inert library; this does not revoke the organizers' shared inference key or control other team members' usage.
+
+The account reported a $0.00 balance and $0.58 unbilled usage at teardown. Earlier usage may still appear on a final invoice; promotional-credit treatment was not verified. The Akamai account remains open with no resources found in the checked billable service categories.
+
+The sections below describe the former deployment and restoration configuration. Provision a new instance and explicitly restore credentials before using deployment scripts again.
+
 Weather Desk runs on one Akamai Compute instance with Caddy HTTPS, Next.js, Go and a single Strands gRPC worker. Hosted model inference uses the workshop endpoint. Only ports 80 and 443 serve the app; SSH uses a dedicated deployment key. Internal API and gRPC ports are not published.
 
 ## Free shareable app name

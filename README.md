@@ -1,5 +1,7 @@
 # Weather Desk
 
+> **Deployment retired October 11, 2026.** The Akamai server was deleted to stop recurring compute charges. The public demo is offline; source and a private local backup are retained. Local inference credentials are disabled.
+
 NOAA-first facility operations experiment for Hack Midwest. Primary user: a USDA-style facility manager reviewing an operating instruction after weather evidence changes. Fictional facilities and synthetic people only.
 
 The implementation uses **Next.js 16.4 / React 19.3 / Tailwind 4**, a **Go backend**, an embedded **OPA/Rego approval policy**, and the existing **Python Strands Agents 1.59 adapter** for an Akamai OpenAI-compatible inference endpoint.
@@ -68,7 +70,7 @@ SDK installation is complete. No inference credentials are in the repository. Th
 
 Go calls a local Python gRPC worker on 127.0.0.1:8089 using the typed contract in `contracts/proto/weatherdesk/v1/briefing.proto`. Shared Go packages provide deadlines, correlation IDs, error mapping and response identity checks. Cancellation stops async inference; requests have no automatic retries. See [reusable gRPC patterns](docs/GRPC-PATTERNS.md). One Strands agent receives applicable facility evidence and explicit gaps, with one read-only source lookup tool. The model has no approval, sending, filesystem, or provisioning tools. Fresh case explanation requests explicitly have no prior approval, in LIVE or REPLAY, and return no invented corrections. The manager reviews deterministic recipient-specific drafts. Legacy REPLAY correction generation receives the recorded warning, prior instruction, existing correction approval, synthetic notice states, illustrative policy and exact review revision. Generated drafts are explicitly unapproved; manager approval remains a separate Go/OPA action. The app rejects unknown or omitted citations, missing affected groups, malformed tool markup and unsupported operational movement directives. These checks are not a truth or safety certification. See the timestamped [QA and model evaluation results](docs/VERIFICATION.md).
 
-The [Akamai workshop](https://github.com/akamai-developers/akamai-workshop-hackmidwest) supplies the inference setup path; sponsor eligibility remains conditional on working implementation. The app is deployed on [Akamai HTTPS](https://weatherdesk-hackmidwest.duckdns.org); Google sign-in has been verified with the intended manager account. See [deployment configuration](docs/DEPLOYMENT.md).
+The [Akamai workshop](https://github.com/akamai-developers/akamai-workshop-hackmidwest) supplies the inference setup path; sponsor eligibility remains conditional on working implementation. The app was hosted on Akamai with verified Google sign-in; that deployment has now been retired. See [deployment configuration](docs/DEPLOYMENT.md).
 
 ## Checks
 
