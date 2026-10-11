@@ -7,7 +7,7 @@ export function authEnvironment(env = process.env) {
     return { mode: 'demo' };
   }
   if (env.WEATHER_DESK_AUTH_MODE && env.WEATHER_DESK_AUTH_MODE !== 'oauth') throw Error('Invalid authentication mode');
-  if (!env.AUTH_GITHUB_ID || !env.AUTH_GITHUB_SECRET || (env.AUTH_SECRET || '').length < 32 || (env.WEATHER_DESK_GATEWAY_SECRET || '').length < 32 || !env.AUTH_URL) {
+  if (!env.AUTH_GOOGLE_ID || !env.AUTH_GOOGLE_SECRET || (env.AUTH_SECRET || '').length < 32 || (env.WEATHER_DESK_GATEWAY_SECRET || '').length < 32 || !env.AUTH_URL) {
     throw Error('OAuth configuration is incomplete');
   }
   const url = new URL(env.AUTH_URL);
@@ -16,18 +16,26 @@ export function authEnvironment(env = process.env) {
   if (url.protocol !== 'https:' && !(env.NODE_ENV !== 'production' && local && url.protocol === 'http:')) throw Error('HTTPS is required');
   return { mode: 'oauth', origin: url.origin };
 }
-export function roleFor(login, env = process.env) {
-  const managers = (env.AUTH_MANAGER_LOGINS || '').split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
-  return managers.includes(String(login || '').toLowerCase()) ? 'manager' : 'viewer';
+const validGoogleSubject = value => /^google:[A-Za-z0-9_-]{1,255}$/.test(value || '');
+const emailAddress = value => typeof value === 'string' && /^[^\s@]+@[^\s@]+$/.test(value.trim()) ? value.trim().toLowerCase() : null;
+export function identityFromGoogleProfile(account, profile) {
+  if (account?.provider !== 'google' || profile?.email_verified !== true || typeof profile.sub !== 'string' || account.providerAccountId !== profile.sub) return null;
+  const sub = `google:${account.providerAccountId}`, email = emailAddress(profile.email);
+  if (!validGoogleSubject(sub) || !email) return null;
+  return { sub, email, emailVerified: true, name: profile.name || email };
+}
+export function roleFor(email, env = process.env, subject) {
+  const managers = (env.AUTH_MANAGER_EMAILS || '').split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
+  const allowedIds = (env.AUTH_MANAGER_GOOGLE_IDS || '').split(',').map(value => value.trim()).filter(Boolean);
+  const listedEmail = managers.includes(emailAddress(email));
+  const pinnedSubject = allowedIds.length === 0 || (validGoogleSubject(subject) && allowedIds.includes(subject.slice('google:'.length)));
+  return listedEmail && pinnedSubject ? 'manager' : 'viewer';
 }
 export function identityFromSession(session, env = process.env) {
-  const user = session?.user;
-  if (!user || !/^github:\d+$/.test(user.id || '') || !user.login) return null;
-  // Never trust a role posted by the browser or cached in the JWT.
-  const allowedIds = (env.AUTH_MANAGER_IDS || '').split(',').map(value => value.trim()).filter(Boolean);
-  const candidateRole = roleFor(user.login, env);
-  const role = candidateRole === 'manager' && (allowedIds.length === 0 || allowedIds.includes(user.id.slice('github:'.length))) ? 'manager' : 'viewer';
-  return { sub: user.id, name: user.name || user.login, login: user.login, role, facilities: [...FACILITY_IDS] };
+  const user = session?.user, email = emailAddress(user?.email);
+  // Old provider cookies, unverified email, and client-supplied roles grant no authority.
+  if (!user || !validGoogleSubject(user.id) || user.emailVerified !== true || !email) return null;
+  return { sub: user.id, name: user.name || email, email, login: email, role: roleFor(email, env, user.id), facilities: [...FACILITY_IDS] };
 }
 export function demoIdentity() {
   return { sub: 'demo:local', name: 'Demo manager', login: 'demo', role: 'manager', facilities: [...FACILITY_IDS], demo: true };

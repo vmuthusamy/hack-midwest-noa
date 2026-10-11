@@ -11,10 +11,12 @@ if len(sys.argv)!=2:raise SystemExit('Usage: ../.venv/bin/python scripts/configu
 source=dotenv_values(Path(sys.argv[1]).expanduser())
 private=root/'.cache/deploy.env'
 if not private.exists():raise SystemExit('Existing deployment configuration is required')
-for key in ('AUTH_GITHUB_ID','AUTH_GITHUB_SECRET'):
+for key in ('AUTH_GOOGLE_ID','AUTH_GOOGLE_SECRET'):
  value=source.get(key)
  if not value or '\n' in value:raise SystemExit(key+' is missing or invalid in the credential file')
-for key in ('AUTH_GITHUB_ID','AUTH_GITHUB_SECRET'):set_key(str(private),key,source[key])
+for key in ('AUTH_GOOGLE_ID','AUTH_GOOGLE_SECRET'):set_key(str(private),key,source[key])
+for key in ('AUTH_MANAGER_EMAILS','AUTH_MANAGER_GOOGLE_IDS'):
+ if source.get(key):set_key(str(private),key,source[key])
 os.chmod(private,0o600)
 state=json.loads((root/'.cache/deploy.json').read_text())
 if state['label']!='weather-desk-hack26':raise SystemExit('Unexpected cloud target')
@@ -22,4 +24,4 @@ server='root@'+state['ipv4'][0]
 ssh=['-i',str(root/'.cache/deploy-ssh'),'-o','UserKnownHostsFile='+str(root/'.cache/deploy-known-hosts')]
 subprocess.run(['scp',*ssh,str(private),server+':/tmp/weather-desk-oauth.env'],check=True)
 subprocess.run(['ssh',*ssh,server,'chmod 600 /tmp/weather-desk-oauth.env; mv /tmp/weather-desk-oauth.env /opt/weather-desk/deploy/.env; cd /opt/weather-desk/deploy; docker compose config --quiet && docker compose up -d --no-deps web'],check=True)
-print('OAuth credentials configured without logging values. Verify GitHub sign-in at https://'+state['hostname'])
+print('OAuth credentials configured without logging values. Verify Google sign-in at https://'+state['hostname'])

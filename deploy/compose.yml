@@ -23,13 +23,13 @@ services:
     restart: unless-stopped
     depends_on: [api]
     environment:
-      AUTH_GITHUB_ID: ${AUTH_GITHUB_ID:-}
-      AUTH_GITHUB_SECRET: ${AUTH_GITHUB_SECRET:-}
+      AUTH_GOOGLE_ID: ${AUTH_GOOGLE_ID:-}
+      AUTH_GOOGLE_SECRET: ${AUTH_GOOGLE_SECRET:-}
       AUTH_SECRET: ${AUTH_SECRET:?required}
       AUTH_URL: ${AUTH_URL:?required}
       AUTH_TRUST_HOST: "true"
-      AUTH_MANAGER_LOGINS: ${AUTH_MANAGER_LOGINS:-vmuthusamy}
-      AUTH_MANAGER_IDS: ${AUTH_MANAGER_IDS:?required}
+      AUTH_MANAGER_EMAILS: ${AUTH_MANAGER_EMAILS:-}
+      AUTH_MANAGER_GOOGLE_IDS: ${AUTH_MANAGER_GOOGLE_IDS:-}
       WEATHER_DESK_AUTH_MODE: oauth
       WEATHER_DESK_GATEWAY_SECRET: ${WEATHER_DESK_GATEWAY_SECRET:?required}
       WEATHER_DESK_API_URL: http://api:8087

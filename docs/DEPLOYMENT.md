@@ -2,17 +2,22 @@
 
 Weather Desk runs on one Akamai Compute instance with Caddy HTTPS, Next.js, Go and a single Strands gRPC worker. Hosted model inference uses the workshop endpoint. Only ports 80 and 443 serve the app; SSH uses a dedicated deployment key. Internal API and gRPC ports are not published.
 
-## GitHub login registration
+## Google login registration
 
-Register a personal GitHub OAuth app at https://github.com/settings/applications/new.
+The selected login provider is Google. Register a Web application OAuth client in Google Cloud Console, with only openid, email and profile sign-in scopes.
 
-- Name: Weather Desk
-- Homepage: https://172-236-96-42.sslip.io
-- Callback: https://172-236-96-42.sslip.io/api/auth/callback/github
+- App name: Weather Desk
+- JavaScript origin: https://172-236-96-42.sslip.io
+- Redirect URI: https://172-236-96-42.sslip.io/api/auth/callback/google
+- Keep the app in testing for the hackathon; configure the intended test users if Google requires them.
 
-Store AUTH_GITHUB_ID and AUTH_GITHUB_SECRET in a private local configuration file. Run ../.venv/bin/python scripts/configure-oauth.py /absolute/path/to/private-oauth.env to update the ignored deployment configuration and recreate only the web container. This script never prints credentials. AUTH_SECRET and WEATHER_DESK_GATEWAY_SECRET are independently generated secrets. AUTH_MANAGER_LOGINS=vmuthusamy and AUTH_MANAGER_IDS=5147665 jointly grant manager authority to that immutable GitHub account; other authenticated users are viewers of the fictional facilities. This is a hackathon workspace role, not a USDA identity assertion.
+Use a personal Google Cloud project. No billing account or paid Google resource is needed for this sign-in client. Save AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET in a private local environment file. Include AUTH_MANAGER_EMAILS for the intended verified manager account; optional AUTH_MANAGER_GOOGLE_IDS pins manager access to the immutable Google subject. Missing manager grants leave accounts as viewers; the first person to log in does not become a manager automatically.
 
-Never commit runtime .env files, SSH private keys, model credentials or the Akamai Cloud token. The cloud token is used only locally to manage resources; it is not transferred to the application server. The UI contains no provider keys.
+Run ../.venv/bin/python scripts/configure-oauth.py /absolute/path/to/private-oauth.env to transfer private runtime configuration and recreate only the web container. The script never prints credentials. AUTH_SECRET and WEATHER_DESK_GATEWAY_SECRET are independent server secrets. Google sign-in uses verified email and immutable google:subject identity; older GitHub session cookies do not grant access.
+
+The Akamai account currently has no configured domains. Akamai DNS Manager hosts DNS for a separately registered domain; it does not sell domain registrations. The temporary HTTPS hostname remains usable while a domain is chosen. See https://techdocs.akamai.com/cloud-computing/docs/getting-started-with-dns-manager.
+
+Never commit runtime .env files, SSH private keys or credentials. The cloud token is used only locally; it is not transferred to the server. The UI contains no provider keys.
 
 ## Container launch
 
@@ -22,6 +27,6 @@ The server is /opt/weather-desk on Akamai instance 107869915, label weather-desk
 
 ## Verification and mobile
 
-Unauthenticated requests must redirect to sign-in or return an uncached authentication error. Verify the actual GitHub callback, manager identity and viewer restrictions before calling OAuth complete. Run the exact review and simulated-send flow after login, including repeated send attempts and changed evidence.
+Unauthenticated requests must redirect to sign-in or return an uncached authentication error. Verify the actual Google callback, manager identity and viewer restrictions before calling OAuth complete. Run the exact review and simulated-send flow after login, including repeated send attempts and changed evidence.
 
 The responsive website works at the same HTTPS URL on a phone. There is no native mobile client, push-notification service or real SMS/email delivery. Channels and staff are synthetic review data. Missing weather evidence stays unknown; cached or expired warnings never authorize reopening.
