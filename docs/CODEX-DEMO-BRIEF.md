@@ -97,3 +97,10 @@ The official alert card shows NWS instructions immediately, severity/certainty/u
 ## Phone flow pending user acceptance
 
 Crisis response view: official alert and source instruction paragraph, operating choice, one review action. Full NWS text, map/timeline, rationale and local power inputs open on demand. Channel icons continue to describe planned routes separately from recorded simulated status. Preserve the user's existing approval and show its actual posture at the top. Pause further QA until the user accepts this flow.
+
+## Decision detail additions · pending flow acceptance
+
+- Work overlap: remaining alert window intersected with supplied facility-local example hours over the next 24 hours. Uses the replay capture clock in REPLAY. Missing timing/schedule or stale applicability is Unknown. Batesburg's recorded warning overlaps 0 minutes of 08:00–17:00 work; no commute hours are invented. Message expiry remains distinct from expected hazard end.
+- Evidence confidence: High for fresh, applicable active Actual NWS evidence with Observed/Likely certainty; Medium for Possible; Low otherwise. This transparent presentation rule does not authorize action or assess safety. Replay freshness is explicitly relative to its capture clock.
+- Plain rationale: default untouched drafts use short sourced sentences with facility, message expiry, selected posture and effective time. Power reports retain source/time. Saved approvals and custom rationales are preserved; Use concise rationale explicitly prepares a revision. No invented Sunday closure or supervisor contact instructions.
+- Calculation explanations stay collapsed. Deployment build completed; additional QA remains paused pending user acceptance.

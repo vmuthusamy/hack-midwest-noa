@@ -148,3 +148,7 @@ a { color:inherit;text-decoration:none; }
  .status-workspace .recommendation-card > .recommendation-action { order:3; }
  .status-workspace .recommendation-card .eyebrow { letter-spacing:0; font-size:14px; }
 }
+
+.decision-measures { display:flex; flex-wrap:wrap; gap:6px 18px; padding:8px 0; font-size:13px; color:var(--muted); }
+.decision-measures strong { color:var(--text); margin-left:5px; }
+.decision-support > p { font-size:13px; line-height:1.5; }
