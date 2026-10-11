@@ -1,0 +1,50 @@
+services:
+  agent:
+    build: {context: .., dockerfile: deploy/Dockerfile.agent}
+    restart: unless-stopped
+    environment:
+      AI_BASE_URL: ${AI_BASE_URL:?required}
+      AI_MODEL_ID: ${AI_MODEL_ID:?required}
+      AI_API_KEY: ${AI_API_KEY:?required}
+    networks: [private]
+  api:
+    build: {context: .., dockerfile: deploy/Dockerfile.go}
+    restart: unless-stopped
+    depends_on: [agent]
+    environment:
+      AUTH_REQUIRED: "true"
+      AUTH_URL: ${AUTH_URL:?required}
+      WEATHER_DESK_GATEWAY_SECRET: ${WEATHER_DESK_GATEWAY_SECRET:?required}
+      WEATHER_DESK_AGENT_ADDR: agent:8089
+    volumes: [history:/data]
+    networks: [private]
+  web:
+    build: {context: .., dockerfile: deploy/Dockerfile.web}
+    restart: unless-stopped
+    depends_on: [api]
+    environment:
+      AUTH_GITHUB_ID: ${AUTH_GITHUB_ID:-}
+      AUTH_GITHUB_SECRET: ${AUTH_GITHUB_SECRET:-}
+      AUTH_SECRET: ${AUTH_SECRET:?required}
+      AUTH_URL: ${AUTH_URL:?required}
+      AUTH_TRUST_HOST: "true"
+      AUTH_MANAGER_LOGINS: ${AUTH_MANAGER_LOGINS:-vmuthusamy}
+      AUTH_MANAGER_IDS: ${AUTH_MANAGER_IDS:?required}
+      WEATHER_DESK_AUTH_MODE: oauth
+      WEATHER_DESK_GATEWAY_SECRET: ${WEATHER_DESK_GATEWAY_SECRET:?required}
+      WEATHER_DESK_API_URL: http://api:8087
+    networks: [private]
+  edge:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    depends_on: [web]
+    ports: ["80:80", "443:443"]
+    environment: {PUBLIC_HOST: "${PUBLIC_HOST:?required}"}
+    volumes: ["./Caddyfile:/etc/caddy/Caddyfile:ro", "caddy_data:/data", "caddy_config:/config"]
+    networks: [private]
+networks:
+  private: {}
+volumes:
+  history: {}
+  caddy_data: {}
+  caddy_config: {}

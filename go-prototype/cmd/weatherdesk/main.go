@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"weatherdesk.local/prototype/internal/weatherdesk"
+	"github.com/vmuthusamy/hack-midwest-noa/go-prototype/internal/weatherdesk"
 )
 
 func main() {
@@ -28,7 +28,11 @@ func main() {
 		log.Fatal(err)
 	}
 	defer app.Close()
-	server := &http.Server{Addr: "127.0.0.1:8087", Handler: app, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 100 * time.Second, IdleTimeout: 60 * time.Second}
+	address := os.Getenv("WEATHER_DESK_HTTP_ADDR")
+	if address == "" {
+		address = "127.0.0.1:8087"
+	}
+	server := &http.Server{Addr: address, Handler: app, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second, WriteTimeout: 100 * time.Second, IdleTimeout: 60 * time.Second}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	go func() {
@@ -37,7 +41,7 @@ func main() {
 		defer cancel()
 		server.Shutdown(shutdown)
 	}()
-	log.Println("Weather Desk Go API: http://127.0.0.1:8087")
+	log.Println("Weather Desk Go API:", address)
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatal(err)
 	}

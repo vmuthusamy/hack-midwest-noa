@@ -1,4 +1,4 @@
-module weatherdesk.local/prototype
+module github.com/vmuthusamy/hack-midwest-noa/go-prototype
 
 go 1.26.0
 

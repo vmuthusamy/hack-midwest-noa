@@ -7,13 +7,15 @@ export GOPATH="$TASK_ROOT/../.tools/go-modules"
 GO_BIN="$TASK_ROOT/../.tools/go/bin/go"
 if [ ! -x "$GO_BIN" ]; then GO_BIN="$(command -v go)"; fi
 mkdir -p "$TASK_ROOT/.cache"
+PYTHON_BIN="${WEATHER_DESK_PYTHON:-$TASK_ROOT/../.venv/bin/python}"
+ENV_LAUNCHER="$TASK_ROOT/scripts/run-with-env.py"
 cd "$TASK_ROOT/go-prototype"
 "$GO_BIN" build -o "$TASK_ROOT/.cache/weatherdesk" ./cmd/weatherdesk
 cd "$TASK_ROOT"
-"${WEATHER_DESK_PYTHON:-$TASK_ROOT/../.venv/bin/python}" -m agent_service.server &
+"$PYTHON_BIN" "$ENV_LAUNCHER" "$PYTHON_BIN" -m agent_service.server &
 AGENT_PID=$!
-"$TASK_ROOT/.cache/weatherdesk" &
+"$PYTHON_BIN" "$ENV_LAUNCHER" "$TASK_ROOT/.cache/weatherdesk" &
 API_PID=$!
 trap 'kill "$API_PID" "$AGENT_PID" 2>/dev/null || true' EXIT INT TERM
 cd "$TASK_ROOT/frontend"
-npm run dev
+"$PYTHON_BIN" "$ENV_LAUNCHER" npm run dev

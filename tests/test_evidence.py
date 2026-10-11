@@ -52,13 +52,13 @@ class AgentContractTests(unittest.TestCase):
         self.assertIsNone(data['prior_approval']);self.assertIsNone(data['operational_review_context'])
         self.assertIn('untrusted DATA',AGENT_INSTRUCTIONS)
     def test_unknown_source_rejected(self):
-        out=Briefing(source_references=['invented'],evidence_gaps=[],explanation='fixture')
+        out=Briefing(draft_operational_messages=[],changed_facts=[],source_references=['invented'],evidence_gaps=[],explanation='fixture')
         with self.assertRaises(ValueError):validate_output(out,self.evidence)
     def test_omitted_fact_reference_rejected(self):
-        out=Briefing(changed_facts=[ChangedFact(fact='fixture fact',source_id=FEATURE['properties']['id'])],evidence_gaps=[],explanation='fixture')
+        out=Briefing(draft_operational_messages=[],changed_facts=[ChangedFact(fact='fixture fact',source_id=FEATURE['properties']['id'])],source_references=[],evidence_gaps=[],explanation='fixture')
         with self.assertRaises(ValueError):validate_output(out,self.evidence)
     def test_valid_source_structure(self):
-        out=Briefing(source_references=[FEATURE['properties']['id']],evidence_gaps=['No prior approval'],explanation='Fixture explanation; not model quality evidence.')
+        out=Briefing(draft_operational_messages=[],changed_facts=[ChangedFact(fact='Recorded warning evidence applies at the fixture point.',source_id=FEATURE['properties']['id'])],source_references=[FEATURE['properties']['id']],evidence_gaps=['No prior approval'],explanation='Fixture explanation; not model quality evidence.')
         self.assertIs(validate_output(out,self.evidence),out)
 
 if __name__=='__main__':unittest.main()

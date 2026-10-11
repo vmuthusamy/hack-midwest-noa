@@ -1,15 +1,27 @@
-# Experiment verification — October 10, 2026
+# Weather Desk verification
 
-* 13 named Go tests passed with race instrumentation; `go vet ./...` passed. Coverage includes geographic/time applicability, policy scope/default denial, exact bindings, sticky holds, immutable approved snapshots, duplicate prevention, HTTP revision checks, failed-persistence isolation and shared RPC deadlines/error mapping.
-* 18 Python tests passed. Three exercise real loopback gRPC with a stub generator: typed evidence identity, unconfigured-provider rejection, and deadline cancellation/worker-lock release. Other tests cover normalized NOAA evidence, geographic holes/boundaries/multipolygons and shared agent contracts/source references.
-* 17 Node checks passed for the earlier design experiment. Its deterministic fixture report: missed material changes **0/5**; unnecessary new holds or invalidations **0/2**. These small samples do not measure model quality or operational effectiveness.
-* Next.js production build passed for `/`, `/gallery` and `/boundaries`.
-* Final browser checks passed: demo identity, dark/light, 390px layout without horizontal overflow, gallery controls, interactive diagram lens, real NOAA refresh, disabled unconfigured inference and browser-only stale/expiry fixtures. No page script errors. Desktop/mobile screenshots were visually checked. Final checks did not mutate the user's replay history.
-* Real NOAA refresh at **2026-10-10T21:45:52Z** returned 515 nationwide records. For the fictional Barnwell point, deterministic checks returned 3 applicable records and 4 with unknown applicability. This timestamped observation is not a current-warning claim or an all-clear.
-* Astra high review confirmed the latest gRPC cancellation, retry and persistence fixes. No remaining blocker was found in that reviewed scope.
-* The user-supplied Akamai Cloud token authenticated to the official Linode profile endpoint (HTTP 200). No profile information was logged and no cloud resources were created. Its ignored local configuration is separate from the workshop model key.
-* Actual hosted Strands inference and model-quality evaluation: **not run, 0 samples**. The organizer inference team key is still required. Transport tests and successful cloud API authentication do not verify model compatibility.
+The tested application separates live NOAA evidence, recorded replay, manager approval and simulated notices. The original USDA challenge coverage is tracked in ACCEPTANCE.md; the application is not a safety certification or a complete production notification service.
 
-Authenticated manager roles, production durable storage/transactional sending, full update/cancellation lineage, supplementary local signals and cloud deployment remain future slices. The running prototype uses a demo manager, ignored local replay snapshots and simulated queued intents; it sends no employee notices.
+## Independent checks
 
-Reproduce: `go test -race ./...` and `go vet ./...` in `go-prototype`; `npm run build` in `frontend`; `../.venv/bin/python -m unittest discover -s tests`, `npm test` and `npm run report` at project root. App and agent tests import the shared `briefing.py`; transport fixtures substitute generation and make no provider call.
+- Python: 33 tests passed including the two lifecycle-output regression cases, including real loopback gRPC identity, cancellation and shared model contract checks.
+- Go: all 44 named tests passed with race instrumentation; go vet passed. Coverage includes the original approval/evidence/RPC behavior, nine authorization tests, thirteen river/posture tests and three profile/posture binding regressions.
+- Frontend: 15 independent authorization tests passed. Isolated browser checks used actual Auth.js encrypted session decoding with synthetic keys: missing and tampered sessions denied; viewer writes and inference denied; manager allowlist recomputed server-side; 320px and 390px layouts checked.
+- Next production build passed. The isolated replay browser flow checked exact approval, five queued simulated intents, duplicate prevention, immutable prior approvals, edited messages, evidence changes, inference cancellation and dark/light mobile layout. No real employee notice was sent.
+- Deterministic Go fixtures: missed approval-invalidating changes 0/6; unnecessary invalidations 0/1; changed exact packages erroneously accepted 0/4; repeated send duplicates 0/1; automatic release of held original notices 0/3. These are fixture outcomes, not model-quality metrics.
+
+## Actual hosted inference
+
+Eight final JSON-schema inference samples were attempted through the same Strands instructions and message builder as the app. Seven structured outputs were accepted; an injection-case output was rejected. Independent review of the seven accepted summaries found one cancellation described as expiration and one omitted update marker. Missing/stale evidence also needed greater prominence in two summaries. New application guards reject both identified lifecycle defects. A fresh two-case hosted evaluation accepted an explicitly marked Update summary and rejected the cancellation output for still asserting expiration. Provider behavior remains imperfect; rejection protects the displayed review without asserting general model correctness.
+
+Actual app requests traversed Go, gRPC, Strands and Akamai: a LIVE request returned HTTP 200 at 2026-10-11T00:03:01Z; a REPLAY request returned HTTP 200 in 48.9 seconds at 00:26:49Z. These earlier outputs precede subsequent validator and authentication changes. An accepted draft does not imply authorization or delivery.
+
+## OAuth and cloud verification boundaries
+
+OAuth uses GitHub via Auth.js. The Go API independently verifies a signed short-lived principal bound to method, path, exact body, facility scope and write nonce; Rego receives the verified manager identity. Cloud manifests require authentication and expose only HTTPS through Caddy; API and gRPC stay on a private container network. Secrets are excluded from Git and build context, and the cloud-management token stays local.
+
+Akamai instance weather-desk-hack26 was created in Chicago on the 4 GB plan, listed at $0.036/hour and $24/month cap. All four cloud services are running. HTTPS is verified: root redirects to sign-in, favicon and sign-in return HTTP 200, and workspace API fails closed without OAuth configuration. At 2026-10-11T00:50:41Z, private cloud integration using an explicitly synthetic signed QA principal returned HTTP 200 for worker status, actual NOAA refresh (560 national records and one regional river signal), and real Strands/Akamai LIVE inference with two source references and zero operational drafts. Viewer inference was denied. This test does not verify a GitHub callback. Real GitHub provider callback verification is pending the account owner's OAuth client registration. Local development remains explicitly labeled demo mode; production rejects demo access.
+
+## Reproduction
+
+Run go test -race ./... and go vet ./... in go-prototype; npm run build in frontend; ../.venv/bin/python -m unittest discover -s tests and node --test tests/auth-qa.test.mjs at project root. Browser checks are in tests/browser-qa.cjs and tests/auth-browser-qa.cjs. Inference evaluation uses tests/evaluate_agent.py and fixtures as inputs and expected outcomes, never copied prompts.

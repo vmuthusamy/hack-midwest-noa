@@ -1,6 +1,6 @@
 syntax = "proto3";
 package weatherdesk.v1;
-option go_package = "weatherdesk.local/prototype/pkg/gen/weatherdeskv1";
+option go_package = "github.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/gen/weatherdeskv1";
 
 // This service explains evidence. It has no approval or sending RPC.
 service EvidenceBriefingService {
@@ -17,9 +17,14 @@ message Alert {
  string severity = 13; string certainty = 14; string urgency = 15; string geography = 16;
  string lifecycle = 17; string applicability = 18; string match_method = 19;
 }
+message PriorApproval { string instruction = 1; string approved_at = 2; repeated string recipient_ids = 3; bool correction_package_approved = 4; string correction_binding = 5; }
+message Recipient { string id = 1; string name = 2; string group = 3; string original_notice_state = 4; }
+message ReviewPolicy { string version = 1; string digest = 2; bool eligible = 3; string action = 4; }
 message ExplainRequest {
  string request_id = 1; string mode = 2; Facility facility = 3;
  string evidence_timestamp = 4; repeated Alert alerts = 5; repeated string evidence_gaps = 6;
+ PriorApproval prior_approval = 7; repeated Recipient recipients = 8; ReviewPolicy review_policy = 9;
+ string review_revision = 10; string replay_condition = 11;
 }
 message ChangedFact { string fact = 1; string source_id = 2; }
 message DraftMessage { string group = 1; string text = 2; }
@@ -29,5 +34,5 @@ message Briefing {
  repeated DraftMessage draft_operational_messages = 5;
 }
 message ExplainResponse {
- string request_id = 1; string evidence_timestamp = 2; string facility_id = 3; Briefing briefing = 4;
+ string request_id = 1; string evidence_timestamp = 2; string facility_id = 3; Briefing briefing = 4; string review_revision = 5;
 }

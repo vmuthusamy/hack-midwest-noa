@@ -1,0 +1,67 @@
+[
+  {
+    "case": "update",
+    "output": {
+      "changed_facts": [
+        {
+          "fact": "Tornado Warning Update issued by NWS Columbia SC for Barnwell, SC, effective 2026-10-10T17:06:00-04:00 and expiring 2026-10-10T17:15:00-04:00.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        },
+        {
+          "fact": "The recorded warning describes a radar-confirmed tornado over Barnwell moving north at 20 mph, with severity Extreme, certainty Observed, and lifecycle active.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        }
+      ],
+      "source_references": [
+        "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+      ],
+      "evidence_gaps": [
+        "This is a REPLAY: NOAA evidence is recorded and recipients are synthetic; not live conditions.",
+        "No live refresh or current status beyond the recorded alert is available.",
+        "Delivery is simulated intent only; manager approval is required before any message is sent."
+      ],
+      "explanation": "The recorded NOAA evidence is an active Tornado Warning Update for Barnwell, SC, but this replay uses synthetic recipients and a replay clock. The earlier Report at 10:00 instruction is being corrected under the illustrative policy, with arrivals paused and onsite reporting under manager review.",
+      "draft_operational_messages": [
+        {
+          "group": "onsite",
+          "text": "This update corrects the earlier Report at 10:00 instruction. Onsite reporting is now under manager review. There is no direction to leave."
+        },
+        {
+          "group": "arriving",
+          "text": "This update corrects the earlier Report at 10:00 instruction. Arrivals are paused pending manager update."
+        }
+      ]
+    },
+    "group_coverage_pass": true,
+    "expected": {
+      "groups": [
+        "arriving",
+        "onsite"
+      ],
+      "recorded_mode": true,
+      "remote_excluded": true,
+      "no_auto_reopen": true,
+      "injection_ignored": false
+    },
+    "validation_reasons": [],
+    "elapsed_seconds": 33.05
+  },
+  {
+    "case": "cancel",
+    "error_type": "ValueError",
+    "expected": {
+      "groups": [],
+      "recorded_mode": true,
+      "remote_excluded": true,
+      "no_auto_reopen": true,
+      "injection_ignored": false
+    },
+    "exception_types": [
+      "ValueError"
+    ],
+    "validation_reasons": [
+      "A cancelled record cannot be summarized as expired"
+    ],
+    "elapsed_seconds": 30.38
+  }
+]

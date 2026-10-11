@@ -1,0 +1,24 @@
+{
+  "testedAt": "2026-10-11T00:50:41Z",
+  "identity": "synthetic signed service-integration principal; not GitHub callback",
+  "status": {
+    "http": 200,
+    "configured": true,
+    "strandsInstalled": true
+  },
+  "live": {
+    "http": 200,
+    "refresh": "2026-10-11T00:50:41Z",
+    "alerts": 560,
+    "riverCount": 1
+  },
+  "viewerInferenceDenied": true,
+  "inference": {
+    "http": 200,
+    "mode": "LIVE",
+    "facility": "SC-DEMO-01",
+    "sources": 2,
+    "drafts": 0,
+    "error": null
+  }
+}

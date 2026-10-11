@@ -11,7 +11,21 @@ const periods = [
   { time: "7 PM", probability: 42, temperature: 78, wind: "5 mph S" },
   { time: "8 PM", probability: 62, temperature: 78, wind: "5 mph S" },
 ];
+const references = {
+  "01": { product: "NWS weather.gov", href: "https://www.weather.gov/safety/tornado-ww", pattern: "Official alert type and instructions", adapt: "Keep official instructions above the manager's operating decision." },
+  "02": { product: "Everbridge VCC + ArcGIS Dashboards", href: "https://learn.arcgis.com/en/projects/monitor-real-time-emergencies/", pattern: "Linked map, incident list and facility selection", adapt: "One selected facility connects the warning shape, explanation and affected people." },
+  "03": { product: "Everbridge Mass Notification", href: "https://www.everbridge.com/wp-content/uploads/DS-Mass_Notification.pdf", pattern: "Guided messages and follow-up notifications", adapt: "Review what changed since the exact arrival instruction was approved. This is our task-specific hypothesis." },
+  "04": { product: "Everbridge Mass Notification", href: "https://www.everbridge.com/wp-content/uploads/DS-Mass_Notification.pdf", pattern: "Targeted notices, reporting and follow-up", adapt: "Keep original notices visible while reviewing corrections for each affected group." },
+  "05": { product: "PagerDuty Incident Timeline", href: "https://support.pagerduty.com/main/docs/incidents#incident-timeline", pattern: "Timestamped actions and notification history", adapt: "Record evidence, approval and notification steps. A receipt does not resolve the weather warning." },
+  "06": { product: "NWS Hourly Weather Graph", href: "https://www.weather.gov/dlh/GetyourHourlyWeatherForecastfromNWS", pattern: "Location-specific hourly variables and periods", adapt: "Show one relevant measure with actual values, units, local time and provenance." },
+  "07": { product: "Our policy boundary · OPA", href: "https://www.openpolicyagent.org/docs/integration", pattern: "Policy decision separated from enforcement", adapt: "Explain why an action is held. This card is our design, not a competing product screenshot." },
+};
 const sourceLinks = [
+  ["Everbridge VCC", "https://www.everbridge.com/products/visual-command-center/"],
+  ["Everbridge notifications", "https://www.everbridge.com/wp-content/uploads/DS-Mass_Notification.pdf"],
+  ["PagerDuty Timeline", "https://support.pagerduty.com/main/docs/incidents#incident-timeline"],
+  ["ArcGIS emergency dashboard", "https://learn.arcgis.com/en/projects/monitor-real-time-emergencies/"],
+  ["NWS hourly graph", "https://www.weather.gov/dlh/GetyourHourlyWeatherForecastfromNWS"],
   ["NWS geography", "https://www.weather.gov/media/documentation/docs/NWS_Geolocation.pdf"],
   ["NWS alert meanings", "https://www.weather.gov/safety/tornado-ww"],
   ["USWDS alerts", "https://designsystem.digital.gov/components/alert/"],
@@ -26,12 +40,18 @@ function Badge({ children, tone = "neutral" }) {
 }
 
 function Pattern({ number, title, subtitle, icon: Icon, label, why, data, variants, notes, children }) {
+  const reference = references[number];
   return <article className="wg-card">
     <header className="wg-card-header">
       <span className="wg-icon"><Icon size={20} aria-hidden="true" /></span>
       <div><p className="wg-kicker">PATTERN {number}</p><h2>{title}</h2></div>
     </header>
     <p className="wg-subtitle">{subtitle}</p>
+    <div className="wg-notes" style={{ paddingTop: 0, paddingBottom: 16, marginTop: 0 }}>
+      <p><strong>Real reference</strong> <a href={reference.href}>{reference.product} <ExternalLink size={11} aria-hidden="true" style={{ display: "inline" }} /></a></p>
+      <p>{reference.pattern}</p>
+      <p><strong>We adapt</strong> {reference.adapt}</p>
+    </div>
     <div className="wg-preview"><p className="wg-example-label">{label}</p>{children}</div>
     {notes && <div className="wg-notes">
       <p><strong>Why it helps</strong> {why}</p>
@@ -43,15 +63,15 @@ function Pattern({ number, title, subtitle, icon: Icon, label, why, data, varian
 
 export default function Gallery() {
   const [theme, setTheme] = useState("dark");
-  const [notes, setNotes] = useState(true);
+  const [notes, setNotes] = useState(false);
   const [geoVariant, setGeoVariant] = useState("polygon");
   return <main className="wg-root" data-theme={theme}>
     <div className="wg-shell">
       <header className="wg-hero">
         <div>
           <p className="wg-kicker">WEATHER DESK / DESIGN INVESTIGATION</p>
-          <h1>Evidence first.<br /><span>Decisions that stay explainable.</span></h1>
-          <p className="wg-intro">A pattern library for a facility manager who needs to know what changed, who is affected, and what to review.</p>
+          <h1>How real alert apps work.<br /><span>What we adapt for a facility manager.</span></h1>
+          <p className="wg-intro">Everbridge, PagerDuty, ArcGIS Dashboards and NWS already provide maps, notifications and histories. This gallery connects their documented workflows to our correction task.</p>
           <div className="wg-hero-links"><a href="/">← Prototype</a><a href="/boundaries">View the problem boundaries <ArrowRight size={14} aria-hidden="true" /></a></div>
         </div>
         <div className="wg-controls">
@@ -63,12 +83,12 @@ export default function Gallery() {
         </div>
       </header>
 
-      <div className="wg-disclaimer"><Radio size={17} aria-hidden="true" /><p><strong>Design gallery — no live warnings or sending.</strong> Operational examples are synthetic REPLAY. The forecast card uses a separately labeled recorded NOAA snapshot. Research is public desk research, with usability hypotheses still to test.</p></div>
+      <div className="wg-disclaimer"><Radio size={17} aria-hidden="true" /><p><strong>Design gallery — no live warnings or sending.</strong> These are our design examples, not product screenshots. Sources link to real applications and illustrated documentation. People and notices are simulated; the forecast is a recorded NOAA snapshot. No product accounts or user interviews were used.</p></div>
 
       <section className="wg-grid" aria-label="Reusable alert and decision patterns">
-        <Pattern number="01" title="Official warning first" subtitle="Authority is visible before analysis or approval." icon={Radio} label="SYNTHETIC REPLAY · PLACEHOLDER CONTENT" notes={notes} why="An urgent instruction deserves the most visible space. Separate the official alert from any operating recommendation." data="Alert event + exact text, issuer, source URL, issue/expiry, last successful refresh." variants="Expanded source panel for urgent alerts; slim informational header for non-urgent evidence.">
+        <Pattern number="01" title="Official warning first" subtitle="Authority is visible before analysis or approval." icon={Radio} label="REPLAY EXAMPLE · NOT A LIVE WARNING" notes={notes} why="An urgent instruction deserves the most visible space. Separate the official alert from any operating recommendation." data="Alert event + exact text, issuer, source URL, issue/expiry, last successful refresh." variants="Expanded source panel for urgent alerts; slim informational header for non-urgent evidence.">
           <div className="wg-warning">
-            <div className="wg-row"><Badge tone="danger">Warning example</Badge><span className="wg-small">Fixture T+5</span></div>
+            <div className="wg-row"><Badge tone="danger">Warning example</Badge><span className="wg-small">5 minutes later</span></div>
             <h3>Tornado Warning</h3>
             <p>In the app, show the alert’s original official instructions here, immediately and without rewriting.</p>
             <div className="wg-source-row"><span>NWS source · original alert ID</span><ExternalLink size={13} aria-hidden="true" /></div>
@@ -76,7 +96,7 @@ export default function Gallery() {
           <div className="wg-inline-note"><ShieldCheck size={14} aria-hidden="true" />No AI or manager approval before official instructions appear.</div>
         </Pattern>
 
-        <Pattern number="02" title="Why this location?" subtitle="Geography is an explanation, not decoration." icon={MapPin} label="SYNTHETIC GEOMETRY SCHEMATIC · NOT A MAP" notes={notes} why="A statewide alert is not automatically applicable. Show exactly how the facility matched the alert." data="Facility coordinates, official polygon or county/zone identifiers and boundaries, applicability result." variants="Point + polygon footprint; county/zone coverage; explicit unknown when data is missing.">
+        <Pattern number="02" title="Why this location?" subtitle="Geography is an explanation, not decoration." icon={MapPin} label="ILLUSTRATIVE GEOGRAPHY · NOT A REAL MAP" notes={notes} why="A statewide alert is not automatically applicable. Show exactly how the facility matched the alert." data="Facility coordinates, official polygon or county/zone identifiers and boundaries, applicability result." variants="Point + polygon footprint; county/zone coverage; explicit unknown when data is missing.">
           <div className="wg-small-segment" aria-label="Applicability examples">
             {["polygon", "zone", "unknown"].map(value => <button key={value} aria-pressed={geoVariant === value} onClick={() => setGeoVariant(value)}>{value}</button>)}
           </div>
@@ -92,30 +112,30 @@ export default function Gallery() {
           </> : geoVariant === "zone" ? <div className="wg-location-state"><h3>Coverage by forecast zone</h3><p>Facility zone <code>FLZ028</code> is listed in the recorded Flood Watch.</p><Badge tone="accent">Zone match example</Badge><p className="wg-small">No polygon does not mean irrelevant. County-based watches require county matching.</p></div> : <div className="wg-location-state"><h3>Applicability unknown</h3><p>Missing or unresolved geographic evidence cannot be treated as outside the alert.</p><Badge tone="amber">Needs evidence</Badge><p className="wg-small">Show what is missing. Do not invent a boundary.</p></div>}
         </Pattern>
 
-        <Pattern number="03" title="Show the material change" subtitle="The useful unit is a decision diff, not an alert count." icon={FileCheck2} label="SYNTHETIC REPLAY · ILLUSTRATIVE POLICY" notes={notes} why="Connect a prior operating instruction to new evidence and one next action." data="Prior immutable approval, current relevant facts, source references, policy version and evidence gaps." variants="Side-by-side comparison on desktop; ordered before/changed/action rows on mobile.">
+        <Pattern number="03" title="Show the material change" subtitle="The useful unit is a decision diff, not an alert count." icon={FileCheck2} label="REPLAY EXAMPLE · DEMONSTRATION POLICY" notes={notes} why="Connect a prior operating instruction to new evidence and one next action." data="Prior immutable approval, current relevant facts, source references, policy version and evidence gaps." variants="Side-by-side comparison on desktop; ordered before/changed/action rows on mobile.">
           <div className="wg-diff">
-            <div><p className="wg-kicker">PREVIOUSLY APPROVED</p><h3>Report at 10:00</h3><p className="wg-small">Manager approval · T+0</p></div>
+            <div><p className="wg-kicker">PREVIOUSLY APPROVED</p><h3>Report at 10:00</h3><p className="wg-small">Manager approval · Start</p></div>
             <div><p className="wg-kicker">WHAT CHANGED</p><h3>Warning now applies</h3><p className="wg-small">Illustrative policy holds 2 queued arrival notices.</p></div>
           </div>
           <div className="wg-next"><span>What needs action</span><strong>Review a correction for affected groups</strong><span className="wg-action-example">Review correction <ArrowRight size={14} aria-hidden="true" /></span></div>
           <p className="wg-small wg-margin-top">Operating instruction review is separate from the official warning. Closure does not mean leave the building.</p>
         </Pattern>
 
-        <Pattern number="04" title="People and notice states" subtitle="Queued, delivered and acknowledged mean different things." icon={Users} label="SYNTHETIC ROSTER · SIMULATED HISTORY" notes={notes} why="Show who saw the outdated instruction, who is held, and who was never targeted." data="Group membership, exact message version, distinct notice state events and labeled fixtures." variants="Table for comparison; stacked group cards with the same semantic labels on narrow screens.">
-          <div className="wg-table-wrap"><table className="wg-table"><caption>Synthetic correction groups</caption><thead><tr><th scope="col">Group</th><th scope="col">Old notice</th><th scope="col">Correction</th></tr></thead><tbody>
+        <Pattern number="04" title="People and notice states" subtitle="Queued, delivered and acknowledged mean different things." icon={Users} label="DEMO PEOPLE · SIMULATED HISTORY" notes={notes} why="Show who saw the outdated instruction, who is held, and who was never targeted." data="Group membership, exact message version, distinct notice state events and labeled fixtures." variants="Table for comparison; stacked group cards with the same semantic labels on narrow screens.">
+          <div className="wg-table-wrap"><table className="wg-table"><caption>Demo correction groups</caption><thead><tr><th scope="col">Group</th><th scope="col">Old notice</th><th scope="col">Correction</th></tr></thead><tbody>
             <tr><th scope="row">Onsite <small>2 staff</small></th><td>1 delivered*<br />1 queued, held</td><td><Badge tone="amber">Draft</Badge></td></tr>
             <tr><th scope="row">Not yet onsite <small>3 staff</small></th><td>2 delivered*<br />1 queued, held</td><td><Badge tone="amber">Draft</Badge></td></tr>
             <tr><th scope="row">Remote <small>1 staff</small></th><td>Not targeted</td><td><Badge>Excluded</Badge></td></tr>
           </tbody></table></div>
-          <p className="wg-small wg-margin-top">*Delivery is a fixture. A send intent does not establish delivery or acknowledgement.</p>
+          <p className="wg-small wg-margin-top">*Delivery is simulated. Queuing a correction does not establish receipt or acknowledgement.</p>
         </Pattern>
 
-        <Pattern number="05" title="A reconstructable timeline" subtitle="Preserve originals. Add changes as new events." icon={History} label="SYNTHETIC REPLAY · NO DELIVERY CLAIMS" notes={notes} why="Support audit and recall: what was known, what was approved and what happened next." data="Event IDs, times, actor, evidence/source version, package digest, policy decision and intent IDs." variants="Ordered event list for one facility; state lanes if event volume justifies them.">
+        <Pattern number="05" title="A reconstructable timeline" subtitle="Preserve originals. Add changes as new events." icon={History} label="REPLAY EXAMPLE · NO MESSAGES DELIVERED" notes={notes} why="Support audit and recall: what was known, what was approved and what happened next." data="Event IDs, times, actor, evidence/source version, package digest, policy decision and intent IDs." variants="Ordered event list for one facility; state lanes if event volume justifies them.">
           <ol className="wg-timeline">
-            <li><time>T+0</time><div><strong>Arrival instruction approved</strong><span>Original decision retained</span></div></li>
-            <li><time>T+5</time><div><strong>Applicable warning introduced</strong><span>Official text appears; 2 queued notices held</span></div></li>
-            <li><time>T+6</time><div><strong>Correction package reviewed</strong><span>Exact text and synthetic recipients</span></div></li>
-            <li><time>T+7</time><div><strong>Re-check before intent</strong><span>Approval + evidence + duplicate prevention</span></div></li>
+            <li><time>Start</time><div><strong>Arrival instruction approved</strong><span>Original decision retained</span></div></li>
+            <li><time>5 min</time><div><strong>Applicable warning introduced</strong><span>Official text appears; 2 queued notices held</span></div></li>
+            <li><time>6 min</time><div><strong>Correction package reviewed</strong><span>Exact message and demo recipients</span></div></li>
+            <li><time>7 min</time><div><strong>Re-check before intent</strong><span>Check approval and evidence; prevent duplicates</span></div></li>
           </ol>
         </Pattern>
 
@@ -127,13 +147,13 @@ export default function Gallery() {
           <div className="wg-provenance"><span>Fetched 21:06 UTC</span><span>Update time unavailable in first-pass extract</span><a href="https://api.weather.gov/gridpoints/TAE/118,69/forecast/hourly">NOAA endpoint <ExternalLink size={11} aria-hidden="true" /></a></div>
         </Pattern>
 
-        <Pattern number="07" title="Explain the policy gate" subtitle="A held action needs an understandable reason." icon={ShieldCheck} label="SYNTHETIC REPLAY · ILLUSTRATIVE OPA RESULT" notes={notes} why="Expose allow/deny and relevant conditions without making the model an authority." data="OPA result + reasons, policy version, evaluated conditions, exact package digest and Go recheck time." variants="Short reason beside the next action; expandable condition-by-condition evidence.">
+        <Pattern number="07" title="Explain the policy gate" subtitle="A held action needs an understandable reason." icon={ShieldCheck} label="REPLAY EXAMPLE · DEMONSTRATION POLICY RESULT" notes={notes} why="Expose allow/deny and relevant conditions without making the model an authority." data="OPA result + reasons, policy version, evaluated conditions, exact package digest and Go recheck time." variants="Short reason beside the next action; expandable condition-by-condition evidence.">
           <div className="wg-policy"><div className="wg-row"><Badge tone="amber">Intent held</Badge><code>policy: illustrative-v1</code></div><h3>Review the changed package</h3><p>The draft differs from the last approval. Exact message and recipients require manager review.</p><ul><li><span>Evidence applicability</span><strong>Known</strong></li><li><span>Exact approved package</span><strong>Changed</strong></li><li><span>Duplicate intent</span><strong>None recorded</strong></li></ul></div>
           <p className="wg-small wg-margin-top">OPA evaluates policy. Go enforces exact binding and deduplication. One Strands agent explains and drafts; it cannot approve or send.</p>
         </Pattern>
       </section>
 
-      <footer className="wg-footer"><div><p className="wg-kicker">PRIMARY REFERENCES</p><p>Patterns adapted from documented systems. Usability and accessibility of this implementation still need testing.</p></div><nav aria-label="Research sources">{sourceLinks.map(([name, url]) => <a key={name} href={url}>{name}<ExternalLink size={12} aria-hidden="true" /></a>)}</nav></footer>
+      <footer className="wg-footer"><div><p className="wg-kicker">REAL APPLICATIONS & DESIGN REFERENCES</p><p>Maps, targeted notifications and timelines already exist. Our proposed value is the exact prior-instruction correction flow; that hypothesis still needs user testing.</p></div><nav aria-label="Research sources">{sourceLinks.map(([name, url]) => <a key={name} href={url}>{name}<ExternalLink size={12} aria-hidden="true" /></a>)}</nav></footer>
     </div>
   </main>;
 }

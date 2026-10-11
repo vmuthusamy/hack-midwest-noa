@@ -10,7 +10,7 @@ warning if input.event in {"Tornado Warning", "Severe Thunderstorm Warning"}
 
 ready if {
  input.mode == "REPLAY"
- input.actor_role == "fixture-manager"
+ input.actor_role in {"fixture-manager", "manager"}
  input.actor_facility == input.facility_id
  input.fresh == true
  input.applicability == "applicable"
@@ -28,7 +28,7 @@ hold if { input.mode == "REPLAY"; input.queued_notice == true; input.applicabili
 hold if { input.mode == "REPLAY"; input.queued_notice == true; input.applicability == "applicable"; input.lifecycle == "active"; warning }
 
 deny contains "Operational approvals are limited to the recorded replay." if input.mode != "REPLAY"
-deny contains "A facility-scoped fixture manager is required." if input.actor_role != "fixture-manager"
+deny contains "A facility-scoped manager is required." if not input.actor_role in {"fixture-manager", "manager"}
 deny contains "The actor's facility does not match the package." if input.actor_facility != input.facility_id
 deny contains "Evidence is stale or missing." if input.fresh != true
 deny contains "Facility applicability is not established." if input.applicability != "applicable"

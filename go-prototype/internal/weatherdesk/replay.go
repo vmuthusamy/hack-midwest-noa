@@ -14,10 +14,15 @@ import (
 const policyVersion = "illustrative-v1"
 
 type Recipient struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Group    string `json:"group"`
-	Original string `json:"original"`
+	ID               string   `json:"id"`
+	Name             string   `json:"name"`
+	Group            string   `json:"group"`
+	Original         string   `json:"original"`
+	Assignment       string   `json:"assignment"`
+	Essential        bool     `json:"essential"`
+	TeleworkEligible bool     `json:"teleworkEligible"`
+	Accessibility    string   `json:"accessibility"`
+	Channels         []string `json:"channels"`
 }
 type Message struct {
 	Group      string   `json:"group"`
@@ -34,17 +39,21 @@ type Package struct {
 	Messages     []Message         `json:"messages"`
 }
 type Approval struct {
-	Binding string  `json:"binding"`
-	Package Package `json:"package"`
-	State   string  `json:"state"`
+	Binding    string  `json:"binding"`
+	Package    Package `json:"package"`
+	State      string  `json:"state"`
+	ActorID    string  `json:"actorId,omitempty"`
+	ActorName  string  `json:"actorName,omitempty"`
+	ApprovedAt string  `json:"approvedAt,omitempty"`
 }
 type Intent struct {
-	Key             string `json:"key"`
-	Recipient       string `json:"recipient"`
-	Text            string `json:"text"`
-	State           string `json:"state"`
-	Simulated       bool   `json:"simulated"`
-	ApprovalBinding string `json:"approvalBinding"`
+	Channels        []string `json:"channels"`
+	Key             string   `json:"key"`
+	Recipient       string   `json:"recipient"`
+	Text            string   `json:"text"`
+	State           string   `json:"state"`
+	Simulated       bool     `json:"simulated"`
+	ApprovalBinding string   `json:"approvalBinding"`
 }
 type Event struct {
 	Time   string `json:"time"`
@@ -52,6 +61,8 @@ type Event struct {
 	Detail string `json:"detail"`
 }
 type Replay struct {
+	OperatingPosture string         `json:"operatingPosture"`
+	OperatingHours   string         `json:"operatingHours"`
 	Mode             string         `json:"mode"`
 	Scenario         string         `json:"scenario"`
 	CapturedAt       string         `json:"capturedAt"`
@@ -91,7 +102,17 @@ func newReplay(scenario string, previous []Event) (*Replay, error) {
 		return nil, err
 	}
 	r := &Replay{Mode: "REPLAY", Scenario: scenario, CapturedAt: recording.CapturedAt, Facility: recording.Facility, Alert: normalize(recording.Feature, recording.Facility, nil, captured), Case: "applicable", MaterialVersion: "recorded-v1", Fresh: true, Policy: policyVersion, Intents: []Intent{}, History: append([]Event{}, previous...)}
-	r.Roster = []Recipient{{"S01", "Alex", "onsite", "delivered"}, {"S02", "Jordan", "onsite", "queued"}, {"S03", "Morgan", "arriving", "delivered"}, {"S04", "Casey", "arriving", "delivered"}, {"S05", "Taylor", "arriving", "queued"}, {"S06", "Sam", "remote", "not targeted"}}
+	r.OperatingPosture = "delay"
+	r.OperatingHours = "08:00–17:00 facility local time (synthetic)"
+	r.Roster = []Recipient{
+		{ID: "S01", Name: "Alex", Group: "onsite", Original: "delivered", Assignment: "facility", TeleworkEligible: true, Accessibility: "plain-text email", Channels: []string{"in-app", "email"}},
+		{ID: "S02", Name: "Jordan", Group: "onsite", Original: "queued", Assignment: "essential facility operations", Essential: true, Accessibility: "plain-text email", Channels: []string{"in-app", "sms"}},
+		{ID: "S03", Name: "Morgan", Group: "arriving", Original: "delivered", Assignment: "facility", TeleworkEligible: true, Channels: []string{"email", "sms"}},
+		{ID: "S04", Name: "Casey", Group: "arriving", Original: "delivered", Assignment: "essential facility operations", Essential: true, Channels: []string{"email", "sms"}},
+		{ID: "S05", Name: "Taylor", Group: "arriving", Original: "queued", Assignment: "temporary detail at this facility", TeleworkEligible: true, Accessibility: "plain-text email", Channels: []string{"email", "sms"}},
+		{ID: "S06", Name: "Sam", Group: "remote", Original: "not targeted", Assignment: "remote assignment", TeleworkEligible: true, Channels: []string{"in-app", "email"}},
+	}
+
 	r.Messages = []Message{{"onsite", "The earlier “Report at 10:00” instruction is superseded. Your onsite reporting status is under review. This message does not direct you to leave the building. Official NWS instructions are displayed separately.", []string{"S01", "S02"}}, {"arriving", "The earlier “Report at 10:00” instruction is superseded. The facility manager has paused the arrival instruction pending a further operational update. Official NWS instructions are displayed separately.", []string{"S03", "S04", "S05"}}}
 	r.Gate = gate(r)
 	r.Held = []string{}
@@ -124,7 +145,7 @@ func packageFor(r *Replay) Package {
 	raw, _ := json.Marshal(r.Messages)
 	var messages []Message
 	json.Unmarshal(raw, &messages)
-	return Package{r.Facility, "revise-arrival-instruction", map[string]string{"previous": "Report at 10:00", "replacement": "Arrival instruction paused pending manager update"}, r.Policy, policyDigest, conditions(r), messages}
+	return Package{r.Facility, "revise-arrival-instruction", map[string]string{"previous": "Report at 10:00", "replacement": "Arrival instruction paused pending manager update", "operatingPosture": r.OperatingPosture, "recipientRules": recipientRules(r), "essentialStaff": "Manager must review essential assignments individually; designation never overrides official warning instructions"}, r.Policy, policyDigest, conditions(r), messages}
 }
 func gate(r *Replay) string {
 	if !r.Fresh || r.Alert.Lifecycle == "unknown" || r.Alert.Geography == "unknown" {
@@ -213,7 +234,10 @@ func (r *Replay) updateMessages(texts map[string]string) error {
 	return nil
 }
 func (r *Replay) approve() error {
-	decision, err := evaluatePolicy(context.Background(), policyInput(r, "approve"))
+	return r.approveAs(Principal{Sub: "demo:fixture-manager", Name: "Demo facility manager", Role: "fixture-manager", Facilities: []string{r.Facility.ID}})
+}
+func (r *Replay) approveAs(actor Principal) error {
+	decision, err := evaluatePolicy(context.Background(), policyInputFor(r, "approve", actor))
 	if err != nil || !decision.Allow {
 		return errors.New("OPA denied approval: review current applicability, freshness, and policy conditions")
 	}
@@ -225,13 +249,16 @@ func (r *Replay) approve() error {
 	if r.Approval != nil && r.Approval.Binding == b {
 		return nil
 	}
-	r.Approval = &Approval{b, p, "approved"}
+	r.Approval = &Approval{Binding: b, Package: p, State: "approved", ActorID: actor.Sub, ActorName: actor.Name, ApprovedAt: time.Now().UTC().Format(time.RFC3339)}
 	r.ApprovedPackages = append(r.ApprovedPackages, *r.Approval)
-	r.event("T+6 · Fixture manager approved correction", "Exact facility, action, parameters, recipients, messages, policy, and relevant evidence conditions are bound to approval "+b[:12]+".")
+	r.event("Manager approved correction", "Exact facility, action, parameters, recipients, messages, policy, and relevant evidence conditions are bound to approval "+b[:12]+".")
 	return nil
 }
 func (r *Replay) simulate() (int, error) {
-	decision, err := evaluatePolicy(context.Background(), policyInput(r, "simulate"))
+	return r.simulateAs(Principal{Role: "fixture-manager", Facilities: []string{r.Facility.ID}})
+}
+func (r *Replay) simulateAs(actor Principal) (int, error) {
+	decision, err := evaluatePolicy(context.Background(), policyInputFor(r, "simulate", actor))
 	if err != nil || !decision.Allow {
 		return 0, errors.New("OPA denied simulated sending: a current exact approval and eligible evidence are required")
 	}
@@ -252,11 +279,39 @@ func (r *Replay) simulate() (int, error) {
 				}
 			}
 			if !found {
-				r.Intents = append(r.Intents, Intent{key, recipient, m.Text, "queued", true, r.Approval.Binding})
+				channels := []string{}
+				for _, person := range r.Roster {
+					if person.ID == recipient {
+						channels = append(channels, person.Channels...)
+					}
+				}
+				r.Intents = append(r.Intents, Intent{Channels: channels, Key: key, Recipient: recipient, Text: m.Text, State: "queued", Simulated: true, ApprovalBinding: r.Approval.Binding})
 				count++
 			}
 		}
 	}
 	r.event("T+7 · Simulated send re-check", fmt.Sprintf("%d new queued intents. No attempted, delivered, or acknowledged correction states asserted.", count))
 	return count, nil
+}
+
+// Routing and roster decisions are part of the exact package; transport remains simulated.
+func recipientRules(r *Replay) string {
+	raw, _ := json.Marshal(r.Roster)
+	return string(raw)
+}
+func (r *Replay) selectPosture(posture string) error {
+	switch posture {
+	case "normal", "delay", "early-dismissal", "telework", "closure":
+	default:
+		return errors.New("unknown operating posture")
+	}
+	if posture == "normal" {
+		return errors.New("normal operations cannot be authorized by this warning correction policy; separate review required")
+	}
+	if r.OperatingPosture != posture {
+		r.OperatingPosture = posture
+		r.Approval = nil
+		r.event("Operating posture requires review", "The proposed operating posture changed. Exact messages and essential assignments require manager review.")
+	}
+	return nil
 }

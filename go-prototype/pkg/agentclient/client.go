@@ -5,13 +5,13 @@ import (
 	"context"
 	"time"
 
+	pb "github.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/gen/weatherdeskv1"
+	"github.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/rpcpattern"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
-	pb "weatherdesk.local/prototype/pkg/gen/weatherdeskv1"
-	"weatherdesk.local/prototype/pkg/rpcpattern"
 )
 
 type Client struct {
@@ -41,7 +41,7 @@ func (c *Client) Explain(ctx context.Context, input *pb.ExplainRequest) (*pb.Exp
 	if err != nil {
 		return nil, err
 	}
-	if response == nil || response.Briefing == nil || response.RequestId != id || response.FacilityId != input.Facility.Id || response.EvidenceTimestamp != input.EvidenceTimestamp {
+	if response == nil || response.Briefing == nil || response.RequestId != id || response.FacilityId != input.Facility.Id || response.EvidenceTimestamp != input.EvidenceTimestamp || response.ReviewRevision != input.ReviewRevision {
 		return nil, status.Error(codes.DataLoss, "Evidence response identity mismatch")
 	}
 	return response, nil

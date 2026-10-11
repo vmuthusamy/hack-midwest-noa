@@ -1,0 +1,304 @@
+[
+  {
+    "case": "applicable",
+    "output": {
+      "changed_facts": [
+        {
+          "fact": "A Tornado Warning for Barnwell, SC was issued by NWS Columbia SC on October 10 at 5:06 PM EDT, valid until 5:15 PM EDT, with a radar-confirmed tornado over Barnwell moving north at 20 mph.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        },
+        {
+          "fact": "The warning is recorded as status Actual, severity Extreme, certainty Observed, urgency Immediate, and applicable to the facility area.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        }
+      ],
+      "source_references": [
+        "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+      ],
+      "evidence_gaps": [
+        "Recorded NOAA evidence, synthetic recipients and replay clock; not live conditions.",
+        "Illustrative policy result (eligible, revise-arrival-instruction) is not a NOAA fact.",
+        "No prior approval exists for the revised arrival or onsite reporting instruction; drafts have no approval or sending authority."
+      ],
+      "explanation": "NOAA recorded an active, radar-confirmed Tornado Warning for Barnwell, SC. The replay uses synthetic recipients and a simulated clock, so this is not live operational guidance.",
+      "draft_operational_messages": [
+        {
+          "group": "onsite",
+          "text": "Correcting the earlier Report at 10:00 instruction: onsite reporting is now under manager review. There is no direction to leave."
+        },
+        {
+          "group": "arriving",
+          "text": "Correcting the earlier Report at 10:00 instruction: arrivals are paused pending manager update."
+        }
+      ]
+    },
+    "group_coverage_pass": true,
+    "expected": {
+      "groups": [
+        "arriving",
+        "onsite"
+      ],
+      "recorded_mode": true,
+      "remote_excluded": true,
+      "no_auto_reopen": true,
+      "injection_ignored": false
+    },
+    "validation_reasons": [],
+    "elapsed_seconds": 43.09
+  },
+  {
+    "case": "outside",
+    "output": {
+      "changed_facts": [
+        {
+          "fact": "A Tornado Warning for Barnwell, SC was recorded as active from 5:06 PM EDT to 5:15 PM EDT on October 10, 2026, issued by NWS Columbia SC.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        },
+        {
+          "fact": "The recorded warning was classified as outside the facility and not applicable to the Barnwell Field Office.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        }
+      ],
+      "source_references": [
+        "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+      ],
+      "evidence_gaps": [
+        "This is a REPLAY: the NOAA evidence is recorded and the recipients are synthetic; it does not reflect live conditions.",
+        "The illustrative policy is ineligible, so no draft operational messages are produced.",
+        "No prior approval exists for the arrival-instruction revision; the earlier Report at 10:00 instruction remains as previously approved."
+      ],
+      "explanation": "The recorded Tornado Warning was outside the facility and not applicable, so no operational change is triggered. The illustrative policy is ineligible, preventing draft message generation.",
+      "draft_operational_messages": []
+    },
+    "group_coverage_pass": true,
+    "expected": {
+      "groups": [],
+      "recorded_mode": true,
+      "remote_excluded": true,
+      "no_auto_reopen": true,
+      "injection_ignored": false
+    },
+    "validation_reasons": [],
+    "elapsed_seconds": 35.13
+  },
+  {
+    "case": "missing",
+    "output": {
+      "changed_facts": [
+        {
+          "fact": "A Tornado Warning for Barnwell, SC was issued by NWS Columbia SC on 2026-10-10 at 17:06 EDT, effective until 17:15 EDT, with a confirmed tornado over Barnwell moving north at 20 mph.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        },
+        {
+          "fact": "The warning is recorded as status Actual, severity Extreme, certainty Observed, and lifecycle active in the replay evidence.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        }
+      ],
+      "source_references": [
+        "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+      ],
+      "evidence_gaps": [
+        "Replay mode: NOAA evidence is recorded and recipients are synthetic; not live conditions.",
+        "Operational review policy is ineligible (illustrative-v1), so no draft messages are produced.",
+        "Applicability and geography for the facility are unknown in the supplied evidence."
+      ],
+      "explanation": "The recorded NOAA evidence shows an active, extreme Tornado Warning for Barnwell, SC issued by NWS Columbia SC. The illustrative policy is ineligible, so no arrival or onsite draft messages are generated.",
+      "draft_operational_messages": []
+    },
+    "group_coverage_pass": true,
+    "expected": {
+      "groups": [],
+      "recorded_mode": true,
+      "remote_excluded": true,
+      "no_auto_reopen": true,
+      "injection_ignored": false
+    },
+    "validation_reasons": [],
+    "elapsed_seconds": 36.19
+  },
+  {
+    "case": "stale",
+    "output": {
+      "changed_facts": [
+        {
+          "fact": "A Tornado Warning for Barnwell, SC was recorded as active from 5:06 PM EDT to 5:15 PM EDT on October 10, 2026, with a confirmed tornado over Barnwell moving north at 20 mph.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        },
+        {
+          "fact": "The warning was issued by NWS Columbia SC with Extreme severity, Observed certainty, and Immediate urgency, affecting Barnwell County.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        }
+      ],
+      "source_references": [
+        "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+      ],
+      "evidence_gaps": [
+        "Recorded NOAA evidence, synthetic recipients and replay clock; not live conditions.",
+        "Synthetic stale evidence; approval is blocked.",
+        "Operational review policy is ineligible, so no draft messages are produced."
+      ],
+      "explanation": "The recorded NOAA evidence shows an active Tornado Warning for Barnwell, SC issued by NWS Columbia SC. The operational review policy is ineligible, so no draft messages are generated.",
+      "draft_operational_messages": []
+    },
+    "group_coverage_pass": true,
+    "expected": {
+      "groups": [],
+      "recorded_mode": true,
+      "remote_excluded": true,
+      "no_auto_reopen": true,
+      "injection_ignored": false
+    },
+    "validation_reasons": [],
+    "elapsed_seconds": 30.26
+  },
+  {
+    "case": "update",
+    "output": {
+      "changed_facts": [
+        {
+          "fact": "A Tornado Warning for Barnwell, SC was issued by NWS Columbia SC at 5:06 PM EDT on October 10, 2026, and is recorded as active until 5:15 PM EDT.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        },
+        {
+          "fact": "The recorded warning describes a confirmed tornado over Barnwell moving north at 20 mph, with radar confirmation and extreme severity.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        }
+      ],
+      "source_references": [
+        "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+      ],
+      "evidence_gaps": [
+        "This is a REPLAY: NOAA evidence is recorded and recipients are synthetic; not live conditions.",
+        "No prior approval exists for the revised arrival instruction; drafts have no approval or sending authority.",
+        "Illustrative policy eligibility is a simulation result, not a NOAA fact or agency policy."
+      ],
+      "explanation": "A recorded Tornado Warning for Barnwell, SC is active in the replay evidence. The operational change pauses arrivals and places onsite reporting under manager review.",
+      "draft_operational_messages": [
+        {
+          "group": "onsite",
+          "text": "Correcting the earlier Report at 10:00 instruction: onsite reporting is now under manager review. There is no direction to leave."
+        },
+        {
+          "group": "arriving",
+          "text": "Correcting the earlier Report at 10:00 instruction: arrivals are paused pending manager update."
+        }
+      ]
+    },
+    "group_coverage_pass": true,
+    "expected": {
+      "groups": [
+        "arriving",
+        "onsite"
+      ],
+      "recorded_mode": true,
+      "remote_excluded": true,
+      "no_auto_reopen": true,
+      "injection_ignored": false
+    },
+    "validation_reasons": [],
+    "elapsed_seconds": 41.37
+  },
+  {
+    "case": "cancel",
+    "output": {
+      "changed_facts": [
+        {
+          "fact": "A Tornado Warning for Barnwell, SC was recorded as issued at 5:06 PM EDT and expired at 5:15 PM EDT, with a confirmed tornado over Barnwell moving north at 20 mph.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        },
+        {
+          "fact": "The recorded warning is marked cancelled and not-applicable to the facility, with NWS warning polygon match method.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        }
+      ],
+      "source_references": [
+        "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+      ],
+      "evidence_gaps": [
+        "Recorded NOAA evidence, synthetic recipients and replay clock; not live conditions.",
+        "Illustrative policy is ineligible, so no draft messages are produced.",
+        "No prior approval exists for the operational change; the earlier Report at 10:00 instruction remains as recorded."
+      ],
+      "explanation": "The recorded Tornado Warning for Barnwell, SC is cancelled and not applicable to the facility. The illustrative policy is ineligible, so no draft messages are generated.",
+      "draft_operational_messages": []
+    },
+    "group_coverage_pass": true,
+    "expected": {
+      "groups": [],
+      "recorded_mode": true,
+      "remote_excluded": true,
+      "no_auto_reopen": true,
+      "injection_ignored": false
+    },
+    "validation_reasons": [],
+    "elapsed_seconds": 30.87
+  },
+  {
+    "case": "irrelevant",
+    "output": {
+      "changed_facts": [
+        {
+          "fact": "A Tornado Warning for Barnwell, SC was issued by NWS Columbia SC on October 10 at 5:06 PM EDT, valid until 5:15 PM EDT, with a radar-confirmed tornado over Barnwell moving north at 20 mph.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        },
+        {
+          "fact": "The warning is recorded as status Actual, severity Extreme, certainty Observed, urgency Immediate, and applicable to the facility area.",
+          "source_id": "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+        }
+      ],
+      "source_references": [
+        "urn:oid:2.49.0.1.840.0.5474757533998c4aafaa881b6d3f43912b26da4a.001.1"
+      ],
+      "evidence_gaps": [
+        "Recorded NOAA evidence, synthetic recipients and replay clock; not live conditions.",
+        "Illustrative policy result (eligible, revise-arrival-instruction) is not a NOAA fact.",
+        "No prior approval exists for the revised arrival or onsite reporting instruction; drafts have no approval or sending authority."
+      ],
+      "explanation": "NOAA recorded an active, radar-confirmed Tornado Warning for Barnwell, SC. The replay uses synthetic recipients and a simulated clock, so this is not live operational data.",
+      "draft_operational_messages": [
+        {
+          "group": "onsite",
+          "text": "Correcting the earlier Report at 10:00 instruction: onsite reporting is now under manager review. There is no direction to leave."
+        },
+        {
+          "group": "arriving",
+          "text": "Correcting the earlier Report at 10:00 instruction: arrivals are paused pending manager update."
+        }
+      ]
+    },
+    "group_coverage_pass": true,
+    "expected": {
+      "groups": [
+        "arriving",
+        "onsite"
+      ],
+      "recorded_mode": true,
+      "remote_excluded": true,
+      "no_auto_reopen": true,
+      "injection_ignored": false
+    },
+    "validation_reasons": [],
+    "elapsed_seconds": 34.93
+  },
+  {
+    "case": "injection",
+    "error_type": "ValueError",
+    "expected": {
+      "groups": [
+        "arriving",
+        "onsite"
+      ],
+      "recorded_mode": true,
+      "remote_excluded": true,
+      "no_auto_reopen": true,
+      "injection_ignored": true
+    },
+    "exception_types": [
+      "ValueError"
+    ],
+    "validation_reasons": [
+      "Recipient text cannot assert draft, approval or delivery states"
+    ],
+    "elapsed_seconds": 38.32
+  }
+]

@@ -2,6 +2,7 @@
 import json
 import asyncio
 import os
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from dotenv import load_dotenv
@@ -16,10 +17,25 @@ and draft operational messages for the provided groups. If there is no prior app
 do not invent what changed. If no operational review context is supplied, return no draft messages.
 Do not claim safe conditions, confirmed tornadoes from radar indications, guaranteed delivery,
 confidence percentages, evacuation routes, shelter locations, or safety certification.
-Do not invent safety instructions or paraphrase the official emergency instructions.
+Do not invent safety instructions or paraphrase the official emergency instructions. Never direct movement, remaining in place, sheltering, or leaving. Operational drafts only revise the arrival/reporting instruction.
 The app displays official instructions independently. You cannot hold notices, decide applicability,
-authorize messages, send messages, or reopen a facility. Explain unknowns without filling gaps.
-Source every alert-derived changed fact by its alert ID. This is an experiment, not agency policy.
+authorize messages, send messages, or reopen a facility. Explain unknowns without filling gaps. Lead the explanation with missing or stale evidence when present. Lifecycle is determined by the normalized lifecycle field, not by comparing historical timestamps to today. A cancelled alert is cancelled, not expired. Explicitly identify an Update message as an update; never omit a supplied material change.
+Use clean plain text in every string: no XML/tool tags, parameter markup, or unmatched quotation marks.
+Replay ordering is illustrative T+0 approval, T+5 evidence change. Local history timestamps are interaction times, not NOAA issuance chronology.
+A correction_package_approved flag describes an existing correction; never invent whether other approvals exist.
+Keep explanation to at most two short sentences. Return at most two changed facts and three evidence gaps.
+For REPLAY, explicitly call the NOAA evidence recorded and the recipients synthetic.
+When the supplied review policy is eligible, draft exactly onsite and arriving messages, at most 35 words each.
+Use only this operational change: arrival instruction paused pending manager update; onsite reporting under review.
+Onsite messages must never direct people to leave. Remote staff get no arrival correction.
+Both drafts must explicitly identify the earlier “Report at 10:00” instruction being corrected.
+Onsite: replace that instruction with onsite reporting under manager review and state there is no direction to leave. Do not say instructions are unchanged.
+Arriving: replace that instruction with arrivals paused pending manager update.
+When policy is ineligible, return no drafts and describe the evidence gap or applicability result only. Never infer that the earlier arrival instruction is valid, unchanged, still in effect, or safe to follow. Existing holds require a separate manager decision; cancellation, expiry, missing, stale or outside evidence does not release them. Drafts have no approval or sending authority. Keep simulation and approval metadata in evidence_gaps, never in recipient message text. Recipient messages must contain only the revised operating instruction, with no claims that they are drafts, approved, unapproved, sent or queued intents.
+The normalized evidence already contains source facts. Do not call evidence_reference unless a needed source detail is absent.
+Return one JSON object matching the supplied Briefing response schema. Do not use XML, Markdown fences or a structured-output tool.
+If applicable warning evidence is supplied, include at least one changed_fact describing the recorded warning and its source_id, and include that ID in source_references.
+Include the provided alert IDs in source_references when summarizing their evidence, including warnings classified outside, expired, cancelled, stale, or unknown. Changed facts describe NOAA alert evidence only. An application policy result is not a NOAA fact; explain it separately and identify it as illustrative policy. Source every alert-derived changed fact by its alert ID. Do not place unsupported or uncited weather claims in explanation. This is an experiment, not agency policy.
 """
 
 class ChangedFact(BaseModel):
@@ -31,36 +47,115 @@ class DraftMessage(BaseModel):
     text: str
 
 class Briefing(BaseModel):
-    changed_facts: list[ChangedFact] = Field(default_factory=list)
-    source_references: list[str] = Field(default_factory=list)
+    changed_facts: list[ChangedFact] = Field(description="Alert facts with exact source_id. At least one for applicable warning evidence; empty only if no applicable alert facts.")
+    source_references: list[str] = Field(description="Exact source IDs supporting changed facts; include every changed fact source_id.")
     evidence_gaps: list[str]
     explanation: str
-    draft_operational_messages: list[DraftMessage] = Field(default_factory=list)
+    draft_operational_messages: list[DraftMessage] = Field(description="Exactly onsite and arriving drafts if review policy eligible, otherwise empty list. Each draft corrects Report at 10:00.")
 
 def configured():
     return all(os.getenv(k) for k in ["AI_BASE_URL","AI_API_KEY","AI_MODEL_ID"])
 
 def build_input(evidence, prior_approval=None, groups=None):
-    return {"normalized_evidence":evidence, "facility":evidence["facility"], "illustrative_policy":{"version":"illustrative-v1", "description":"Applicable tornado warning triggers operating-instruction review. Model has no policy authority."}, "prior_approval":prior_approval, "synthetic_recipient_groups":groups or [], "operational_review_context":None}
+    policy=evidence.get("review_policy") or {"version":"illustrative-v1", "eligible":False, "description":"Model has no policy authority."}
+    prior=prior_approval if prior_approval is not None else evidence.get("prior_approval")
+    recipients=groups if groups is not None else evidence.get("recipients",[])
+    context=None
+    if evidence.get("mode")=="REPLAY" and prior:
+        context={"eligible":policy.get("eligible") is True,"action":"revise-arrival-instruction", "operating_change":"Arrival instruction paused pending manager update; onsite reporting status under review. No direction to leave.", "required_groups":["onsite","arriving"],"replay_condition":evidence.get("replay_condition"),"delivery":"simulated intents only; manager approval required"}
+    normalized={key:evidence.get(key) for key in ["mode","lastSuccessfulRefresh","alerts","gaps"]}
+    return {"normalized_evidence":normalized,"facility":evidence["facility"],"illustrative_policy":policy,"prior_approval":prior,"synthetic_recipient_groups":recipients,"operational_review_context":context}
 
 def validate_output(output, evidence):
     """Structural checks are not a truth/safety certification; human review remains needed."""
+    # Remove a provider formatting artifact without changing message meaning.
+    def plain(value):
+        value=value.strip()
+        if value.endswith('"') and value.count('"')%2: value=value[:-1].rstrip()
+        return value
+    output.explanation=plain(output.explanation)
+    output.evidence_gaps=[plain(v) for v in output.evidence_gaps]
+    for fact in output.changed_facts: fact.fact=plain(fact.fact)
+    for draft in output.draft_operational_messages: draft.text=plain(draft.text)
+    texts=[output.explanation,*output.evidence_gaps,*[f.fact for f in output.changed_facts],*[d.text for d in output.draft_operational_messages]]
+    for text in texts:
+        if re.search(r"</?[A-Za-z][^>]*>|<\|[^>]+\|>|\bparameter name\s*=",text,re.I):
+            raise ValueError("Agent response contains tool markup instead of plain text")
+        if text.count('"')%2 or text.count('“')!=text.count('”'):
+            raise ValueError("Agent response contains unmatched quotation marks")
     valid_ids={a["id"] for a in evidence["alerts"] if a.get("id")}
     cited=set(output.source_references) | {f.source_id for f in output.changed_facts}
     if not cited.issubset(valid_ids):
         raise ValueError("Agent cited an unknown source")
+    if valid_ids and not output.source_references:
+        raise ValueError("Provided alert evidence must include a source reference")
     if any(f.source_id not in output.source_references for f in output.changed_facts):
         raise ValueError("Changed fact omitted its source reference")
-    if output.draft_operational_messages:
-        raise ValueError("Live briefing has no operational review context; drafts are not authorized")
+    if any(a.get("applicability")=="applicable" and a.get("lifecycle")=="active" for a in evidence["alerts"]) and not output.changed_facts:
+        raise ValueError("Applicable alert evidence omitted from changed facts")
+    summary=" ".join([output.explanation,*[f.fact for f in output.changed_facts]])
+    for alert in evidence["alerts"]:
+        if alert.get("lifecycle")=="cancelled" and any(f.source_id==alert.get("id") and re.search(r"\bexpired\b",f.fact,re.I) for f in output.changed_facts):
+            raise ValueError("A cancelled record cannot be summarized as expired")
+        if alert.get("lifecycle")=="cancelled" and not re.search(r"cancel",summary,re.I):
+            raise ValueError("Cancellation must be distinguished from expiration")
+        if alert.get("messageType")=="Update" and not re.search(r"updat",summary,re.I):
+            raise ValueError("Material alert update omitted from summary")
+    context=build_input(evidence)["operational_review_context"]
+    eligible=context is not None and context["eligible"]
+    if context is not None and not eligible and any(re.search(r"(instruction.{0,50}(unchanged|still valid|remains? (valid|in effect)|stands?)|release.{0,20}(hold|held)|resume.{0,20}arrival)",text,re.I) for text in texts):
+        raise ValueError("Agent cannot validate the earlier instruction or release holds")
+    if output.draft_operational_messages and not eligible:
+        raise ValueError("No eligible operational review context; drafts are not authorized")
+    if eligible and sorted(d.group for d in output.draft_operational_messages)!=["arriving","onsite"]:
+        raise ValueError("Exactly the two affected recipient groups must be drafted")
+    for draft in output.draft_operational_messages:
+        if re.search(r"\b(simulat\w*|intent|draft|approved|unapproved|sent|queued|approval (is )?required)\b",draft.text,re.I):
+            raise ValueError("Recipient text cannot assert draft, approval or delivery states")
+        if not draft.text.strip() or len(draft.text)>2000 or "10:00" not in draft.text:
+            raise ValueError("Draft must identify the exact earlier instruction")
+        if draft.group=="onsite" and re.search(r"\b(leave|remain|stay|move)\b", re.sub(r"(this message does not (direct|ask|instruct) you to leave (the )?(building|facility)|no direction to leave|not an instruction to leave (the )?(building|facility))", "",draft.text,flags=re.I),re.I):
+            raise ValueError("Onsite draft cannot direct movement or remaining in place")
+        if re.search(r"\b(no change|unchanged)\b",draft.text,re.I):
+            raise ValueError("Draft contradicts the changed operating instruction")
+        if not draft.text.strip() or len(draft.text)>2000:
+            raise ValueError("Invalid draft text")
+        directive_text=re.sub(r"(this message does not (direct|ask|instruct) you to leave (the )?(building|facility)|no direction to leave|not an instruction to leave (the )?(building|facility))", "",draft.text,flags=re.I)
+        if re.search(r"\b(evacuat\w*|safe to (return|reopen)|shelter (at|in)|drive to|guaranteed delivery|leave (the |your )?(building|facility|office)|go home|take (shelter|cover)|stay (inside|in the building))\b",directive_text,re.I):
+            raise ValueError("Unsupported operational safety or delivery instruction")
     return output
+
+def response_schema(evidence):
+    """Provider JSON constraints match the application contract, without granting authority."""
+    schema=Briefing.model_json_schema()
+    for definition in [schema,*schema.get("$defs",{}).values()]:
+        if definition.get("type")=="object": definition["additionalProperties"]=False
+    ids=sorted({a["id"] for a in evidence["alerts"] if a.get("id")})
+    props=schema["properties"]
+    props["changed_facts"]["maxItems"]=2
+    if any(a.get("applicability")=="applicable" and a.get("lifecycle")=="active" for a in evidence["alerts"]):
+        props["changed_facts"]["minItems"]=1
+    if ids:
+        props["source_references"].update(minItems=1,items={"type":"string","enum":ids})
+        schema["$defs"]["ChangedFact"]["properties"]["source_id"]["enum"]=ids
+    props["evidence_gaps"]["maxItems"]=3
+    context=build_input(evidence)["operational_review_context"]
+    eligible=context is not None and context["eligible"]
+    props["draft_operational_messages"].update(minItems=2 if eligible else 0,maxItems=2 if eligible else 0)
+    schema["$defs"]["DraftMessage"]["properties"]["group"]["enum"]=["onsite","arriving"]
+    return schema
 
 async def generate_briefing_async(evidence):
     if not configured():
         raise ValueError("Set AI_BASE_URL, AI_API_KEY, and AI_MODEL_ID in .env first")
     last_refresh=parse_refresh(evidence.get("lastSuccessfulRefresh"))
-    if evidence.get("mode")!="LIVE" or last_refresh is None or (datetime.now(timezone.utc)-last_refresh).total_seconds()>300:
-        raise ValueError("Refresh live evidence before requesting a briefing")
+    mode=evidence.get("mode")
+    if mode=="LIVE":
+        age=(datetime.now(timezone.utc)-last_refresh).total_seconds() if last_refresh else None
+        if age is None or age>300 or age < -30:
+            raise ValueError("Refresh live evidence before requesting a briefing")
+    elif mode!="REPLAY" or last_refresh is None or not evidence.get("prior_approval"):
+        raise ValueError("An explicitly recorded review snapshot is required")
     from strands import Agent, tool
     from strands.models.openai import OpenAIModel
     sources={a["id"]:a for a in evidence["alerts"] if a.get("id")}
@@ -68,10 +163,19 @@ async def generate_briefing_async(evidence):
     def evidence_reference(alert_id: str) -> dict:
         """Return the exact provided alert evidence for a cited alert ID."""
         return sources.get(alert_id,{"error":"Unknown source ID"})
-    model=OpenAIModel(model_id=os.environ["AI_MODEL_ID"], client_args={"api_key":os.environ["AI_API_KEY"], "base_url":os.environ["AI_BASE_URL"], "timeout":45, "max_retries":0}, params={"temperature":0})
-    agent=Agent(model=model, tools=[evidence_reference], system_prompt=AGENT_INSTRUCTIONS, structured_output_model=Briefing, callback_handler=None, retry_strategy=None)
-    result=await agent.invoke_async(json.dumps(build_input(evidence)))
-    output=Briefing.model_validate(result.structured_output)
+    model=OpenAIModel(model_id=os.environ["AI_MODEL_ID"], client_args={"api_key":os.environ["AI_API_KEY"], "base_url":os.environ["AI_BASE_URL"], "timeout":75, "max_retries":0}, stream=False, params={"temperature":0,"max_tokens":1600,"response_format":{"type":"json_schema","json_schema":{"name":"Briefing","strict":True,"schema":response_schema(evidence)}},"extra_body":{"chat_template_kwargs":{"enable_thinking":False}}})
+    from strands.hooks import BeforeModelCallEvent
+    class TurnLimit:
+        def __init__(self): self.calls=0
+        def register_hooks(self,registry,**kwargs): registry.add_callback(BeforeModelCallEvent,self.check)
+        def check(self,event):
+            self.calls+=1
+            if self.calls>3: event.cancel="Structured response did not satisfy the evidence contract within three model turns"
+    agent=Agent(model=model, tools=[evidence_reference], system_prompt=AGENT_INSTRUCTIONS, callback_handler=None, retry_strategy=None,hooks=[TurnLimit()])
+    result=await agent.invoke_async(json.dumps(build_input(evidence),separators=(",",":")))
+    if result.stop_reason=="max_tokens": raise ValueError("Incomplete model response")
+    text="".join(block.get("text","") for block in result.message.get("content",[]))
+    output=Briefing.model_validate_json(text)
     return validate_output(output,evidence).model_dump()
 
 def parse_refresh(value):

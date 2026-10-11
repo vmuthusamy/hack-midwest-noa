@@ -1,0 +1,40 @@
+{
+  "scope": "Independent QA of OAuth/session gateway, signed Go principal, staff routing/posture, live river UX; synthetic identities/fixtures and isolated servers only",
+  "unit_results": {
+    "python": "33/33 pass",
+    "gateway": "14/14 pass",
+    "go": "all packages pass under -race; new9auth and3profile top-level tests"
+  },
+  "browser_results": {
+    "auth": "PASS actual Auth.js encrypted synthetic token decoding, no-session redirect/API401, session cached role ignored, viewer actualAPIapproval+inferencePOST403, tamperedtoken redirect/API401, allowlisted manager controls",
+    "responsive": "PASS390px and320px long name/login, source/river text, no horizontal overflow or page errors",
+    "replay": "PASS exact closureposture persisted, normaloptiondisabled, essential+channelrouting shown, exact messages and recipients, simulation/dedup, edit/history preservation, cancel pending AI, missing/cancel/expired holds",
+    "live": "PASS empty briefing, cited alert expiry invalidates AI briefing AND posture suggestion; LIVE-only regional rivercontext preserveszero/unknown/nullthreshold, observationyear and age visible, facilityimpactunknown"
+  },
+  "fixed_findings": [
+    "Go unauthenticated unknownfacility status ordering",
+    "Go publicly bound API cannot silently use demo authority",
+    "320px nav overflow",
+    "River observation year omission",
+    "LIVE posture stale suggestion after warning expiry",
+    "Model cancellation-as-expiration and missing Update marker now covered by sharedvalidator regression tests"
+  ],
+  "deployment_review": "Manifest review only: CaddyHTTPS ports80/443 only, internalAPI/gRPC, explicit AUTH_REQUIREDtrue, nonrootcontainers, persistent named history; actual cloud runtime not independently tested yet",
+  "limitations": [
+    "Actual GitHub provider callback is unverified until OAuth client credentials configured.",
+    "Model8case run preceded newest semantic guards;7/8acceptedthen, injection rejected; two observed defects now blocked by regressiontests, no paid rerun yet.",
+    "No real staff sends/acknowledgments, native mobile app, or safety certification."
+  ],
+  "artifacts": [
+    "/tmp/weather-desk-oauth-viewer-mobile-qa.png",
+    "/tmp/weather-desk-agent-jsonschema-final-results.json"
+  ],
+  "qa_source_files": [
+    "tests/auth-qa.test.mjs",
+    "tests/auth-browser-qa.cjs",
+    "tests/browser-qa.cjs",
+    "tests/test_briefing_review.py",
+    "go-prototype/internal/weatherdesk/auth_test.go",
+    "go-prototype/internal/weatherdesk/profile_test.go"
+  ]
+}

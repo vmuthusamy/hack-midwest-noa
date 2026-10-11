@@ -4,24 +4,28 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
 	"time"
 
-	"weatherdesk.local/prototype/pkg/agentclient"
-	pb "weatherdesk.local/prototype/pkg/gen/weatherdeskv1"
-	"weatherdesk.local/prototype/pkg/rpcpattern"
+	"github.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/agentclient"
+	pb "github.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/gen/weatherdeskv1"
+	"github.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/rpcpattern"
 )
 
 type App struct {
-	mu      sync.Mutex
-	replays map[string]*Replay
-	live    map[string]Evidence
-	root    string
-	agent   *agentclient.Client
-	agentMu sync.Mutex
+	auth          *authorization
+	mu            sync.Mutex
+	replays       map[string]*Replay
+	live          map[string]Evidence
+	root          string
+	agent         *agentclient.Client
+	agentMu       sync.Mutex
+	lastInference string
 }
 
 func (a *App) Close() error { return a.agent.Close() }
@@ -55,7 +59,7 @@ func decode(w http.ResponseWriter, r *http.Request, input any) bool {
 func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		origin := r.Header.Get("Origin")
-		if origin != "" && origin != "http://127.0.0.1:8088" && origin != "http://localhost:8088" && origin != "http://127.0.0.1:8087" {
+		if origin != "" && origin != "http://127.0.0.1:8088" && origin != "http://localhost:8088" && origin != "http://127.0.0.1:8087" && (a.auth == nil || origin != a.auth.origin) {
 			failure(w, 403, "Origin not allowed")
 			return
 		}
@@ -67,6 +71,18 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.mu.Lock()
 	replay, exists := a.replays[scenario]
 	a.mu.Unlock()
+	if !exists {
+		failure(w, 404, "Unknown fictional facility")
+		return
+	}
+	if exists && a.auth != nil {
+		principal, err := a.auth.verify(r, replay.Facility.ID)
+		if err != nil {
+			failure(w, 403, err.Error())
+			return
+		}
+		r = withPrincipal(r, principal)
+	}
 	if r.URL.Path == "/api/status" && r.Method == "GET" {
 		ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 		defer cancel()
@@ -76,7 +92,9 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			configured = status.Configured
 			installed = status.Installed
 		}
-		respond(w, 200, map[string]any{"go": true, "strandsInstalled": installed, "agentConfigured": configured, "inferenceVerified": false, "delivery": "simulation only", "history": "local replay snapshots", "transport": "gRPC v1", "session": "demo; no account signed in"})
+		a.mu.Lock()
+		defer a.mu.Unlock()
+		respond(w, 200, map[string]any{"go": true, "strandsInstalled": installed, "agentConfigured": configured, "inferenceVerified": a.lastInference != "", "lastSuccessfulInference": a.lastInference, "delivery": "simulation only", "history": "local replay snapshots", "transport": "gRPC v1", "session": requestPrincipal(r).Name})
 		return
 	}
 	if !exists {
@@ -92,18 +110,19 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		a.mu.Lock()
 		defer a.mu.Unlock()
 		replay = a.replays[scenario]
-		respond(w, 200, map[string]any{"replay": replay, "revision": digest(packageFor(replay))})
+		respond(w, 200, map[string]any{"replay": replay, "postureAssessment": AssessPosture(replay.Mode, replay.Facility, []Alert{replay.Alert}, replay.Fresh), "revision": digest(packageFor(replay))})
 	case "/api/replay/action":
 		if r.Method != "POST" {
 			failure(w, 405, "POST required")
 			return
 		}
 		var input struct {
-			Action   string            `json:"action"`
-			Case     string            `json:"case"`
-			Messages map[string]string `json:"messages"`
-			Revision string            `json:"revision"`
-			Binding  string            `json:"binding"`
+			OperatingPosture string            `json:"operatingPosture"`
+			Action           string            `json:"action"`
+			Case             string            `json:"case"`
+			Messages         map[string]string `json:"messages"`
+			Revision         string            `json:"revision"`
+			Binding          string            `json:"binding"`
 		}
 		if !decode(w, r, &input) {
 			return
@@ -123,6 +142,16 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		var err error
 		added := 0
+		if input.OperatingPosture != "" {
+			if input.Action != "edit" && input.Action != "approve" {
+				failure(w, 400, "Posture changes require review")
+				return
+			}
+			if err := replay.selectPosture(input.OperatingPosture); err != nil {
+				failure(w, 409, err.Error())
+				return
+			}
+		}
 		switch input.Action {
 		case "case":
 			err = replay.setCase(input.Case)
@@ -133,13 +162,13 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				err = replay.updateMessages(input.Messages)
 			}
 			if err == nil {
-				err = replay.approve()
+				err = replay.approveAs(requestPrincipal(r))
 			}
 		case "simulate":
 			if replay.Approval == nil || input.Binding != replay.Approval.Binding {
 				err = fmt.Errorf("exact approval binding required")
 			} else {
-				added, err = replay.simulate()
+				added, err = replay.simulateAs(requestPrincipal(r))
 			}
 		default:
 			err = fmt.Errorf("unknown action")
@@ -154,7 +183,7 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			failure(w, 500, "Unable to save the local replay record")
 			return
 		}
-		respond(w, 200, map[string]any{"replay": replay, "revision": digest(packageFor(replay)), "added": added})
+		respond(w, 200, map[string]any{"replay": replay, "postureAssessment": AssessPosture(replay.Mode, replay.Facility, []Alert{replay.Alert}, replay.Fresh), "revision": digest(packageFor(replay)), "added": added})
 	case "/api/live":
 		if r.Method != "GET" {
 			failure(w, 405, "GET required")
@@ -180,43 +209,106 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer a.agentMu.Unlock()
-		a.mu.Lock()
-		e, ok := a.live[scenario]
-		a.mu.Unlock()
-		e.Alerts = append([]Alert{}, e.Alerts...)
-		last, err := time.Parse(time.RFC3339, e.LastRefresh)
-		if !ok || err != nil || time.Since(last) > 5*time.Minute {
-			failure(w, 409, "Refresh live NOAA evidence before requesting a briefing")
+		var input struct {
+			Mode     string `json:"mode"`
+			Revision string `json:"revision"`
+		}
+		if !decode(w, r, &input) {
 			return
 		}
-		// Re-evaluate validity at inference time; cache freshness cannot prolong a warning.
-		now := time.Now()
-		for i := range e.Alerts {
-			end, err := time.Parse(time.RFC3339, e.Alerts[i].Expires)
-			if err == nil && !now.Before(end) {
-				e.Alerts[i].Lifecycle = "expired"
-				e.Alerts[i].Applicability = "not-applicable"
-			}
+		if input.Mode == "" {
+			input.Mode = "LIVE"
 		}
-		// The model gets facility evidence, not every unrelated alert in the nationwide feed.
-		local := []Alert{}
-		excludedUnknown := 0
-		for _, alert := range e.Alerts {
-			if alert.Applicability == "applicable" || (alert.Geography == "applicable" && alert.Applicability == "unknown") {
-				local = append(local, alert)
-			} else if alert.Applicability == "unknown" {
-				excludedUnknown++
-			}
+		if input.Mode != "LIVE" && input.Mode != "REPLAY" {
+			failure(w, 400, "Unknown evidence mode")
+			return
 		}
-		e.Alerts = local
-		if excludedUnknown > 0 {
-			e.Gaps = append(e.Gaps, fmt.Sprintf("%d nationwide records have unresolved applicability and are excluded from this facility briefing. Their absence is not an all-clear.", excludedUnknown))
+		var e Evidence
+		var request *pb.ExplainRequest
+		if input.Mode == "REPLAY" {
+			a.mu.Lock()
+			current := a.replays[scenario]
+			if input.Revision != digest(packageFor(current)) {
+				a.mu.Unlock()
+				failure(w, 409, "The review changed. Reload the current package.")
+				return
+			}
+			e = Evidence{Mode: "REPLAY", Facility: current.Facility, LastRefresh: current.CapturedAt, Alerts: []Alert{current.Alert}, Gaps: []string{"Recorded NOAA evidence and synthetic recipients; not live conditions. Illustrative order is T+0 approval, T+5 warning. History timestamps record local interactions, not the NOAA issue chronology."}}
+			if !current.Fresh {
+				e.Gaps = append(e.Gaps, "Synthetic stale evidence; approval is blocked.")
+			}
+			request = explainRequest(e)
+			recipients := []string{}
+			for _, p := range current.Roster {
+				request.Recipients = append(request.Recipients, &pb.Recipient{Id: p.ID, Name: p.Name, Group: p.Group, OriginalNoticeState: p.Original})
+				if p.Original != "not targeted" {
+					recipients = append(recipients, p.ID)
+				}
+			}
+			approvedAt := ""
+			if len(current.History) > 0 {
+				approvedAt = current.History[0].Time
+			}
+			request.PriorApproval = &pb.PriorApproval{Instruction: "Report at 10:00", ApprovedAt: approvedAt, RecipientIds: recipients, CorrectionPackageApproved: current.Approval != nil}
+			if current.Approval != nil {
+				request.PriorApproval.CorrectionBinding = current.Approval.Binding
+			}
+			request.ReviewPolicy = &pb.ReviewPolicy{Version: current.Policy, Digest: policyDigest, Eligible: current.PolicyDecision.Allow, Action: "revise-arrival-instruction"}
+			request.ReviewRevision = input.Revision
+			request.ReplayCondition = current.Case
+			a.mu.Unlock()
+		} else {
+			a.mu.Lock()
+			var ok bool
+			e, ok = a.live[scenario]
+			a.mu.Unlock()
+			e.Alerts = append([]Alert{}, e.Alerts...)
+			last, err := time.Parse(time.RFC3339, e.LastRefresh)
+			if !ok || err != nil || time.Since(last) > 5*time.Minute {
+				failure(w, 409, "Refresh live NOAA evidence before requesting a briefing")
+				return
+			}
+			// Re-evaluate validity at inference time; cache freshness cannot prolong a warning.
+			now := time.Now()
+			for i := range e.Alerts {
+				end, err := time.Parse(time.RFC3339, e.Alerts[i].Expires)
+				if err == nil && !now.Before(end) {
+					e.Alerts[i].Lifecycle = "expired"
+					e.Alerts[i].Applicability = "not-applicable"
+				}
+			}
+			// The model gets facility evidence, not every unrelated alert in the nationwide feed.
+			local := []Alert{}
+			excludedUnknown := 0
+			for _, alert := range e.Alerts {
+				if alert.Applicability == "applicable" || (alert.Geography == "applicable" && alert.Applicability == "unknown") {
+					local = append(local, alert)
+				} else if alert.Applicability == "unknown" {
+					excludedUnknown++
+				}
+			}
+			e.Alerts = local
+			if excludedUnknown > 0 {
+				e.Gaps = append(e.Gaps, fmt.Sprintf("%d nationwide records have unresolved applicability and are excluded from this facility briefing. Their absence is not an all-clear.", excludedUnknown))
+			}
+			request = explainRequest(e)
 		}
 		ctx, cancel := context.WithTimeout(r.Context(), 90*time.Second)
 		defer cancel()
-		response, err := a.agent.Explain(ctx, explainRequest(e))
+		response, err := a.agent.Explain(ctx, request)
 		if err != nil {
-			failure(w, rpcpattern.HTTPStatus(err), "Strands inference unavailable. Check the local team key and provider connection.")
+			message := "Inference failed. The reviewed messages and notice history were not changed."
+			switch status.Code(err) {
+			case codes.DeadlineExceeded:
+				message = "The shared inference service timed out. You can retry or review the editable fixture draft."
+			case codes.FailedPrecondition:
+				message = "The agent response did not satisfy the evidence contract. Review the fixture draft or try again."
+			case codes.ResourceExhausted:
+				message = "Another briefing is running. Wait for it to finish."
+			case codes.Unavailable:
+				message = "The local agent worker is unavailable. Start it with scripts/dev.sh."
+			}
+			failure(w, rpcpattern.HTTPStatus(err), message)
 			return
 		}
 		if response.EvidenceTimestamp != e.LastRefresh || response.FacilityId != e.Facility.ID || response.RequestId == "" {
@@ -229,7 +321,14 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			failure(w, 502, "Invalid agent output")
 			return
 		}
-		respond(w, 200, map[string]any{"briefing": result, "evidenceTimestamp": e.LastRefresh, "facilityId": e.Facility.ID})
+		a.mu.Lock()
+		defer a.mu.Unlock()
+		if input.Mode == "REPLAY" && digest(packageFor(a.replays[scenario])) != input.Revision {
+			failure(w, 409, "The review changed while the draft was generated. Review again.")
+			return
+		}
+		a.lastInference = time.Now().UTC().Format(time.RFC3339)
+		respond(w, 200, map[string]any{"briefing": result, "evidenceTimestamp": e.LastRefresh, "facilityId": e.Facility.ID, "mode": input.Mode, "reviewRevision": input.Revision})
 	default:
 		failure(w, 404, "Route not found")
 	}
@@ -244,7 +343,12 @@ func New(root, agentAddress string) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	app := &App{replays: map[string]*Replay{}, live: map[string]Evidence{}, root: root, agent: client}
+	auth, err := newAuthorization()
+	if err != nil {
+		client.Close()
+		return nil, err
+	}
+	app := &App{auth: auth, replays: map[string]*Replay{}, live: map[string]Evidence{}, root: root, agent: client}
 	for _, key := range []string{"barnwell", "florida", "california"} {
 		r, err := newReplay(key, nil)
 		if err != nil {
@@ -264,6 +368,21 @@ func New(root, agentAddress string) (*App, error) {
 				if record.Approval != nil && record.Approval.Binding != digest(packageFor(record)) {
 					record.Approval = nil
 					record.event("Approval requires review", "Policy or package changed across local restart.")
+				}
+				if record.OperatingPosture == "" {
+					record.OperatingPosture = "delay"
+					record.OperatingHours = original.OperatingHours
+				}
+				for i := range record.Roster {
+					for _, person := range original.Roster {
+						if record.Roster[i].ID == person.ID {
+							record.Roster[i].Assignment = person.Assignment
+							record.Roster[i].Essential = person.Essential
+							record.Roster[i].TeleworkEligible = person.TeleworkEligible
+							record.Roster[i].Accessibility = person.Accessibility
+							record.Roster[i].Channels = person.Channels
+						}
+					}
 				}
 				if err := record.refreshPolicy(); err != nil {
 					client.Close()

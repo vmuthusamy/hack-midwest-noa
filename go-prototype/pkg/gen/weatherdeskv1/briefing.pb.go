@@ -381,6 +381,218 @@ func (x *Alert) GetMatchMethod() string {
 	return ""
 }
 
+type PriorApproval struct {
+	state                     protoimpl.MessageState `protogen:"open.v1"`
+	Instruction               string                 `protobuf:"bytes,1,opt,name=instruction,proto3" json:"instruction,omitempty"`
+	ApprovedAt                string                 `protobuf:"bytes,2,opt,name=approved_at,json=approvedAt,proto3" json:"approved_at,omitempty"`
+	RecipientIds              []string               `protobuf:"bytes,3,rep,name=recipient_ids,json=recipientIds,proto3" json:"recipient_ids,omitempty"`
+	CorrectionPackageApproved bool                   `protobuf:"varint,4,opt,name=correction_package_approved,json=correctionPackageApproved,proto3" json:"correction_package_approved,omitempty"`
+	CorrectionBinding         string                 `protobuf:"bytes,5,opt,name=correction_binding,json=correctionBinding,proto3" json:"correction_binding,omitempty"`
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
+}
+
+func (x *PriorApproval) Reset() {
+	*x = PriorApproval{}
+	mi := &file_briefing_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PriorApproval) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PriorApproval) ProtoMessage() {}
+
+func (x *PriorApproval) ProtoReflect() protoreflect.Message {
+	mi := &file_briefing_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PriorApproval.ProtoReflect.Descriptor instead.
+func (*PriorApproval) Descriptor() ([]byte, []int) {
+	return file_briefing_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *PriorApproval) GetInstruction() string {
+	if x != nil {
+		return x.Instruction
+	}
+	return ""
+}
+
+func (x *PriorApproval) GetApprovedAt() string {
+	if x != nil {
+		return x.ApprovedAt
+	}
+	return ""
+}
+
+func (x *PriorApproval) GetRecipientIds() []string {
+	if x != nil {
+		return x.RecipientIds
+	}
+	return nil
+}
+
+func (x *PriorApproval) GetCorrectionPackageApproved() bool {
+	if x != nil {
+		return x.CorrectionPackageApproved
+	}
+	return false
+}
+
+func (x *PriorApproval) GetCorrectionBinding() string {
+	if x != nil {
+		return x.CorrectionBinding
+	}
+	return ""
+}
+
+type Recipient struct {
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	Id                  string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name                string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Group               string                 `protobuf:"bytes,3,opt,name=group,proto3" json:"group,omitempty"`
+	OriginalNoticeState string                 `protobuf:"bytes,4,opt,name=original_notice_state,json=originalNoticeState,proto3" json:"original_notice_state,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *Recipient) Reset() {
+	*x = Recipient{}
+	mi := &file_briefing_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Recipient) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Recipient) ProtoMessage() {}
+
+func (x *Recipient) ProtoReflect() protoreflect.Message {
+	mi := &file_briefing_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Recipient.ProtoReflect.Descriptor instead.
+func (*Recipient) Descriptor() ([]byte, []int) {
+	return file_briefing_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Recipient) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Recipient) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Recipient) GetGroup() string {
+	if x != nil {
+		return x.Group
+	}
+	return ""
+}
+
+func (x *Recipient) GetOriginalNoticeState() string {
+	if x != nil {
+		return x.OriginalNoticeState
+	}
+	return ""
+}
+
+type ReviewPolicy struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Version       string                 `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+	Digest        string                 `protobuf:"bytes,2,opt,name=digest,proto3" json:"digest,omitempty"`
+	Eligible      bool                   `protobuf:"varint,3,opt,name=eligible,proto3" json:"eligible,omitempty"`
+	Action        string                 `protobuf:"bytes,4,opt,name=action,proto3" json:"action,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReviewPolicy) Reset() {
+	*x = ReviewPolicy{}
+	mi := &file_briefing_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReviewPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReviewPolicy) ProtoMessage() {}
+
+func (x *ReviewPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_briefing_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReviewPolicy.ProtoReflect.Descriptor instead.
+func (*ReviewPolicy) Descriptor() ([]byte, []int) {
+	return file_briefing_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ReviewPolicy) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *ReviewPolicy) GetDigest() string {
+	if x != nil {
+		return x.Digest
+	}
+	return ""
+}
+
+func (x *ReviewPolicy) GetEligible() bool {
+	if x != nil {
+		return x.Eligible
+	}
+	return false
+}
+
+func (x *ReviewPolicy) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+}
+
 type ExplainRequest struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
 	RequestId         string                 `protobuf:"bytes,1,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
@@ -389,13 +601,18 @@ type ExplainRequest struct {
 	EvidenceTimestamp string                 `protobuf:"bytes,4,opt,name=evidence_timestamp,json=evidenceTimestamp,proto3" json:"evidence_timestamp,omitempty"`
 	Alerts            []*Alert               `protobuf:"bytes,5,rep,name=alerts,proto3" json:"alerts,omitempty"`
 	EvidenceGaps      []string               `protobuf:"bytes,6,rep,name=evidence_gaps,json=evidenceGaps,proto3" json:"evidence_gaps,omitempty"`
+	PriorApproval     *PriorApproval         `protobuf:"bytes,7,opt,name=prior_approval,json=priorApproval,proto3" json:"prior_approval,omitempty"`
+	Recipients        []*Recipient           `protobuf:"bytes,8,rep,name=recipients,proto3" json:"recipients,omitempty"`
+	ReviewPolicy      *ReviewPolicy          `protobuf:"bytes,9,opt,name=review_policy,json=reviewPolicy,proto3" json:"review_policy,omitempty"`
+	ReviewRevision    string                 `protobuf:"bytes,10,opt,name=review_revision,json=reviewRevision,proto3" json:"review_revision,omitempty"`
+	ReplayCondition   string                 `protobuf:"bytes,11,opt,name=replay_condition,json=replayCondition,proto3" json:"replay_condition,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
 func (x *ExplainRequest) Reset() {
 	*x = ExplainRequest{}
-	mi := &file_briefing_proto_msgTypes[4]
+	mi := &file_briefing_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -407,7 +624,7 @@ func (x *ExplainRequest) String() string {
 func (*ExplainRequest) ProtoMessage() {}
 
 func (x *ExplainRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[4]
+	mi := &file_briefing_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -420,7 +637,7 @@ func (x *ExplainRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExplainRequest.ProtoReflect.Descriptor instead.
 func (*ExplainRequest) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{4}
+	return file_briefing_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ExplainRequest) GetRequestId() string {
@@ -465,6 +682,41 @@ func (x *ExplainRequest) GetEvidenceGaps() []string {
 	return nil
 }
 
+func (x *ExplainRequest) GetPriorApproval() *PriorApproval {
+	if x != nil {
+		return x.PriorApproval
+	}
+	return nil
+}
+
+func (x *ExplainRequest) GetRecipients() []*Recipient {
+	if x != nil {
+		return x.Recipients
+	}
+	return nil
+}
+
+func (x *ExplainRequest) GetReviewPolicy() *ReviewPolicy {
+	if x != nil {
+		return x.ReviewPolicy
+	}
+	return nil
+}
+
+func (x *ExplainRequest) GetReviewRevision() string {
+	if x != nil {
+		return x.ReviewRevision
+	}
+	return ""
+}
+
+func (x *ExplainRequest) GetReplayCondition() string {
+	if x != nil {
+		return x.ReplayCondition
+	}
+	return ""
+}
+
 type ChangedFact struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Fact          string                 `protobuf:"bytes,1,opt,name=fact,proto3" json:"fact,omitempty"`
@@ -475,7 +727,7 @@ type ChangedFact struct {
 
 func (x *ChangedFact) Reset() {
 	*x = ChangedFact{}
-	mi := &file_briefing_proto_msgTypes[5]
+	mi := &file_briefing_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -487,7 +739,7 @@ func (x *ChangedFact) String() string {
 func (*ChangedFact) ProtoMessage() {}
 
 func (x *ChangedFact) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[5]
+	mi := &file_briefing_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -500,7 +752,7 @@ func (x *ChangedFact) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChangedFact.ProtoReflect.Descriptor instead.
 func (*ChangedFact) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{5}
+	return file_briefing_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ChangedFact) GetFact() string {
@@ -527,7 +779,7 @@ type DraftMessage struct {
 
 func (x *DraftMessage) Reset() {
 	*x = DraftMessage{}
-	mi := &file_briefing_proto_msgTypes[6]
+	mi := &file_briefing_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -539,7 +791,7 @@ func (x *DraftMessage) String() string {
 func (*DraftMessage) ProtoMessage() {}
 
 func (x *DraftMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[6]
+	mi := &file_briefing_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -552,7 +804,7 @@ func (x *DraftMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DraftMessage.ProtoReflect.Descriptor instead.
 func (*DraftMessage) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{6}
+	return file_briefing_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *DraftMessage) GetGroup() string {
@@ -582,7 +834,7 @@ type Briefing struct {
 
 func (x *Briefing) Reset() {
 	*x = Briefing{}
-	mi := &file_briefing_proto_msgTypes[7]
+	mi := &file_briefing_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -594,7 +846,7 @@ func (x *Briefing) String() string {
 func (*Briefing) ProtoMessage() {}
 
 func (x *Briefing) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[7]
+	mi := &file_briefing_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -607,7 +859,7 @@ func (x *Briefing) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Briefing.ProtoReflect.Descriptor instead.
 func (*Briefing) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{7}
+	return file_briefing_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *Briefing) GetChangedFacts() []*ChangedFact {
@@ -651,13 +903,14 @@ type ExplainResponse struct {
 	EvidenceTimestamp string                 `protobuf:"bytes,2,opt,name=evidence_timestamp,json=evidenceTimestamp,proto3" json:"evidence_timestamp,omitempty"`
 	FacilityId        string                 `protobuf:"bytes,3,opt,name=facility_id,json=facilityId,proto3" json:"facility_id,omitempty"`
 	Briefing          *Briefing              `protobuf:"bytes,4,opt,name=briefing,proto3" json:"briefing,omitempty"`
+	ReviewRevision    string                 `protobuf:"bytes,5,opt,name=review_revision,json=reviewRevision,proto3" json:"review_revision,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
 func (x *ExplainResponse) Reset() {
 	*x = ExplainResponse{}
-	mi := &file_briefing_proto_msgTypes[8]
+	mi := &file_briefing_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -669,7 +922,7 @@ func (x *ExplainResponse) String() string {
 func (*ExplainResponse) ProtoMessage() {}
 
 func (x *ExplainResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_briefing_proto_msgTypes[8]
+	mi := &file_briefing_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -682,7 +935,7 @@ func (x *ExplainResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExplainResponse.ProtoReflect.Descriptor instead.
 func (*ExplainResponse) Descriptor() ([]byte, []int) {
-	return file_briefing_proto_rawDescGZIP(), []int{8}
+	return file_briefing_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *ExplainResponse) GetRequestId() string {
@@ -711,6 +964,13 @@ func (x *ExplainResponse) GetBriefing() *Briefing {
 		return x.Briefing
 	}
 	return nil
+}
+
+func (x *ExplainResponse) GetReviewRevision() string {
+	if x != nil {
+		return x.ReviewRevision
+	}
+	return ""
 }
 
 var File_briefing_proto protoreflect.FileDescriptor
@@ -751,7 +1011,24 @@ const file_briefing_proto_rawDesc = "" +
 	"\tgeography\x18\x10 \x01(\tR\tgeography\x12\x1c\n" +
 	"\tlifecycle\x18\x11 \x01(\tR\tlifecycle\x12$\n" +
 	"\rapplicability\x18\x12 \x01(\tR\rapplicability\x12!\n" +
-	"\fmatch_method\x18\x13 \x01(\tR\vmatchMethod\"\xfc\x01\n" +
+	"\fmatch_method\x18\x13 \x01(\tR\vmatchMethod\"\xe6\x01\n" +
+	"\rPriorApproval\x12 \n" +
+	"\vinstruction\x18\x01 \x01(\tR\vinstruction\x12\x1f\n" +
+	"\vapproved_at\x18\x02 \x01(\tR\n" +
+	"approvedAt\x12#\n" +
+	"\rrecipient_ids\x18\x03 \x03(\tR\frecipientIds\x12>\n" +
+	"\x1bcorrection_package_approved\x18\x04 \x01(\bR\x19correctionPackageApproved\x12-\n" +
+	"\x12correction_binding\x18\x05 \x01(\tR\x11correctionBinding\"y\n" +
+	"\tRecipient\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
+	"\x05group\x18\x03 \x01(\tR\x05group\x122\n" +
+	"\x15original_notice_state\x18\x04 \x01(\tR\x13originalNoticeState\"t\n" +
+	"\fReviewPolicy\x12\x18\n" +
+	"\aversion\x18\x01 \x01(\tR\aversion\x12\x16\n" +
+	"\x06digest\x18\x02 \x01(\tR\x06digest\x12\x1a\n" +
+	"\beligible\x18\x03 \x01(\bR\beligible\x12\x16\n" +
+	"\x06action\x18\x04 \x01(\tR\x06action\"\x94\x04\n" +
 	"\x0eExplainRequest\x12\x1d\n" +
 	"\n" +
 	"request_id\x18\x01 \x01(\tR\trequestId\x12\x12\n" +
@@ -759,7 +1036,15 @@ const file_briefing_proto_rawDesc = "" +
 	"\bfacility\x18\x03 \x01(\v2\x18.weatherdesk.v1.FacilityR\bfacility\x12-\n" +
 	"\x12evidence_timestamp\x18\x04 \x01(\tR\x11evidenceTimestamp\x12-\n" +
 	"\x06alerts\x18\x05 \x03(\v2\x15.weatherdesk.v1.AlertR\x06alerts\x12#\n" +
-	"\revidence_gaps\x18\x06 \x03(\tR\fevidenceGaps\">\n" +
+	"\revidence_gaps\x18\x06 \x03(\tR\fevidenceGaps\x12D\n" +
+	"\x0eprior_approval\x18\a \x01(\v2\x1d.weatherdesk.v1.PriorApprovalR\rpriorApproval\x129\n" +
+	"\n" +
+	"recipients\x18\b \x03(\v2\x19.weatherdesk.v1.RecipientR\n" +
+	"recipients\x12A\n" +
+	"\rreview_policy\x18\t \x01(\v2\x1c.weatherdesk.v1.ReviewPolicyR\freviewPolicy\x12'\n" +
+	"\x0freview_revision\x18\n" +
+	" \x01(\tR\x0ereviewRevision\x12)\n" +
+	"\x10replay_condition\x18\v \x01(\tR\x0freplayCondition\">\n" +
 	"\vChangedFact\x12\x12\n" +
 	"\x04fact\x18\x01 \x01(\tR\x04fact\x12\x1b\n" +
 	"\tsource_id\x18\x02 \x01(\tR\bsourceId\"8\n" +
@@ -771,17 +1056,18 @@ const file_briefing_proto_rawDesc = "" +
 	"\x11source_references\x18\x02 \x03(\tR\x10sourceReferences\x12#\n" +
 	"\revidence_gaps\x18\x03 \x03(\tR\fevidenceGaps\x12 \n" +
 	"\vexplanation\x18\x04 \x01(\tR\vexplanation\x12Z\n" +
-	"\x1adraft_operational_messages\x18\x05 \x03(\v2\x1c.weatherdesk.v1.DraftMessageR\x18draftOperationalMessages\"\xb6\x01\n" +
+	"\x1adraft_operational_messages\x18\x05 \x03(\v2\x1c.weatherdesk.v1.DraftMessageR\x18draftOperationalMessages\"\xdf\x01\n" +
 	"\x0fExplainResponse\x12\x1d\n" +
 	"\n" +
 	"request_id\x18\x01 \x01(\tR\trequestId\x12-\n" +
 	"\x12evidence_timestamp\x18\x02 \x01(\tR\x11evidenceTimestamp\x12\x1f\n" +
 	"\vfacility_id\x18\x03 \x01(\tR\n" +
 	"facilityId\x124\n" +
-	"\bbriefing\x18\x04 \x01(\v2\x18.weatherdesk.v1.BriefingR\bbriefing2\xb1\x01\n" +
+	"\bbriefing\x18\x04 \x01(\v2\x18.weatherdesk.v1.BriefingR\bbriefing\x12'\n" +
+	"\x0freview_revision\x18\x05 \x01(\tR\x0ereviewRevision2\xb1\x01\n" +
 	"\x17EvidenceBriefingService\x12J\n" +
 	"\tGetStatus\x12\x1d.weatherdesk.v1.StatusRequest\x1a\x1e.weatherdesk.v1.StatusResponse\x12J\n" +
-	"\aExplain\x12\x1e.weatherdesk.v1.ExplainRequest\x1a\x1f.weatherdesk.v1.ExplainResponseB3Z1weatherdesk.local/prototype/pkg/gen/weatherdeskv1b\x06proto3"
+	"\aExplain\x12\x1e.weatherdesk.v1.ExplainRequest\x1a\x1f.weatherdesk.v1.ExplainResponseBKZIgithub.com/vmuthusamy/hack-midwest-noa/go-prototype/pkg/gen/weatherdeskv1b\x06proto3"
 
 var (
 	file_briefing_proto_rawDescOnce sync.Once
@@ -795,33 +1081,39 @@ func file_briefing_proto_rawDescGZIP() []byte {
 	return file_briefing_proto_rawDescData
 }
 
-var file_briefing_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_briefing_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_briefing_proto_goTypes = []any{
 	(*StatusRequest)(nil),   // 0: weatherdesk.v1.StatusRequest
 	(*StatusResponse)(nil),  // 1: weatherdesk.v1.StatusResponse
 	(*Facility)(nil),        // 2: weatherdesk.v1.Facility
 	(*Alert)(nil),           // 3: weatherdesk.v1.Alert
-	(*ExplainRequest)(nil),  // 4: weatherdesk.v1.ExplainRequest
-	(*ChangedFact)(nil),     // 5: weatherdesk.v1.ChangedFact
-	(*DraftMessage)(nil),    // 6: weatherdesk.v1.DraftMessage
-	(*Briefing)(nil),        // 7: weatherdesk.v1.Briefing
-	(*ExplainResponse)(nil), // 8: weatherdesk.v1.ExplainResponse
+	(*PriorApproval)(nil),   // 4: weatherdesk.v1.PriorApproval
+	(*Recipient)(nil),       // 5: weatherdesk.v1.Recipient
+	(*ReviewPolicy)(nil),    // 6: weatherdesk.v1.ReviewPolicy
+	(*ExplainRequest)(nil),  // 7: weatherdesk.v1.ExplainRequest
+	(*ChangedFact)(nil),     // 8: weatherdesk.v1.ChangedFact
+	(*DraftMessage)(nil),    // 9: weatherdesk.v1.DraftMessage
+	(*Briefing)(nil),        // 10: weatherdesk.v1.Briefing
+	(*ExplainResponse)(nil), // 11: weatherdesk.v1.ExplainResponse
 }
 var file_briefing_proto_depIdxs = []int32{
-	2, // 0: weatherdesk.v1.ExplainRequest.facility:type_name -> weatherdesk.v1.Facility
-	3, // 1: weatherdesk.v1.ExplainRequest.alerts:type_name -> weatherdesk.v1.Alert
-	5, // 2: weatherdesk.v1.Briefing.changed_facts:type_name -> weatherdesk.v1.ChangedFact
-	6, // 3: weatherdesk.v1.Briefing.draft_operational_messages:type_name -> weatherdesk.v1.DraftMessage
-	7, // 4: weatherdesk.v1.ExplainResponse.briefing:type_name -> weatherdesk.v1.Briefing
-	0, // 5: weatherdesk.v1.EvidenceBriefingService.GetStatus:input_type -> weatherdesk.v1.StatusRequest
-	4, // 6: weatherdesk.v1.EvidenceBriefingService.Explain:input_type -> weatherdesk.v1.ExplainRequest
-	1, // 7: weatherdesk.v1.EvidenceBriefingService.GetStatus:output_type -> weatherdesk.v1.StatusResponse
-	8, // 8: weatherdesk.v1.EvidenceBriefingService.Explain:output_type -> weatherdesk.v1.ExplainResponse
-	7, // [7:9] is the sub-list for method output_type
-	5, // [5:7] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	2,  // 0: weatherdesk.v1.ExplainRequest.facility:type_name -> weatherdesk.v1.Facility
+	3,  // 1: weatherdesk.v1.ExplainRequest.alerts:type_name -> weatherdesk.v1.Alert
+	4,  // 2: weatherdesk.v1.ExplainRequest.prior_approval:type_name -> weatherdesk.v1.PriorApproval
+	5,  // 3: weatherdesk.v1.ExplainRequest.recipients:type_name -> weatherdesk.v1.Recipient
+	6,  // 4: weatherdesk.v1.ExplainRequest.review_policy:type_name -> weatherdesk.v1.ReviewPolicy
+	8,  // 5: weatherdesk.v1.Briefing.changed_facts:type_name -> weatherdesk.v1.ChangedFact
+	9,  // 6: weatherdesk.v1.Briefing.draft_operational_messages:type_name -> weatherdesk.v1.DraftMessage
+	10, // 7: weatherdesk.v1.ExplainResponse.briefing:type_name -> weatherdesk.v1.Briefing
+	0,  // 8: weatherdesk.v1.EvidenceBriefingService.GetStatus:input_type -> weatherdesk.v1.StatusRequest
+	7,  // 9: weatherdesk.v1.EvidenceBriefingService.Explain:input_type -> weatherdesk.v1.ExplainRequest
+	1,  // 10: weatherdesk.v1.EvidenceBriefingService.GetStatus:output_type -> weatherdesk.v1.StatusResponse
+	11, // 11: weatherdesk.v1.EvidenceBriefingService.Explain:output_type -> weatherdesk.v1.ExplainResponse
+	10, // [10:12] is the sub-list for method output_type
+	8,  // [8:10] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_briefing_proto_init() }
@@ -835,7 +1127,7 @@ func file_briefing_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_briefing_proto_rawDesc), len(file_briefing_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

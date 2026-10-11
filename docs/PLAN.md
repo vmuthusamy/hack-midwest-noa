@@ -43,9 +43,9 @@ Embedded OPA/Rego (`approval.rego`, illustrative-v1) evaluates allow/deny and qu
 
 Go calls the Python worker through a versioned Protobuf/gRPC contract. Common client libraries bound deadlines, propagate request IDs, validate response identity, and map transport errors. Cancellation reaches async inference, and automatic retries are disabled. Local replay snapshots survive restarts; authenticated durable production storage remains a later slice.
 
-One Python Strands agent receives relevant normalized facility evidence and explicit unresolved gaps. Go narrows input to avoid unrelated nationwide alerts dominating the briefing. The shared `briefing.py` instructions/schema/tool remain authoritative for app and eventual evals. Python reads only supplied source references; model output cannot approve, hold, send, reopen or provision. LIVE has no prior operating review, so operational drafts are rejected.
+One Python Strands agent receives relevant normalized facility evidence and explicit unresolved gaps. Go narrows input to avoid unrelated nationwide alerts dominating the briefing. The shared `briefing.py` instructions/schema/tool remain authoritative for app and evals. Python reads only supplied source references; model output cannot approve, hold, send, reopen or provision. LIVE has no prior operating review, so operational drafts are rejected.
 
-The workshop endpoint and model defaults are configured; its organizer inference key is still required. tool/streaming/forced-tool compatibility and real inference remain unverified. Installed SDK alone is not a sponsor integration. No cloud provisioning in this slice.
+The workshop endpoint, model alias and private organizer team key are configured locally. Real Strands structured-output calls through Akamai have executed. The model drafts exactly two correction groups for an eligible replay and has no operational authority. Shared-provider failures return recoverable errors; they do not alter approval or history. Sponsor eligibility still depends on the organizers’ review. No cloud provisioning in this slice.
 
 ## Small slices and design review
 
@@ -54,9 +54,9 @@ Delivered for review: clickable Next dashboard, separate live NOAA ingestion, re
 Next after design review:
 
 1. Resolve practitioner/user feedback on operating postures, notice audiences, approval wording, and evidence hierarchy. Choose gallery patterns and density before expanding.
-2. Validate Akamai streaming/tool/structured output with one real Strands run; run shared-instruction eval fixtures and report sample counts/unsupported claims/source gaps.
+2. Use the completed inference and shared-instruction evaluation results to improve source coverage, output quality and latency. Expand evaluation fixtures and practitioner testing; see VERIFICATION.md for measured sample counts and limitations.
 3. Add one real supplementary local signal and source-aware forecast/observation ingestion, with missing/stale semantics and traceable thresholds.
 4. Add authenticated facility-scoped roles, append-only persistent decision/package/notice store and transactional intent dedup. Keep official warnings independent.
 5. Follow update/cancel reference lineage and resilient caching/refresh. Then scope an authorized Akamai Cloud deployment.
 
-Tests cover applicable/outside/missing/stale/update/cancel/expired/irrelevant evidence, edited recipients/message/facility/policy, immutable history, already-delivered originals, repeat sends, Rego role/scope/deny cases, and HTTP revisions. No invented confidence percentages or safety certification. Model evaluation remains **0 samples** until real inference executes.
+Tests cover applicable/outside/missing/stale/update/cancel/expired/irrelevant evidence, edited recipients/message/facility/policy, immutable history, already-delivered originals, repeat sends, Rego role/scope/deny cases, and HTTP revisions. No invented confidence percentages or safety certification. App and evaluator import the same Strands instructions, builder and output contract. Eight recorded/synthetic model cases and deterministic workflow checks are reported separately in VERIFICATION.md; provider errors are counted as errors, never quality passes.

@@ -68,14 +68,16 @@ type Alert struct {
 	References    []json.RawMessage `json:"references"`
 }
 type Evidence struct {
-	Mode        string   `json:"mode"`
-	Facility    Facility `json:"facility"`
-	LastRefresh string   `json:"lastSuccessfulRefresh"`
-	FeedUpdated string   `json:"feedUpdated"`
-	Source      string   `json:"source"`
-	Alerts      []Alert  `json:"alerts"`
-	Gaps        []string `json:"gaps"`
-	Zones       []string `json:"facilityZones"`
+	PostureAssessment PostureAssessment `json:"postureAssessment"`
+	RiverSignals      []RiverSignal     `json:"riverSignals"`
+	Mode              string            `json:"mode"`
+	Facility          Facility          `json:"facility"`
+	LastRefresh       string            `json:"lastSuccessfulRefresh"`
+	FeedUpdated       string            `json:"feedUpdated"`
+	Source            string            `json:"source"`
+	Alerts            []Alert           `json:"alerts"`
+	Gaps              []string          `json:"gaps"`
+	Zones             []string          `json:"facilityZones"`
 }
 
 // Geometry takes precedence over county membership: a warning covers only its polygon.
@@ -266,7 +268,15 @@ func fetchEvidence(ctx context.Context, f Facility) (Evidence, error) {
 	for _, feature := range feed.Features {
 		e.Alerts = append(e.Alerts, normalize(feature, f, points.zones, now))
 	}
+	riverContext, cancelRiver := context.WithTimeout(ctx, 12*time.Second)
+	defer cancelRiver()
+	signals, riverError := FetchRiverSignals(riverContext, f)
+	e.RiverSignals = signals
+	if riverError != nil {
+		e.Gaps = append(e.Gaps, "Supplementary river data is incomplete; see the gauge evidence gaps. Facility impact remains unknown.")
+	}
 	sort.SliceStable(e.Alerts, func(i, j int) bool { return alertRank(e.Alerts[i]) < alertRank(e.Alerts[j]) })
+	e.PostureAssessment = AssessPosture(e.Mode, e.Facility, e.Alerts, true)
 	return e, nil
 }
 func alertRank(a Alert) int {
