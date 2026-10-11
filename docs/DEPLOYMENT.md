@@ -2,7 +2,7 @@
 
 ## Current status: retired October 11, 2026
 
-The hackathon instance `107869915` was deleted after stopping its containers and saving a private local archive of decision history, inference telemetry and runtime configuration. A follow-up API lookup returned 404 and the instance inventory returned zero. No block volumes, NodeBalancers, Kubernetes clusters, databases, object-storage buckets or allocated IPs remain. Object Storage is disabled; Managed and Longview subscriptions are inactive.
+The hackathon instance `107869915` was deleted after stopping its containers and saving a private local archive of decision history, inference telemetry and runtime configuration. A follow-up API lookup returned 404 and the instance inventory returned zero. A later recheck found the automatically generated recovery image `private/41809535`; it was also deleted. The private-image inventory then returned zero. No block volumes, NodeBalancers, Kubernetes clusters, databases, object-storage buckets or allocated IPs remain. Object Storage is disabled; Managed and Longview subscriptions are inactive.
 
 The free DuckDNS name is retained with its IPv4 record set to `0.0.0.0`, removing its link to the released address. The public app is offline. Local app processes were stopped and inference keys cleared from active runtime environment files. The installed Strands SDK is an inert library; this does not revoke the organizers' shared inference key or control other team members' usage.
 
