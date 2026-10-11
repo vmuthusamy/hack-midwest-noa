@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -18,6 +19,7 @@ import (
 )
 
 type App struct {
+	monitor       *incidentMonitor
 	auth          *authorization
 	mu            sync.Mutex
 	replays       map[string]*Replay
@@ -31,7 +33,12 @@ type App struct {
 	caseFetch     func(context.Context, Facility) (Evidence, error)
 }
 
-func (a *App) Close() error { return a.agent.Close() }
+func (a *App) Close() error {
+	if a.monitor != nil {
+		a.monitor.cancel()
+	}
+	return a.agent.Close()
+}
 func explainRequest(e Evidence) *pb.ExplainRequest {
 	f := e.Facility
 	request := &pb.ExplainRequest{Mode: e.Mode, Facility: &pb.Facility{Id: f.ID, Name: f.Name, Latitude: f.Latitude, Longitude: f.Longitude, Fictional: f.Fictional}, EvidenceTimestamp: e.LastRefresh, EvidenceGaps: e.Gaps}
@@ -102,6 +109,23 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	if !exists {
 		failure(w, 404, "Unknown fictional facility")
+		return
+	}
+	if r.URL.Path == "/api/incidents" {
+		if r.Method != "GET" {
+			failure(w, 405, "GET required")
+			return
+		}
+		if a.monitor == nil {
+			failure(w, 503, "Live monitoring is not enabled")
+			return
+		}
+		region := r.URL.Query().Get("region")
+		if region != "" && region != "ALL" && region != "OTHER" && (len(region) != 2 || !strings.Contains(" "+stateCodes+" ", " "+region+" ")) {
+			failure(w, 400, "Unknown region")
+			return
+		}
+		respond(w, 200, a.monitor.view(region, replay.Facility))
 		return
 	}
 	if r.URL.Path == "/api/metrics" {
@@ -199,7 +223,7 @@ func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			failure(w, 405, "GET required")
 			return
 		}
-		evidence, err := fetchEvidence(r.Context(), replay.Facility)
+		evidence, err := a.caseFetch(r.Context(), replay.Facility)
 		a.mu.Lock()
 		defer a.mu.Unlock()
 		if err != nil {
@@ -408,6 +432,21 @@ func New(root, agentAddress string) (*App, error) {
 	if err := app.restoreOperations(); err != nil {
 		client.Close()
 		return nil, err
+	}
+	if os.Getenv("WEATHER_DESK_MONITOR_ENABLED") == "true" {
+		monitor, err := newIncidentMonitor(root)
+		if err != nil {
+			client.Close()
+			return nil, err
+		}
+		app.monitor = monitor
+		app.caseFetch = func(ctx context.Context, f Facility) (Evidence, error) { return fetchEvidenceUsing(ctx, f, monitor) }
+		go monitor.run()
+		facilities := []Facility{}
+		for _, replay := range app.replays {
+			facilities = append(facilities, replay.Facility)
+		}
+		go monitor.refreshZones(facilities)
 	}
 	return app, nil
 }

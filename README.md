@@ -2,7 +2,7 @@
 
 NOAA-first facility operations experiment for Hack Midwest. Primary user: a USDA-style facility manager reviewing an operating instruction after weather evidence changes. Fictional facilities and synthetic people only.
 
-The new prototype uses **Next.js 16.4 / React 19.3 / Tailwind 4**, a **Go backend**, an embedded **OPA/Rego approval policy**, and the existing **Python Strands Agents 1.59 adapter** for an Akamai OpenAI-compatible inference endpoint.
+The implementation uses **Next.js 16.4 / React 19.3 / Tailwind 4**, a **Go backend**, an embedded **OPA/Rego approval policy**, and the existing **Python Strands Agents 1.59 adapter** for an Akamai OpenAI-compatible inference endpoint.
 
 ## Run locally
 
@@ -17,6 +17,14 @@ Go was installed from the checksum-verified official Go release into `../.tools/
 
 On another machine: install Go 1.26 or newer and Node.js 20.9 or newer, create `../.venv`, install `requirements.txt`, and run `npm ci` in `frontend`. Set `WEATHER_DESK_PYTHON` if your Python interpreter is elsewhere. `scripts/dev.sh` accepts an installed Go binary as a fallback.
 
+## Live regional monitoring
+
+The local source now includes `/incidents`: a shared nationwide NWS collector with region filters, office polygon/zone matching, recency and retained change history. Enable it with `WEATHER_DESK_MONITOR_ENABLED=true ./scripts/dev.sh`. The deployment configuration enables it, but **this slice has not been uploaded or deployed**. It does not run during tests or evaluation commands unless explicitly enabled.
+
+One national feed request every 60 seconds serves all states and territories, rather than one request per region or browser. The browser reads the cache every 15 seconds while visible. The service uses conditional requests and backs off on failures. Monitoring runs no model calls or evaluations. History retains observed changes for seven days with a 5,000-event national cap; it is not a complete historical archive. See [live monitoring](docs/LIVE-MONITORING.md) for recency, operating limits and the acceptance walkthrough.
+
+[Submission answers](docs/SUBMISSION-DRAFT.md) match the organizer form. [Enterprise use and future in-app agents](docs/ENTERPRISE-USE.md) describe the value to validate and the remaining work. These are local drafts; nothing has been submitted.
+
 ## The manager workflow
 
 Open a **LIVE** case from fresh NOAA evidence or an explicitly labeled **REPLAY** case from recorded public source responses. Both use one flow:
@@ -24,7 +32,7 @@ Open a **LIVE** case from fresh NOAA evidence or an explicitly labeled **REPLAY*
 1. **Situation:** facility status and suggested posture appear together with official NWS instructions and a map. The default recorded Batesburg case is inside a saved Flash Flood Warning polygon. Barnwell is outside that polygon and has a Flood Watch; its regional gauge has no published flood-stage threshold. Great Falls demonstrates a recorded Winter Storm Warning.
 2. **Operating decision:** review the versioned policy suggestion, choose delay, telework, or closure, enter an effective time and rationale. **Suggest rationale with AI** calls the actual Strands/Akamai agent against the case's exact evidence. Inference failure leaves the editable manager review available.
 3. **Who is notified:** review every synthetic person's inclusion/exclusion reason, planned accessible channels and exact editable operating message. Essential status never authorizes travel. Remote staff whose arrangements do not change are excluded with a reason.
-4. **Decision record:** approval saves the immutable evidence and exact package. **Re-check & simulate notices** refreshes LIVE evidence immediately; a material change requires a new review, unrelated national changes do not, and repeated attempts add no duplicates. Open the printable record to see what was known, who approved it, and the separate queued-notice state.
+4. **Decision record:** approval saves the immutable evidence and exact package. **Re-check & simulate notices** rechecks LIVE evidence immediately against the latest successful shared snapshot when monitoring is enabled; a material change requires a new review, unrelated national changes do not, and repeated attempts add no duplicates. Open the printable record to see what was known, who approved it, and the separate queued-notice state.
 
 Normal operations and early dismissal are visible vocabulary but require separate facility procedures; this warning-review demo does not authorize reopening or departures. A watch supports planning review, not a claim that flooding has occurred. Missing/current evidence stays unknown. Recorded data never becomes LIVE implicitly. Official emergency instructions do not wait for AI or manager approval.
 
@@ -50,7 +58,7 @@ frontend/                        # Next App Router + reusable UI components
 briefing.py                      # shared Strands instructions/schema/tool
 ```
 
-Rego starts with deny. The current operations policy authorizes a facility-scoped manager's exact reviewed delay, telework or closure package with fresh, resolved evidence in either mode. LIVE uses the current clock and a fresh pre-queue source check; REPLAY uses its labeled capture clock. Go binds facility, action, posture, rationale, effective time, recipients, inclusion rules, channels, text, relevant warning conditions, policy version and policy source digest. Decision snapshots are immutable; notice outcomes append separately and survive opening another case and restarting. Failed persistence leaves previous state intact. The original arrival-correction replay and its stricter Rego policy remain available as legacy test/reference endpoints; they are not mixed into a new case.
+Rego starts with deny. The current operations policy authorizes a facility-scoped manager's exact reviewed delay, telework or closure package with fresh, resolved evidence in either mode. LIVE uses the current clock and a pre-queue source check; with monitoring enabled the shared snapshot must be no more than 90 seconds old and its last refresh must have succeeded; REPLAY uses its labeled capture clock. Go binds facility, action, posture, rationale, effective time, recipients, inclusion rules, channels, text, relevant warning conditions, policy version and policy source digest. Decision snapshots are immutable; notice outcomes append separately and survive opening another case and restarting. Failed persistence leaves previous state intact. The original arrival-correction replay and its stricter Rego policy remain available as legacy test/reference endpoints; they are not mixed into a new case.
 
 Production uses Google OAuth through Auth.js. Go verifies a signed principal bound to facility, path, method, exact body and expiry; write nonces prevent replay. Login identity alone does not grant manager authority. API and agent gRPC are private behind the Next gateway and HTTPS edge.
 
@@ -79,7 +87,7 @@ Use `go` directly if it is on PATH. See [acceptance cases](docs/ACCEPTANCE.md) a
 
 ## Current limits
 
-The app has fictional facilities and a synthetic roster, persistent decision snapshots, manual refresh, and approvals of simulated notice packages in LIVE and REPLAY modes. Cloud login is OAuth; local demo access is explicitly configured. Five operating postures are shown, with illustrative evidence-based delayed-arrival suggestions and exact selected-posture binding. Essential assignments, telework eligibility, accessibility preferences and simulated channel routing are recorded in the reviewed package. No actual staff messages, delivery, or acknowledgment are claimed. LIVE river context now uses matched USGS/NOAA gauge sources and preserves unknown flood thresholds. Manager-reported power inputs are included, and recorded inputs are labeled EXAMPLE. Road conditions and forecast ingestion into the operational screen remain future slices; the gallery includes separately labeled recorded forecast data. Refreshing does not fetch a full historical cancellation lineage. Deterministic tests are not evidence of model quality or safety certification.
+The app has fictional facilities and a synthetic roster, persistent decision snapshots, explicit case refresh, and approvals of simulated notice packages in LIVE and REPLAY modes. Cloud login is OAuth; local demo access is explicitly configured. Five operating postures are shown, with illustrative evidence-based delayed-arrival suggestions and exact selected-posture binding. Essential assignments, telework eligibility, accessibility preferences and simulated channel routing are recorded in the reviewed package. No actual staff messages, delivery, or acknowledgment are claimed. LIVE river context now uses matched USGS/NOAA gauge sources and preserves unknown flood thresholds. Manager-reported power inputs are included, and recorded inputs are labeled EXAMPLE. Road conditions and forecast ingestion into the operational screen remain future slices; the gallery includes separately labeled recorded forecast data. Refreshing does not fetch a full historical cancellation lineage. Deterministic tests are not evidence of model quality or safety certification.
 
 Earlier Python/buildless experiments remain in `server.py` and `prototype/` for reference and run separately on port 8086.
 

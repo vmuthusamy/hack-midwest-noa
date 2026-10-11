@@ -19,10 +19,18 @@ type Facility struct {
 	Longitude float64 `json:"longitude"`
 	Fictional bool    `json:"fictional"`
 }
+type alertFeed struct {
+	Features []Feature `json:"features"`
+	Updated  string    `json:"updated"`
+}
+
 type Feature struct {
 	ID         string          `json:"id"`
 	Geometry   json.RawMessage `json:"geometry"`
 	Properties struct {
+		Geocode struct {
+			UGC []string `json:"UGC"`
+		} `json:"geocode"`
 		ID          string            `json:"id"`
 		Event       string            `json:"event"`
 		Headline    string            `json:"headline"`
@@ -255,12 +263,27 @@ func getNOAA(ctx context.Context, url string, output any) error {
 	return json.NewDecoder(io.LimitReader(r.Body, 12<<20)).Decode(output)
 }
 func fetchEvidence(ctx context.Context, f Facility) (Evidence, error) {
+	return fetchEvidenceUsing(ctx, f, nil)
+}
+
+func fetchEvidenceUsing(ctx context.Context, f Facility, monitor *incidentMonitor) (Evidence, error) {
 	type pointResult struct {
 		zones []string
 		err   error
 	}
 	pointChan := make(chan pointResult, 1)
 	go func() {
+		if monitor != nil {
+			monitor.mu.RLock()
+			zones := append([]string{}, monitor.zones[f.ID]...)
+			checked := monitor.zoneChecked[f.ID]
+			monitor.mu.RUnlock()
+			if time.Since(checked) > 24*time.Hour {
+				zones = nil
+			}
+			pointChan <- pointResult{zones: zones}
+			return
+		}
 		var p struct {
 			Properties struct {
 				ForecastZone    string `json:"forecastZone"`
@@ -279,12 +302,16 @@ func fetchEvidence(ctx context.Context, f Facility) (Evidence, error) {
 		}
 		pointChan <- pointResult{zones, err}
 	}()
-	var feed struct {
-		Features []Feature `json:"features"`
-		Updated  string    `json:"updated"`
-	}
+	var feed alertFeed
 	source := "https://api.weather.gov/alerts/active"
-	if err := getNOAA(ctx, source, &feed); err != nil {
+	checkedAt := ""
+	if monitor != nil {
+		var err error
+		feed, checkedAt, err = monitor.feedForDecision()
+		if err != nil {
+			return Evidence{}, err
+		}
+	} else if err := getNOAA(ctx, source, &feed); err != nil {
 		return Evidence{}, err
 	}
 	if feed.Features == nil {
@@ -292,7 +319,10 @@ func fetchEvidence(ctx context.Context, f Facility) (Evidence, error) {
 	}
 	points := <-pointChan
 	now := time.Now().UTC()
-	e := Evidence{Mode: "LIVE", Facility: f, LastRefresh: now.Format(time.RFC3339), FeedUpdated: feed.Updated, Source: source, Alerts: []Alert{}, Zones: points.zones, Gaps: []string{"No road, power, or employee commute data is connected.", "No prior operational approval is supplied to the live agent.", "An expired or cancelled warning does not authorize reopening."}}
+	if checkedAt == "" {
+		checkedAt = now.Format(time.RFC3339)
+	}
+	e := Evidence{Mode: "LIVE", Facility: f, LastRefresh: checkedAt, FeedUpdated: feed.Updated, Source: source, Alerts: []Alert{}, Zones: points.zones, Gaps: []string{"No road, power, or employee commute data is connected.", "No prior operational approval is supplied to the live agent.", "An expired or cancelled warning does not authorize reopening."}}
 	if points.err != nil || len(points.zones) == 0 {
 		e.Gaps = append(e.Gaps, "Facility zone lookup failed; alerts without polygons have unknown applicability.")
 	}

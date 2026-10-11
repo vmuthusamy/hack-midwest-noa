@@ -2,7 +2,7 @@ import { createHash, createHmac, randomUUID } from 'node:crypto';
 import { authEnvironment, identityFromSession, demoIdentity } from './auth-policy.mjs';
 
 const routes = new Map([
-  ['/api/status', 'GET'], ['/api/replay', 'GET'], ['/api/live', 'GET'],
+  ['/api/incidents', 'GET'], ['/api/status', 'GET'], ['/api/replay', 'GET'], ['/api/live', 'GET'],
   ['/api/replay/action', 'POST'], ['/api/briefing', 'POST'],
   ['/api/case', ['GET', 'POST']], ['/api/case/action', 'POST'], ['/api/case/briefing', 'POST'], ['/api/records', 'GET'], ['/api/metrics', 'GET'],
 ]);

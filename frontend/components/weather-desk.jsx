@@ -42,9 +42,9 @@ function NotificationStatus({person,currentCase}) {
  const status=notificationStatus(person,currentCase.deliveryEvents,currentCase.intents,currentCase.approval?.binding);
  return <div className="recipient-delivery"><StatusLabel label={status.label}/>{status.fallback&&<small>Unreachable → next channel</small>}</div>;
 }
-export default function WeatherDesk({identity}) {
+export default function WeatherDesk({identity,initialFacility='batesburg'}) {
   const manager=identity.role==='manager';
-  const [theme,setTheme]=useState('dark'),[facility,setFacility]=useState('batesburg'),[mode,setMode]=useState('REPLAY');
+  const [theme,setTheme]=useState('dark'),[facility,setFacility]=useState(initialFacility),[mode,setMode]=useState('REPLAY');
   const [current,setCurrent]=useState(null),[records,setRecords]=useState([]),[step,setStep]=useState(1),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState('');
   const [posture,setPosture]=useState('delay'),[rationale,setRationale]=useState(''),[effective,setEffective]=useState(''),[messages,setMessages]=useState({}),[essentialReviewed,setEssentialReviewed]=useState(false),[explanation,setExplanation]=useState(null),[agentConfigured,setAgentConfigured]=useState(false),[now,setNow]=useState(Date.now());
   const [openMessage,setOpenMessage]=useState(null),[changing,setChanging]=useState(false),[overrideReason,setOverrideReason]=useState(''),[previewPerson,setPreviewPerson]=useState(''),[powerStatus,setPowerStatus]=useState('unknown'),[powerSource,setPowerSource]=useState(''),[powerTime,setPowerTime]=useState(''),[recoveredTexts,setRecoveredTexts]=useState([]);

@@ -18,6 +18,7 @@ services:
       AUTH_URL: ${AUTH_URL:?required}
       WEATHER_DESK_GATEWAY_SECRET: ${WEATHER_DESK_GATEWAY_SECRET:?required}
       WEATHER_DESK_AGENT_ADDR: agent:8089
+      WEATHER_DESK_MONITOR_ENABLED: "true"
     volumes: [history:/data]
     networks: [private]
   web:
