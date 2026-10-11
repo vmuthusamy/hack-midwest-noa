@@ -44,3 +44,7 @@ These steps are pending user acceptance, not a claim of completed QA. Build chec
 ## Beyond one instance
 
 The deployment currently has one API process and therefore one collector. Before adding replicas, move ingestion to a dedicated worker or use a distributed lease, shared database and fan-out notifications. Add per-tenant facility subscriptions, spatial indexing, monitored source gaps, backups and retention governance. Add a bounded historical reconciliation job against NWS's seven-day alerts endpoint to recover some outages and explicit cancellations; respect pagination and maintain observed-versus-issued timestamps. None of that should start an agent for every national alert.
+
+## Local preview origin
+
+`scripts/dev.sh` pins the default local browser origin to `http://127.0.0.1:8088`. For a custom local port, set `WEATHER_DESK_DEMO_ORIGIN` on the Next.js process and `AUTH_URL` on the local Go process to the same loopback origin. The frontend validates this configuration and preserves its exact Origin check; production still requires OAuth and its configured HTTPS origin.

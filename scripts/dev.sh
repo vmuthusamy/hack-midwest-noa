@@ -2,6 +2,7 @@
 set -euo pipefail
 TASK_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export WEATHER_DESK_ROOT="$TASK_ROOT"
+export WEATHER_DESK_DEMO_ORIGIN="${WEATHER_DESK_DEMO_ORIGIN:-http://127.0.0.1:8088}"
 export GOCACHE="$TASK_ROOT/.cache/go-build"
 export GOPATH="$TASK_ROOT/../.tools/go-modules"
 GO_BIN="$TASK_ROOT/../.tools/go/bin/go"

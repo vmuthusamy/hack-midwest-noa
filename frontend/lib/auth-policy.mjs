@@ -4,6 +4,13 @@ export const FACILITY_IDS = ['SC-DEMO-01', 'FL-DEMO-01', 'CA-DEMO-01', 'MT-DEMO-
 export function authEnvironment(env = process.env) {
   if (env.WEATHER_DESK_AUTH_MODE === 'demo') {
     if (env.NODE_ENV === 'production') throw Error('Demo access is disabled in production');
+    // Pin the browser origin explicitly when Next runs on a custom local port.
+    // Never accept the request's Origin header as configuration.
+    if (env.WEATHER_DESK_DEMO_ORIGIN) {
+      const origin = new URL(env.WEATHER_DESK_DEMO_ORIGIN);
+      if (origin.protocol !== 'http:' || !['localhost', '127.0.0.1', '[::1]'].includes(origin.hostname) || origin.username || origin.password || origin.pathname !== '/' || origin.search || origin.hash) throw Error('Demo origin must be a loopback HTTP origin');
+      return { mode: 'demo', origin: origin.origin };
+    }
     return { mode: 'demo' };
   }
   if (env.WEATHER_DESK_AUTH_MODE && env.WEATHER_DESK_AUTH_MODE !== 'oauth') throw Error('Invalid authentication mode');
